@@ -1,3 +1,5 @@
+import { derived } from 'svelte/store';
+
 import { Store } from '@/helpers/store';
 
 
@@ -17,3 +19,8 @@ const _default: {
 
 
 export const user = new Store('user', _default);
+
+export const userFirstName = derived(user, $user => {
+    const temp = ($user as typeof _default).name.split(/\s+/, 2);
+    return temp.length > 1 ? temp[1] : temp[0];
+});

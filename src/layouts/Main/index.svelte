@@ -1,15 +1,36 @@
 <script lang="ts">
+    import { MenuButton } from './components';
+
     import { RouterView } from '@/libs/Router';
 
 
     // svelte-ignore unused-export-let
-    export let params = undefined;
+    export let params: { [key: string]: any } | undefined = undefined; params;
+    let className: string = '';
+	export { className as class }; className;
 </script>
 
 
-
-<RouterView>
-    <div slot="loading" class="flex justify-center pt-24">
-        Loading...
+<div class="w-full h-full bg-scene flex flex-col min-w-[320px] overflow-hidden">
+    <div class="shrink-1 grow-1 w-[calc(100%-24px)] h-[calc(100%-12px)] mx-3 mt-3 bg-base-100 rounded-2xl overflow-hidden">
+        <RouterView>
+            <div slot="loading" class="flex justify-center pt-24">
+                Loading...
+            </div>
+        </RouterView>
     </div>
-</RouterView>
+    <div class="shrink-0 grow-0 flex justify-around px-4 py-6">
+        <MenuButton path="/home">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16.612 2.214a1.01 1.01 0 0 0-1.242 0L1 13.419l1.243 1.572L4 13.621V26a2.004 2.004 0 0 0 2 2h20a2.004 2.004 0 0 0 2-2V13.63L29.757 15L31 13.428zM18 26h-4v-8h4zm2 0v-8a2.002 2.002 0 0 0-2-2h-4a2.002 2.002 0 0 0-2 2v8H6V12.062l10-7.79l10 7.8V26z" fill="currentColor"></path></svg>
+        </MenuButton>
+        <MenuButton path="/events">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 22H6V12h20v14zm0-16H6V6h4v2h2V6h8v2h2V6h4v4z" fill="currentColor"></path></svg>
+        </MenuButton>
+        <MenuButton path="/communities">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28 6H8c-1.2 0-2 .8-2 2v14c0 1.2.8 2 2 2h8v-2H8V8h20v14h-7.2L16 28.8l1.6 1.2l4.2-6H28c1.2 0 2-.8 2-2V8c0-1.2-.8-2-2-2z" fill="currentColor"></path><path d="M4 18H2V5c0-1.7 1.3-3 3-3h13v2H5c-.6 0-1 .4-1 1v13z" fill="currentColor"></path></svg>
+        </MenuButton>
+        <MenuButton path="/residents">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 30h-2v-5a5.006 5.006 0 0 0-5-5v-2a7.008 7.008 0 0 1 7 7z" fill="currentColor"></path><path d="M22 30h-2v-5a5.006 5.006 0 0 0-5-5H9a5.006 5.006 0 0 0-5 5v5H2v-5a7.008 7.008 0 0 1 7-7h6a7.008 7.008 0 0 1 7 7z" fill="currentColor"></path><path d="M20 2v2a5 5 0 0 1 0 10v2a7 7 0 0 0 0-14z" fill="currentColor"></path><path d="M12 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path></svg>
+        </MenuButton>
+    </div>
+</div>

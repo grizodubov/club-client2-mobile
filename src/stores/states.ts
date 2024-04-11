@@ -1,6 +1,6 @@
 import { Store } from '@/helpers/store';
 
-import { STATES } from '@/config';
+import { STATES } from '@/config/states.cfg';
 
 import { type WeboscketInstance } from '@/helpers/websocket';
 

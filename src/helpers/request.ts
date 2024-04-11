@@ -1,22 +1,25 @@
 import { states, token } from '@/stores';
 
-import { BINDINGS } from '@/config';
+import { BINDINGS } from '@/config/bindings.cfg';
 
 import { auth, updateBindings, parseNotifications } from './auth';
 
 
-type Data = {
+/* EXPORT: ResponseData */
+export type Data = {
     [key: string]: any;
 };
 
-type ResponseData = {
+/* EXPORT: ResponseData */
+export type ResponseData = {
     _alert?: string;
     _notification?: string;
     _bindings?: { [key: string]: string | number | boolean  };
     [key: string]: any;
 };
 
-type HTTPResponse = {
+/* EXPORT: HTTPResponse */
+export type HTTPResponse = {
     status: number;
     data: ResponseData;
 };
@@ -46,7 +49,7 @@ const EXCEPTIONS: {
 
 
 /* EXPORT: request */
-export async function request({ path, data }: RequestOptions) {
+export async function request({ path, data }: RequestOptions): Promise<HTTPResponse> {
     states.push({
 		loading: true,
 	});
@@ -61,10 +64,11 @@ export async function request({ path, data }: RequestOptions) {
 /* APIRequest */
 async function APIRequest(path: string, data: Data): Promise<HTTPResponse> {
     token.load();
+    const t: string | undefined = token.pull('token');
     const req: RequestAjaxOptions = {
         method: 'POST',
         url: states.pull('api') + path,
-        body: Object.assign(data ? data : {}, { _token: token.pull('token') }),
+        body: Object.assign(data ? data : {}, { _token: t ? t : '' }),
     };
     let result: HTTPResponse = { 
         status: 0,

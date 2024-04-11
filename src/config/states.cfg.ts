@@ -8,7 +8,3 @@ export const STATES: {
     wso: 'wss://eta.clubgermes.ru:5007',
     media: 'https://media.clubgermes.ru:5017',
 };
-
-
-/* EXPORT: BINDINGS */
-export const BINDINGS: string[] = [];

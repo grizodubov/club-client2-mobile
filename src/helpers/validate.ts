@@ -92,7 +92,7 @@ const VALIDATORS: {
             if (model.options.indexOf(value) == -1)
                 return false;
         if (model.valueMin)
-            if (value > model.valueMin)
+            if (value < model.valueMin)
                 return false;
         if (model.valueMax)
             if (value > model.valueMax)
@@ -111,7 +111,7 @@ const VALIDATORS: {
             if (model.options.indexOf(value) == -1)
                 return false;
         if (model.valueMin)
-            if (value > model.valueMin)
+            if (value < model.valueMin)
                 return false;
         if (model.valueMax)
             if (value > model.valueMax)

@@ -71,6 +71,7 @@ const MODEL: {
 export function init(): void {
     token.load();
     user.load();
+    //console.log('init', token.pull());
 	websocket.on('connect',
 		() => {
 			states.push({
@@ -113,6 +114,7 @@ export function init(): void {
 export function auth(data: Data): void {
 	token.load();
 	const timeStamp = token.pull('time');
+    //console.log('auth', token.pull(), data);
 	if (validate(data, MODEL)) {
 		if (data._time > timeStamp) {
 			token.push({
@@ -120,6 +122,9 @@ export function auth(data: Data): void {
 				time: data._time,
 			});
 			token.save();
+            //console.log('auth', token.pull());
+            //token.load();
+            //console.log('auth', token.pull());
             const frUserId: number = user.pull('id');
             user.push(data._user);
 			user.save();

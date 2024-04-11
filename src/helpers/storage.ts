@@ -26,12 +26,16 @@ export function set(key: string, data: StorageType): void {
     switch (t) {
         case 'object':
             localStorage.setItem('___' + key, t + '|' + JSON.stringify(data));
+            return;
         case 'string':
             localStorage.setItem('___' + key, t + '|' + data);
+            return;
         case 'number':
             localStorage.setItem('___' + key, t + '|' + data.toString());
+            return;
         case 'boolean':
             localStorage.setItem('___' + key, t + '|' + (data ? '1' : '0'));
+            return;
     }
 };
 

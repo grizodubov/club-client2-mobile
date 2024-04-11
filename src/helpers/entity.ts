@@ -49,10 +49,10 @@ export class Entity {
 	}: {
         model: Data;
         retriever: Retriever;
-        entries: Entry[];
-        onUpdate: CallBackWithData | null;
-        onSuccess: CallBackWithData | null;
-        onFailure: CallBack | null;
+        entries?: Entry[];
+        onUpdate?: CallBackWithData | null;
+        onSuccess?: CallBackWithData | null;
+        onFailure?: CallBack | null;
     }) {
 		this.model = model;
 		this.retriever = retriever;

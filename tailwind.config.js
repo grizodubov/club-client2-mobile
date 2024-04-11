@@ -5,7 +5,9 @@ module.exports = {
     ],
     theme: {
         colors: {
-            dark: '#0a2d3c',
+            scene: '#0a2d3c',
+            front: '#d49544',
+            moderate: '#467f94',
         },
         extend: {},
     },
@@ -13,8 +15,22 @@ module.exports = {
         require('daisyui'),
     ],
     daisyui: {
-        themes: [ "bumblebee" ],
+        themes: [ "emerald" ],
     },
     safelist: [
+        'bg-primary',
+        'bg-secondary',
+        'bg-warning',
+        'bg-accent',
+        'bg-info',
+        'bg-success',
+        'brighness-75',
+        'brighness-90',
+        'text-primary',
+        'text-secondary',
+        'text-warning',
+        'text-accent',
+        'text-info',
+        'text-success',
     ]
 }

@@ -1,0 +1,33 @@
+<script lang="ts">
+    export let placeholder: string;
+    export let value: string;
+    export let disabled: boolean = false;
+
+
+    let focus: boolean = false;
+</script>
+
+
+<div class="relative h-16 w-full overflow-hidden">
+    <div
+        class="absolute top-0 h-full w-full pt-1 pl-3 bg-scene brightness-[1.3] text-xs text-base-200 border-l-2"
+        class:border-transparent="{!focus}"
+        class:border-secondary="{focus}"
+        class:brightness-[1.3]="{!disabled}"
+        class:brightness-[1.1]="{disabled}"
+    >
+        <span
+            class:opacity-30="{!disabled}"
+            class:opacity-20="{disabled}"
+        >{placeholder}</span>
+    </div>
+    <input
+        type="text"
+        class="absolute top-0 left-[2px] h-full w-[calc(100%-2px)] px-3 m-0 bg-transparent text-base-200
+            outline-none border-0 focus:outline-none focus:border-0 shadow-none focus:shadow-none"
+        disabled="{disabled}"
+        bind:value="{value}"
+        on:focus="{() => { focus = true; }}"
+        on:blur="{() => { focus = false; }}"
+    />
+</div>

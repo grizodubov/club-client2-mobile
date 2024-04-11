@@ -58,21 +58,22 @@ export class Store {
 
     /* Store.push */
     push(value: Storage): void {
-        this.update((self: Storage) => {
-            if (typeof value === 'object') {
-                const filteredValue: Storage = Object.keys(this._default).reduce(
-                    (result: Data, key: string) => {
-                        if (value.hasOwnProperty(key))
-                            result[key] = value[key];
-                        return result;
-                    }, {}
-                );
-                return Object.assign(self, filteredValue);
-            }
-            else {
-                return value;
-            }
-        });
+        if (typeof this._default === typeof value)
+            this.update((self: Storage) => {
+                if (typeof value === 'object') {
+                    const filteredValue: Storage = Object.keys(this._default).reduce(
+                        (result: Data, key: string) => {
+                            if (value.hasOwnProperty(key))
+                                result[key] = value[key];
+                            return result;
+                        }, {}
+                    );
+                    return Object.assign(self, filteredValue);
+                }
+                else {
+                    return value;
+                }
+            });
     }
 
     /* Store.reset */
@@ -86,15 +87,23 @@ export class Store {
     save(key?: string): void {
         if (test())
             storageSet(key ? key : ':' + this.name, get(this));
+        //if (test())
+        //    console.log('save', this.name, get(this));
     }
 
     /* Store.load */
     load(key?: string): void {
         if (test()) {
             const temp: StorageType | undefined = storageGet(key ? key : ':' + this.name);
-            if (typeof temp === 'object')
+            if (typeof temp === 'object') {
                 this.update(self => Object.assign(self, temp));
+            }
+            else if (typeof temp === 'string' || typeof temp === 'number' || typeof temp === 'boolean') {
+                this.update(self => temp);
+            }
         }
+        //if (test())
+        //    console.log('load', this.name, get(this));
     }
 
 };
