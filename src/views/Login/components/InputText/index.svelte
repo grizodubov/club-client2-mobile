@@ -12,7 +12,7 @@
     <div
         class="absolute top-0 h-full w-full pt-1 pl-3 bg-scene brightness-[1.3] text-xs text-base-200 border-l-2"
         class:border-transparent="{!focus}"
-        class:border-secondary="{focus}"
+        class:border-front="{focus}"
         class:brightness-[1.3]="{!disabled}"
         class:brightness-[1.1]="{disabled}"
     >

@@ -9,9 +9,9 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                scene: 'var(--scene)',
-                front: 'var(--front)',
-                moderate: 'var(--moderate)',
+                scene: 'oklch(var(--scene) / <alpha-value>)',
+                front: 'oklch(var(--front) / <alpha-value>)',
+                moderate: 'oklch(var(--moderate) / <alpha-value>)',
             },
         },
     },
@@ -20,13 +20,17 @@ module.exports = {
             {
                 emerald: {
                     ...require('daisyui/src/theming/themes')['emerald'],
-                    '--scene': '#0a2d3c',
-                    '--front': '#d495447',
-                    '--moderate': '#467f94',
+                    '--scene': '28.03% 0.048 230.58',
+                    '--front': '71.67% 0.123 70.27',
+                    '--moderate': '56.59% 0.068 224.07',
                     '.btn-front': {
-                        'background-color': "#d49544",
-                        'border-color': "#d49544",
-                      },
+                        'background-color': 'oklch(var(--front) / 100%)',
+                        'border-color': 'oklch(var(--front) / 100%)',
+                    },
+                    '.btn-front:hover': {
+                        'background-color': 'oklch(var(--front) / 90%)',
+                        'border-color': 'oklch(var(--front) / 90%)',
+                    },
                 },
             },
         ],

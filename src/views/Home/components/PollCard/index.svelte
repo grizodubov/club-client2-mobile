@@ -40,7 +40,7 @@
             ></div>
             <div class="relative flex justify-center">
                 <button
-                    class="btn btn-secondary"
+                    class="btn btn-front"
                     class:btn-active="{selected === undefined}"
                     class:opacity-60="{selected === undefined}"
                     on:click="{() => {
