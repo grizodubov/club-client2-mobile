@@ -103,7 +103,7 @@
         <button
             class="border-b-2 px-2 py-1.5 text-sm text-base-200 transition-all"
             class:border-scene="{step != 1}"
-            class:border-secondary="{step == 1}"
+            class:border-front="{step == 1}"
             on:click="{() => { 
                 if (step != 1) {
                     accessId = '';
@@ -116,7 +116,7 @@
         <button
             class="ml-5 border-b-2 px-2 py-1.5 text-sm text-base-200 transition-all"
             class:border-scene="{step != 2}"
-            class:border-secondary="{step == 2}"
+            class:border-front="{step == 2}"
             on:click="{() => {
                 if (step != 2) {
                     accessId = '';
@@ -129,7 +129,7 @@
         <button
             class="ml-5 border-b-2 border-b px-2 py-1.5 text-sm text-base-200 transition-all"
             class:border-scene="{step != 3}"
-            class:border-secondary="{step == 3}"
+            class:border-front="{step == 3}"
             on:click="{() => {
                 if (step != 3) {
                     accessId = '';
@@ -173,7 +173,7 @@
                             <div class="flex flex-col w-full px-8">
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-secondary w-full"
+                                        class="btn btn-front w-full"
                                         class:btn-active="{!validPhone}"
                                         class:opacity-60="{!validPhone}"
                                         on:click="{() => {
@@ -196,7 +196,7 @@
                                 </div>
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-secondary w-full"
+                                        class="btn btn-front w-full"
                                         class:btn-active="{accessCode.length != 4}"
                                         class:opacity-60="{accessCode.length != 4}"
                                         on:click="{() => {
@@ -228,7 +228,7 @@
                             <div class="flex flex-col w-full px-8">
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-secondary w-full"
+                                        class="btn btn-front w-full"
                                         class:btn-active="{!validEmail}"
                                         class:opacity-60="{!validEmail}"
                                         on:click="{() => {
@@ -251,7 +251,7 @@
                                 </div>
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-secondary w-full"
+                                        class="btn btn-front w-full"
                                         class:btn-active="{accessCode.length != 4}"
                                         class:opacity-60="{accessCode.length != 4}"
                                         on:click="{() => {
@@ -281,7 +281,7 @@
                         </div>
                         <div class="mt-5 w-[160px]">
                             <button
-                                class="btn btn-secondary w-full"
+                                class="btn btn-front w-full"
                                 class:btn-active="{(!validPhone && !validEmail) || accessCode.length < 4}"
                                 class:opacity-60="{(!validPhone && !validEmail) || accessCode.length < 4}"
                                 on:click="{() => {

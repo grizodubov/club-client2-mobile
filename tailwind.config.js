@@ -3,19 +3,33 @@ module.exports = {
     content: [
         './src/**/*.{html,js,svelte,ts}',
     ],
-    theme: {
-        colors: {
-            scene: '#0a2d3c',
-            front: '#d49544',
-            moderate: '#467f94',
-        },
-        extend: {},
-    },
     plugins: [
         require('daisyui'),
     ],
+    theme: {
+        extend: {
+            colors: {
+                scene: 'var(--scene)',
+                front: 'var(--front)',
+                moderate: 'var(--moderate)',
+            },
+        },
+    },
     daisyui: {
-        themes: [ "emerald" ],
+        themes: [
+            {
+                emerald: {
+                    ...require('daisyui/src/theming/themes')['emerald'],
+                    '--scene': '#0a2d3c',
+                    '--front': '#d495447',
+                    '--moderate': '#467f94',
+                    '.btn-front': {
+                        'background-color': "#d49544",
+                        'border-color': "#d49544",
+                      },
+                },
+            },
+        ],
     },
     safelist: [
         'bg-primary',
