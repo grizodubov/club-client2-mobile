@@ -80,11 +80,13 @@
 	.component {
 		width: 100%;
 		height: 100%;
+        /*
         overflow-y: scroll;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         -ms-overflow-style: none;
         scrollbar-width: none;
+        */
 	}
 </style>
 

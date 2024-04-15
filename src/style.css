@@ -24,3 +24,29 @@ main {
     margin: 0px;
     padding: 0px;
 }
+
+@layer components {
+
+    .scrollable-y {
+		width: 100%;
+		height: 100%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollable-x {
+		width: 100%;
+		height: 100%;
+        overflow-y: hidden;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+}

@@ -3,13 +3,16 @@ import { derived } from 'svelte/store';
 import { Store } from '@/helpers/store';
 
 
-const _default: {
-    id: number,
-    name: string,
-    avatar_hash: string | null,
-    roles: string[],
-    telegram: string | null,
-} = {
+export type User = {
+    id: number;
+    name: string;
+    avatar_hash: string | null;
+    roles: string[];
+    telegram: string | null;
+};
+
+
+const _default: User = {
 	id: 0,
 	name: '',
     avatar_hash: null,

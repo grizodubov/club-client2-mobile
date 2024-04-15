@@ -43,6 +43,15 @@ const routes: PathRoute[] = [
 			name: 'Резиденты',
 		},
 	},
+	/* **** */
+	{
+		path: '/profile',
+		layout: 'Main',
+		component: 'Profile',
+		meta: {
+			name: 'Профиль',
+		},
+	},
     /* **** */
 	{
 		path: '/auth',

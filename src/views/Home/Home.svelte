@@ -1,10 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { fade } from 'svelte/transition';
 
-    import { user, userFirstName } from '@/stores';
+    import { type User, user, userFirstName } from '@/stores';
 
     import { type Event, EventCard, PollCard } from './components';
-    import { type User, Avatar } from '@/components';
+    import { Avatar } from '@/components';
 
     import { subscribe } from '@/helpers/notification';
 
@@ -87,41 +88,53 @@
 </script>
 
 
-<div class="w-full">
+<div 
+    class="w-full h-full flex flex-col"
+    in:fade="{{ duration: 100 }}"
+>
 
     <!-- Добро пожаловать -->
-    <div class="bg-front w-full h-[128px] flex flex-col justify-between">
+    <div class="bg-front w-full h-[128px] flex flex-col justify-between shrink-0 grow-0">
         <div class="flex justify-between items-start">
-            <div class="mt-7">
-                <div class="text-sm text-base-100 ml-3">Добро пожаловать,</div>
-                <div class="text-2xl text-base-100 font-semibold ml-3"> {$userFirstName}!</div>
+            <div class="mt-7 shrink-1 grow-1 ml-4">
+                <div class="text-sm text-base-100">Добро пожаловать,</div>
+                <div class="text-2xl text-base-100 font-medium"> {$userFirstName}!</div>
             </div>
-            <div class="w-[56px] h-[56px] mr-4 mt-6 rounded-full border-2 border-base-100">
+            <div class="w-[56px] h-[56px] mr-4 mt-6 rounded-full border-2 border-base-100 shrink-0 grow-0">
                 <Avatar user="{currentUser}" />
             </div>
         </div>
         <div class="bg-base-100 rounded-t-2xl h-5"></div>
     </div>
 
-    <!-- События-->
-    <div class="font-semibold text-lg px-3">События</div>
-    <div class="carousel w-full h-[176px] mt-3">
-        {#each events as event (event.id)}
-            <div class="carousel-item first:pl-1.5 last:pr-1.5">
-                <EventCard event="{event}" />
+    <div class="shrink-0 grow-0 h-[calc(100%-128px)]">
+        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
+
+            <!-- События-->
+            <div class="font-semibold text-lg px-3 mt-6 mb-5">События</div>
+            <div class="h-[176px] overflow-y-hidden">
+                <div class="carousel w-full h-[176px]">
+                    {#each events as event (event.id)}
+                        <div class="carousel-item first:pl-1.5 last:pr-1.5">
+                            <EventCard event="{event}" />
+                        </div>
+                    {/each}
+                </div>
             </div>
-        {/each}
+
+            <!-- Опросы -->
+            <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
+            {#each polls as poll (poll.id)}
+                <PollCard poll="{poll}" />
+            {/each}
+
+            <!-- Партнеры -->
+            <div class="flex w-full justify-between items-end px-3 mt-6 mb-5">
+                <div class="font-semibold text-lg leading-5">Партнеры</div>
+                <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Опросы -->
-    <div class="font-semibold text-lg px-3 mt-5">Опросы</div>
-    {#each polls as poll (poll.id)}
-        <PollCard poll="{poll}" />
-    {/each}
-
-    <!-- Партнеры -->
-    <div class="flex w-full justify-between items-end px-3 mt-5 mb-5">
-        <div class="font-semibold text-lg leading-5">Партнеры</div>
-        <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button>
-    </div>
 </div>

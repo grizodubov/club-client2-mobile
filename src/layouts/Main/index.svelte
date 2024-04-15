@@ -1,13 +1,54 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+
+    import { CupertinoPane } from 'cupertino-pane';
+
     import { MenuButton } from './components';
 
     import { RouterView } from '@/libs/Router';
+
+    import { modal } from '@/stores';
 
 
     // svelte-ignore unused-export-let
     export let params: { [key: string]: any } | undefined = undefined; params;
     let className: string = '';
 	export { className as class }; className;
+
+
+    /* onMount */
+	onMount(() => {
+        modal.push({
+            instance: new CupertinoPane('#modal', {
+                bottomClose: true,
+                backdrop: true,
+                backdropOpacity: 0.2,
+                animationDuration: 300,
+                initialBreak: 'top',
+                buttonDestroy: false,
+                fitHeight: true,
+                fitScreenHeight: true,
+                breaks: {
+                    middle: {
+                        enabled: false,
+                    },
+                },
+            })
+        });
+        const modalInstance = modal.pull('instance');
+        modalInstance.on('onBackdropTap', () => {
+            modalInstance.hide({ animate: true });
+        });
+        return () => {
+            const modalInstance = modal.pull('instance');
+            if (modalInstance) {
+                modalInstance.destroy();
+                modal.push({
+                    instance: null,
+                });
+            }
+        };
+	});
 </script>
 
 

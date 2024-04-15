@@ -20,6 +20,7 @@
     "@tsconfig/svelte": "^5.0.2",
     "@types/node": "^20.12.6",
     "autoprefixer": "^10.4.19",
+    "cupertino-pane": "^1.4.21",
     "daisyui": "^4.10.1",
     "internal-ip": "^7.0.0",
     "path": "^0.12.7",

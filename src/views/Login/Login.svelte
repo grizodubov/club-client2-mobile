@@ -156,7 +156,7 @@
             >
                 <div class="w-full">
                     <div class="px-8">
-                        <div class="w-[200px] mb-1">
+                        <div class="w-[240px] mb-1">
                             <InputText
                                 placeholder="Телефон"
                                 disabled="{code}"
@@ -173,7 +173,7 @@
                             <div class="flex flex-col w-full px-8">
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-front w-full"
+                                        class="btn btn-front w-full text-base-100"
                                         class:btn-active="{!validPhone}"
                                         class:opacity-60="{!validPhone}"
                                         on:click="{() => {
@@ -196,7 +196,7 @@
                                 </div>
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-front w-full"
+                                        class="btn btn-front w-full text-base-100"
                                         class:btn-active="{accessCode.length != 4}"
                                         class:opacity-60="{accessCode.length != 4}"
                                         on:click="{() => {
@@ -211,7 +211,7 @@
                 </div>
                 <div class="w-full">
                     <div class="px-8">
-                        <div class="w-[200px] mb-1">
+                        <div class="w-[240px] mb-1">
                             <InputText
                                 placeholder="Email"
                                 disabled="{code}"
@@ -228,7 +228,7 @@
                             <div class="flex flex-col w-full px-8">
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-front w-full"
+                                        class="btn btn-front w-full text-base-100"
                                         class:btn-active="{!validEmail}"
                                         class:opacity-60="{!validEmail}"
                                         on:click="{() => {
@@ -251,7 +251,7 @@
                                 </div>
                                 <div class="mt-5 w-[160px]">
                                     <button
-                                        class="btn btn-front w-full"
+                                        class="btn btn-front w-full text-base-100"
                                         class:btn-active="{accessCode.length != 4}"
                                         class:opacity-60="{accessCode.length != 4}"
                                         on:click="{() => {
@@ -266,14 +266,14 @@
                 </div>
                 <div class="w-full">
                     <div class="flex flex-col w-full px-8">
-                        <div class="w-[200px] mb-1">
+                        <div class="w-[240px] mb-1">
                             <InputText
                                 placeholder="Телефон / Email"
                                 disabled="{code}"
                                 bind:value="{accessId}"
                             />
                         </div>
-                        <div class="w-[200px]">
+                        <div class="w-[240px]">
                             <InputText
                                 placeholder="Пароль"
                                 bind:value="{accessCode}"
@@ -281,7 +281,7 @@
                         </div>
                         <div class="mt-5 w-[160px]">
                             <button
-                                class="btn btn-front w-full"
+                                class="btn btn-front w-full text-base-100"
                                 class:btn-active="{(!validPhone && !validEmail) || accessCode.length < 4}"
                                 class:opacity-60="{(!validPhone && !validEmail) || accessCode.length < 4}"
                                 on:click="{() => {

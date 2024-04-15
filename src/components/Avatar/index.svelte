@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type User } from './types';
+    import { type User } from '@/stores/';
 
 
     export let user: User;
@@ -7,7 +7,6 @@
 
     $: initials = user.name.split(/\s+/, 2).map((n: string) => n.charAt(0).toUpperCase()).join('');
 </script>
-
 
 
 {#if user.avatar_hash}

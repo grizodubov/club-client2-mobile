@@ -1,12 +1,15 @@
 <script lang="ts">
     import { router, RouterView, currentRoute } from '@/libs/Router';
 
-    import { user, states } from '@/stores';
+    import { user, states, type Modal, modal } from '@/stores';
 
     let userId = user.pull('id');
 
 
     $: $user, userChange();
+
+
+    $: modalData = $modal as Modal;
 
 
     /* userChange */
@@ -41,3 +44,9 @@
         </div>
     </RouterView>
 </main>
+
+<div id="modal">
+    {#if modalData.component}
+        <svelte:component this="{modalData.component}" params="{modalData.params}" />
+    {/if}
+</div>
