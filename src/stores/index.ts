@@ -2,7 +2,8 @@ import { states } from './states';
 import { token } from './token';
 import { type User, user, userFirstName } from './user';
 import { bindings } from './bindings';
-import { type ResidentsFilters, residentsFilters, activeFiltersAmount } from './residentsFilters';
+import { type ResidentsFilters, residentsFilters, activeResidentsFiltersAmount } from './residentsFilters';
+import { type EventsFilters, eventsFilters, activeEventsFiltersAmount } from './eventsFilters';
 
 
 export {
@@ -14,5 +15,8 @@ export {
     bindings,
     type ResidentsFilters,
     residentsFilters,
-    activeFiltersAmount,
+    activeResidentsFiltersAmount,
+    type EventsFilters,
+    eventsFilters,
+    activeEventsFiltersAmount,
 };
