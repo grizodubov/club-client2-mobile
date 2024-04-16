@@ -68,7 +68,9 @@
 	onMount(() => {
         get();
 		const sub = subscribe('events', refresh);
-		return () => { sub.close(); }
+		return () => {
+            sub.close();
+        };
 	});
 
 
@@ -90,7 +92,6 @@
 
 <div 
     class="w-full h-full flex flex-col"
-    in:fade="{{ duration: 100 }}"
 >
 
     <!-- Добро пожаловать -->
@@ -115,7 +116,10 @@
             <div class="h-[176px] overflow-y-hidden">
                 <div class="carousel w-full h-[176px]">
                     {#each events as event (event.id)}
-                        <div class="carousel-item first:pl-1.5 last:pr-1.5">
+                        <div
+                            class="carousel-item first:pl-1.5 last:pr-1.5"
+                            in:fade="{{ duration: 100 }}"
+                        >
                             <EventCard event="{event}" />
                         </div>
                     {/each}
@@ -125,7 +129,11 @@
             <!-- Опросы -->
             <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
             {#each polls as poll (poll.id)}
-                <PollCard poll="{poll}" />
+                <div
+                    in:fade="{{ duration: 100 }}"
+                >
+                    <PollCard poll="{poll}" />
+                </div>
             {/each}
 
             <!-- Партнеры -->

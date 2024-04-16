@@ -2,7 +2,7 @@ import { states } from './states';
 import { token } from './token';
 import { type User, user, userFirstName } from './user';
 import { bindings } from './bindings';
-import { type Modal, modal } from './modal';
+import { type ResidentsFilters, residentsFilters, activeFiltersAmount } from './residentsFilters';
 
 
 export {
@@ -12,6 +12,7 @@ export {
     user,
     userFirstName,
     bindings,
-    modal,
-    type Modal,
+    type ResidentsFilters,
+    residentsFilters,
+    activeFiltersAmount,
 };

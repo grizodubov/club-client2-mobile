@@ -1,7 +1,9 @@
 <script lang="ts">
     import { router, RouterView, currentRoute } from '@/libs/Router';
 
-    import { user, states, type Modal, modal } from '@/stores';
+    import { user, states } from '@/stores';
+
+    import { type Modal, modal } from '@/helpers/modal';
 
     let userId = user.pull('id');
 

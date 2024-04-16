@@ -50,3 +50,8 @@ main {
     }
 
 }
+
+.modal-fix .pane {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+}

@@ -2,9 +2,18 @@
     import { onMount } from 'svelte';
     import { fade } from 'svelte/transition';
 
-    import { Filters } from './components';
+    import { Filters, ResidentCard, InputText } from './components';
 
-    import { modal } from '@/stores';
+    import { modalCreate, modalDestroy, modalShow } from '@/helpers/modal';
+
+    import { activeFiltersAmount } from '@/stores';
+
+    import { subscribe } from '@/helpers/notification';
+
+    import { Entity, collector } from '@/helpers/entity';
+    import {
+        residentsList,
+    } from '@/queries/user';
 
 
     // svelte-ignore unused-export-let
@@ -13,20 +22,49 @@
 	export { className as class }; className;
 
 
+    let residents: { [key: string]: any }[] = [];
+    let contacts: { [key: string]: any } = {};
+
+    let filterName = '';
+
+
+    /* DATA: residentsListHandler */
+	const residentsListHandler = new Entity({
+		model: residentsList.model,
+		retriever: residentsList.retriever,
+        onSuccess: data => {
+            /* communities */
+            residents = [ ...data.residents ];
+            contacts = data.contacts;
+        },
+	});
+
+
+    /* get */
+    function get() {
+        collector.get([
+            [ 
+                residentsListHandler,
+                {}
+            ],
+        ]);
+    }
+
+    
+    /* refresh */
+    function refresh() {
+        get();
+    }
+
+
     /* onMount */
 	onMount(() => {
-        modal.push({
-            component: Filters,
-        });
+        modalCreate(Filters, undefined);
+        get();
+        const sub = subscribe('events', refresh);
         return () => {
-            const modalInstance = modal.pull('instance');
-            if (modalInstance) {
-                modalInstance.hide();
-                modal.push({
-                    component: null,
-                    parameters: undefined,
-                });
-            }
+            modalDestroy();
+            sub.close();
         };
 	});
 </script>
@@ -34,7 +72,6 @@
 
 <div 
     class="w-full h-full flex flex-col"
-    in:fade="{{ duration: 100 }}"
 >
 
     <div class="bg-front w-full h-[112px] flex flex-col justify-between shrink-0 grow-0">
@@ -54,15 +91,15 @@
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
                 <button
-                    class="text-base-100 w-8 h-8 flex items-center justify-center"
+                    class="relative text-base-100 w-8 h-8 flex items-center justify-center"
                     on:click="{() => {
-                        const modalInstance = modal.pull('instance');
-                        if (modalInstance) {
-                            modalInstance.present({ animate: true });
-                        }
+                        modalShow();
                     }}"
                 >
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 8h-4.1c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2h14.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30V8zm-9 4c-1.7 0-3-1.3-3-3s1.3-3 3-3s3 1.3 3 3s-1.3 3-3 3z" fill="currentColor"></path><path d="M2 24h4.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30v-2H15.9c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2zm9-4c1.7 0 3 1.3 3 3s-1.3 3-3 3s-3-1.3-3-3s1.3-3 3-3z" fill="currentColor"></path></svg>
+                    {#if $activeFiltersAmount}
+                        <div class="absolute w-[18px] h-[18px] bg-scene text-base-100 flex items-center justify-center text-[9px] font-medium rounded-full top-5 left-5"><span>{$activeFiltersAmount}</span></div>
+                    {/if}
                 </button>
             </div>
         </div>
@@ -70,9 +107,25 @@
     </div>
 
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
-        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
-
-
+        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl">
+            <div class="relative h-full">
+                <div class="absolute w-full px-4 mt-5 h-16">
+                    <InputText
+                        placeholder="Имя / Компания"
+                        bind:value="{filterName}"
+                    />
+                </div>
+                <div class="h-full scrollable-y">
+                    {#each residents as resident (resident.id)}
+                        <div
+                            class="mb-5 first:mt-[104px]"
+                            in:fade="{{ duration: 100 }}"
+                        >
+                            <ResidentCard resident="{resident}" />
+                        </div>
+                    {/each}
+                </div>
+            </div>
         </div>
     </div>
 
