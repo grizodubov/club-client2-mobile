@@ -32,7 +32,7 @@
                 <div class="relative text-xs font-medium mb-0.5 text-base-100">{currentDate[1]}</div>
             </div>
             <div class="ml-3 h-[66px] flex flex-col justify-start items-start shrink-1 grow-1 w-full">
-                <div class="mt-1 flex items-start text-{currentFormat?.color}">
+                <div class="mt-2 flex items-start text-{currentFormat?.color}">
                     <div class="w-4 h-4 shrink-0 grow-0">{@html currentFormat?.icon}</div>
                     <div class="text-xs leading-4 ml-1.5">{currentFormat?.name}</div>
                 </div>

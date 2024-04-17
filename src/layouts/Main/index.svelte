@@ -15,8 +15,8 @@
 <div class="w-full h-full bg-scene flex flex-col min-w-[320px] overflow-hidden">
     <div class="shrink-1 grow-1 w-[calc(100%-24px)] h-[calc(100%-12px)] mx-3 mt-3 bg-base-100 rounded-2xl overflow-hidden">
         <RouterView>
-            <div slot="loading" class="flex justify-center pt-24">
-                Loading...
+            <div slot="loading" class="w-full h-full flex justify-center items-center">
+                <span class="loading loading-bars text-front laoding-lg"></span>
             </div>
         </RouterView>
     </div>

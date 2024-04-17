@@ -10,8 +10,8 @@
 
 <div class="bg-scene w-full h-full min-w-[320px]">
     <RouterView>
-        <div slot="loading" class="flex justify-center pt-24">
-            Loading...
+        <div slot="loading" class="w-full h-full flex justify-center items-center">
+            <span class="loading loading-bars text-front laoding-lg"></span>
         </div>
     </RouterView>
 </div>

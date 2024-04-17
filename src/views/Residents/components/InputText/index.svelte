@@ -10,7 +10,7 @@
 
 <div class="relative h-16 w-full overflow-hidden">
     <div
-        class="absolute top-0 h-full w-full pt-1 pl-3 bg-base-200 text-xs border-l-2"
+        class="absolute top-0 h-full w-full pt-1 pl-3 bg-base-200 text-xs border-l-2 opacity-90"
         class:border-transparent="{!focus}"
         class:border-neutral="{focus}"
     >

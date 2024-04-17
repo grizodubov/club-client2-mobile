@@ -8,11 +8,14 @@
 
     import { type EventsFilters, eventsFilters, activeEventsFiltersAmount } from '@/stores';
 
+    import { dateKey } from '@/utils/dates';
+
     import { subscribe } from '@/helpers/notification';
 
     import { Entity, collector } from '@/helpers/entity';
     import {
-    } from '@/queries/event';
+		eventsFeed,
+	} from '@/queries/event'
 
 
     // svelte-ignore unused-export-let
@@ -24,68 +27,101 @@
     $: filters = $eventsFilters as EventsFilters;
 
 
-    let events: { [key: string]: any }[] = [];
+    let calendar: any;
+
+    let firstRun = true;
+
+    let events: { [key: string]: any } = {};
+    let eventsSelectedCache = {};
+    let eventsThumbsupCache = {};
+
+    let dateActive: Date | undefined = undefined;
+
+    let eventsFiltered: any[] = [];
 
 
-    /* DATA: residentsListHandler */
-	/*const residentsListHandler = new Entity({
-		model: residentsList.model,
-		retriever: residentsList.retriever,
+    let tmFilter: ReturnType<typeof setTimeout> | null = null;
+
+
+    $: filters, events, filterEvents();
+
+
+    /* DATA: eventsFeedHandler */
+	const eventsFeedHandler = new Entity({
+		model: eventsFeed.model,
+		retriever: eventsFeed.retriever,
         onSuccess: data => {
-            resident = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
-            residents = [
-                ...data.residents.filter((r: { [key: string]: any }) => r.id != currentUser.id).map((r: { [key: string]: any }) => {
-                    if (resident) {
-                        r.tagsLinked = findTags(resident.tags, r.interests);
-                        r.interestsLinked = findTags(resident.interests, r.tags);
-                    }
-                    else {
-                        r.tagsLinked = [];
-                        r.interestsLinked = [];
-                    }
-                    return r;
-                })
-            ];
-            contacts = data.contacts;
+            eventsSelectedCache = Object.assign({}, data.events_selected);
+            eventsThumbsupCache = Object.assign({}, data.events_thumbsup);
+            const temp: { [key: string]: any } = {};
+            data.events.forEach((event: any) => {
+                const d = new Date(event.time_event);
+                const k = dateKey(d);
+                if (!temp.hasOwnProperty(k))
+                    temp[k] = [];
+                temp[k].push(event);
+            });
+            events = temp;
         },
-	});*/
+	});
+
+    let eventsFeedLoading = eventsFeedHandler.loading;
+
+    let eventsFilterLoading = false;
 
 
-    /* filterResidents */
-    /*function filterResidents() {
-        residentsFiltered = [];
-        if (tmFilter)
-            clearTimeout(tmFilter);
-        tmFilter = setTimeout(
-            () => {
-                if ($activeResidentsFiltersAmount || filterName) {
-                    const fn = filterName.toLowerCase();
-                    residentsFiltered = residents.filter(
-                        (r: { [key: string]: any }) => {
-                            return (!fn || r.name.toLowerCase().indexOf(fn) > -1 || r.company.toLowerCase().indexOf(fn) > -1) &&
-                                (!filters.helpful || r.rating > 0) &&
-                                (!filters.tags || r.tagsLinked.length > 0) &&
-                                (!filters.interests || r.interestsLinked.length > 0)  &&
-                                (!filters.contacts || (contacts[r.id.toString()] && contacts[r.id.toString()].contact));
+    /* filterEvents */
+    function filterEvents() {
+        if (dateActive) {
+            eventsFiltered = [];
+            eventsFilterLoading = true;
+            if (tmFilter)
+                clearTimeout(tmFilter);
+            tmFilter = setTimeout(
+                () => {
+                    const temp: any[] = [];
+                    if (dateActive) {
+                        const k = dateKey(dateActive);
+                        if (events.hasOwnProperty(k))
+                            temp.push(...events[k]);
+                        if (filters.future) {
+                            const t = new Date();
+                            const tk = dateKey(t);
+                            const dates = Object.keys(events);
+                            dates.sort();
+                            let flag = true;
+                            dates.filter(d => d >= tk).map(ck => {
+                                if (flag) {
+                                    temp.push({ id: -1 });
+                                    flag = false;
+                                }
+                                temp.push(...events[ck]);
+                            });
                         }
-                    );
-                }
-                else {
-                    residentsFiltered = [ ...residents ];
-                }
-            }, 250
-        );
-    }*/
+                    }
+                    eventsFiltered = temp;
+                    eventsFilterLoading = false;
+                }, 250
+            );
+        }
+    }
 
 
     /* get */
     function get() {
-        /*collector.get([
-            [ 
-                residentsListHandler,
-                {}
-            ],
-        ]);*/
+        if (calendar) {
+            collector.get([
+                [ 
+                    eventsFeedHandler,
+                    {
+                        from: calendar.getStartDate().getTime(),
+                        to: calendar.getFinishDate().getTime(),
+                        find: firstRun,
+                    }
+                ],
+            ]);
+            firstRun = false;
+        }
     }
 
     
@@ -147,23 +183,35 @@
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl">
             <div class="relative h-full">
-                <div class="absolute w-full px-4 mt-5 h-16 z-10">
-                    <Calendar />
+                <div class="absolute w-full mt-6 z-10">
+                    <Calendar
+                        events="{events}"
+                        bind:this="{calendar}"
+                        on:change="{(event) => {
+                            dateActive = event.detail;
+                            filterEvents();
+                        }}"
+                    />
                 </div>
                 <div class="h-full scrollable-y">
-                    {#each events as event (event.id)}
-                        <div
-                            class="mb-5 first:mt-[104px]"
-                            in:fade="{{ duration: 100 }}"
-                        >
-                            <!--
-                            <Event
-                                resident="{resident}"
-                                contact="{contacts[resident.id.toString()] && contacts[resident.id.toString()].contact}"
-                            />
-                            -->
+                    {#if $eventsFeedLoading || eventsFilterLoading}
+                        <div class="w-full h-full flex justify-center items-center">
+                            <span class="loading loading-bars text-front laoding-lg"></span>
                         </div>
-                    {/each}
+                    {:else}
+                        {#each eventsFiltered as event}
+                            <div
+                                class="mb-5 first:mt-[140px]"
+                                in:fade="{{ duration: 100 }}"
+                            >
+                                {#if event.id == -1}
+                                    <div class="font-semibold text-lg px-3">Ближайшие события</div>
+                                {:else}
+                                    <EventCard event="{event}" />
+                                {/if}
+                            </div>
+                        {/each}
+                    {/if}
                 </div>
             </div>
         </div>

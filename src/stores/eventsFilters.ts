@@ -4,10 +4,12 @@ import { Store } from '@/helpers/store';
 
 
 export type EventsFilters = {
+    future: boolean;
 };
 
 
 const _default: EventsFilters = {
+    future: true,
 };
 
 

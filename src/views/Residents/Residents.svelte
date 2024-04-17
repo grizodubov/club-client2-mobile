@@ -33,12 +33,11 @@
     let residentsFiltered: { [key: string]: any }[] = [];
     let contacts: { [key: string]: any } = {};
 
-    let filterName = '';
 
     let tmFilter: ReturnType<typeof setTimeout> | null = null;
 
 
-    $: filterName, filters, residents, filterResidents();
+    $: filters, residents, filterResidents();
 
 
     /* DATA: residentsListHandler */
@@ -64,29 +63,65 @@
         },
 	});
 
+    let residentsListLoading = residentsListHandler.loading;
+
+    let residentFilterLoading = false;
+
 
     /* filterResidents */
     function filterResidents() {
         residentsFiltered = [];
+        residentFilterLoading = true;
         if (tmFilter)
             clearTimeout(tmFilter);
         tmFilter = setTimeout(
             () => {
-                if ($activeResidentsFiltersAmount || filterName) {
-                    const fn = filterName.toLowerCase();
+                if ($activeResidentsFiltersAmount || filters.name) {
+                    const fn = filters.name.toLowerCase();
                     residentsFiltered = residents.filter(
                         (r: { [key: string]: any }) => {
+                            let flagOff = 0;
+                            let flagOn = 0;
+                            if (!filters.helpful) {
+                                flagOff++;
+                            }
+                            else {
+                                if (r.rating > 0)
+                                    flagOn++;
+                            }
+                            if (!filters.tags) {
+                                flagOff++;
+                            }
+                            else {
+                                if (r.tagsLinked.length > 0)
+                                    flagOn++;
+                            }
+                            if (!filters.interests) {
+                                flagOff++;
+                            }
+                            else {
+                                if (r.interestsLinked.length > 0)
+                                    flagOn++;
+                            }
+                            if (!filters.contacts) {
+                                flagOff++;
+                            }
+                            else {
+                                if (contacts[r.id.toString()] && contacts[r.id.toString()].contact)
+                                flagOn++;
+                            }
                             return (!fn || r.name.toLowerCase().indexOf(fn) > -1 || r.company.toLowerCase().indexOf(fn) > -1) &&
-                                (!filters.helpful || r.rating > 0) &&
-                                (!filters.tags || r.tagsLinked.length > 0) &&
-                                (!filters.interests || r.interestsLinked.length > 0)  &&
-                                (!filters.contacts || (contacts[r.id.toString()] && contacts[r.id.toString()].contact));
+                                (
+                                    (filters.strict && flagOn + flagOff == 4) ||
+                                    (!filters.strict && (flagOff == 4 || flagOn > 0))
+                                )
                         }
                     );
                 }
                 else {
                     residentsFiltered = [ ...residents ];
                 }
+                residentFilterLoading = false;
             }, 250
         );
     }
@@ -150,7 +185,7 @@
                 >
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 8h-4.1c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2h14.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30V8zm-9 4c-1.7 0-3-1.3-3-3s1.3-3 3-3s3 1.3 3 3s-1.3 3-3 3z" fill="currentColor"></path><path d="M2 24h4.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30v-2H15.9c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2zm9-4c1.7 0 3 1.3 3 3s-1.3 3-3 3s-3-1.3-3-3s1.3-3 3-3z" fill="currentColor"></path></svg>
                     {#if $activeResidentsFiltersAmount}
-                        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-5 left-5"><span>{$activeResidentsFiltersAmount}</span></div>
+                        <div class="absolute w-[18px] h-[18px] bg-scene text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-5 left-5"><span>{$activeResidentsFiltersAmount}</span></div>
                     {/if}
                 </button>
             </div>
@@ -164,22 +199,28 @@
                 <div class="absolute w-full px-4 mt-5 h-16 z-10">
                     <InputText
                         placeholder="Имя / Компания"
-                        bind:value="{filterName}"
+                        bind:value="{filters.name}"
                     />
                 </div>
-                <div class="h-full scrollable-y">
-                    {#each residentsFiltered as resident (resident.id)}
-                        <div
-                            class="mb-5 first:mt-[104px]"
-                            in:fade="{{ duration: 100 }}"
-                        >
-                            <ResidentCard
-                                resident="{resident}"
-                                contact="{contacts[resident.id.toString()] && contacts[resident.id.toString()].contact}"
-                            />
-                        </div>
-                    {/each}
-                </div>
+                {#if $residentsListLoading || residentFilterLoading}
+                    <div class="w-full h-full flex justify-center items-center">
+                        <span class="loading loading-bars text-front laoding-lg"></span>
+                    </div>
+                {:else}
+                    <div class="h-full scrollable-y">
+                        {#each residentsFiltered as resident (resident.id)}
+                            <div
+                                class="mb-6 first:mt-[104px]"
+                                in:fade="{{ duration: 100 }}"
+                            >
+                                <ResidentCard
+                                    resident="{resident}"
+                                    contact="{contacts[resident.id.toString()] && contacts[resident.id.toString()].contact}"
+                                />
+                            </div>
+                        {/each}
+                    </div>
+                {/if}
             </div>
         </div>
     </div>

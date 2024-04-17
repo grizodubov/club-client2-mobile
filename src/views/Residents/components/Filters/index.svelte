@@ -28,7 +28,7 @@
             {:else}
                 <div class="rounded-[10px] border-2 border-front w-7 h-7 shrink-0 grow-0"></div>
             {/if}
-            <div class="w-5 h-5 ml-3 mt-1 text-front">
+            <div class="w-5 h-5 ml-3 mt-1 text-info">
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="currentColor"></path></svg>
             </div>
             <div class="w-full text-sm text-left ml-3 shrink-1 grow-1 mt-[3px]">Есть полезные ответы в сообществах</div>
@@ -75,7 +75,7 @@
         </div>
     </button>
     <button
-        class="w-full"
+        class="w-full mb-5"
         on:click="{() => {
             residentsFilters.push({ contacts: !filters.contacts });
         }}"
@@ -89,9 +89,26 @@
                 <div class="rounded-[10px] border-2 border-front w-7 h-7 shrink-0 grow-0"></div>
             {/if}
             <div class="w-5 h-5 ml-3 mt-1 text-warning">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72l3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41l-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18l-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z" fill="currentColor"></path></svg>
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45L7.77 18l1.12-4.81l-3.73-3.23l4.92-.42L12 5l1.92 4.53l4.92.42l-3.73 3.23L16.23 18z" fill="currentColor"></path></svg>
             </div>
             <div class="w-full text-sm text-left ml-3 shrink-1 grow-1 mt-[3px]">В списке Ваших контаков</div>
+        </div>
+    </button>
+    <button
+        class="w-full"
+        on:click="{() => {
+            residentsFilters.push({ strict: !filters.strict });
+        }}"
+    >
+        <div class=" w-full h-full flex justify-between items-start">
+            {#if filters.strict}
+                <div class="rounded-[10px] border-2 border-front bg-front w-7 h-7 flex items-center justify-center text-base-100 shrink-0 grow-0">
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                </div>
+            {:else}
+                <div class="rounded-[10px] border-2 border-front w-7 h-7 shrink-0 grow-0"></div>
+            {/if}
+            <div class="w-full text-sm text-left ml-[44px] shrink-1 grow-1 mt-[3px]">Только все совпадения</div>
         </div>
     </button>
 </div>

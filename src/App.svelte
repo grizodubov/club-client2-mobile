@@ -1,9 +1,16 @@
 <script lang="ts">
+    import { register } from 'swiper/element/bundle';
+
     import { router, RouterView, currentRoute } from '@/libs/Router';
 
     import { user, states } from '@/stores';
 
     import { type Modal, modal } from '@/helpers/modal';
+
+
+    /* web components */
+    register();
+
 
     let userId = user.pull('id');
 
@@ -41,8 +48,8 @@
 
 <main>
     <RouterView>
-        <div slot="loading" class="flex items-center justify-center h-full">
-            Loading...
+        <div slot="loading" class="w-full h-full flex justify-center items-center">
+            <span class="loading loading-bars text-front laoding-lg"></span>
         </div>
     </RouterView>
 </main>
