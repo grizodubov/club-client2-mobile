@@ -2,7 +2,9 @@
     import { onMount } from 'svelte';
     import { fade } from 'svelte/transition';
 
-    import { Filters, Calendar, EventCard } from './components';
+    import { CupertinoPane } from 'cupertino-pane';
+
+    import { Filters, EventCard, Calendar, CalendarSlider } from './components';
 
     import { modalCreate, modalDestroy, modalShow } from '@/helpers/modal';
 
@@ -27,7 +29,9 @@
     $: filters = $eventsFilters as EventsFilters;
 
 
+    let swiperIntance: any;
     let calendar: any;
+    let calendarSlider: any;
 
     let firstRun = true;
 
@@ -35,9 +39,12 @@
     let eventsSelectedCache = {};
     let eventsThumbsupCache = {};
 
-    let dateActive: Date | undefined = undefined;
+    let dateActive: Date = new Date();
+    dateActive.setHours(0, 0, 0, 0);
 
     let eventsFiltered: any[] = [];
+
+    let sync: boolean = false;
 
 
     let tmFilter: ReturnType<typeof setTimeout> | null = null;
@@ -68,6 +75,7 @@
     let eventsFeedLoading = eventsFeedHandler.loading;
 
     let eventsFilterLoading = false;
+    let calendarOpen = true;
 
 
     /* filterEvents */
@@ -107,6 +115,41 @@
     }
 
 
+    /* swiperCreate */
+    function swiperCreate() {
+        swiperIntance = new CupertinoPane('#events-swiper', {
+            inverse: true,
+            bottomClose: false,
+            initialBreak: 'top',
+            backdrop: false,
+            breaks: {
+                top: { enabled: true, height: 500 },
+                middle: { enabled: false },
+                bottom: { enabled: true, height: 50 },
+            },
+            preventClicks: true,
+            clickBottomOpen: true,
+            cssClass: 'swiper-fix',
+        });
+        swiperIntance.on('onTransitionStart', () => {
+            calendarOpen = true;
+        });
+        swiperIntance.on('onTransitionEnd', () => {
+            setTimeout(() => {
+                if (swiperIntance.currentBreak() == 'bottom') {
+                    calendarOpen = false;
+                    swiperIntance.settings.preventClicks = true;
+                }
+                else {
+                    calendarOpen = true;
+                    swiperIntance.settings.preventClicks = false;
+                }
+            }, 20);
+        });
+        swiperIntance.present({animate: false});
+    }
+
+
     /* get */
     function get() {
         if (calendar) {
@@ -134,6 +177,12 @@
     /* onMount */
 	onMount(() => {
         modalCreate(Filters, undefined);
+        swiperCreate();
+        if (calendar && calendarSlider) {
+            calendarSlider.createCalendarRange(calendar.getStartDate(), calendar.getFinishDate());
+            calendarSlider.setActiveDate(calendar.getActiveDate());
+            sync = true;
+        }
         get();
         const sub = subscribe('events', refresh);
         return () => {
@@ -181,19 +230,28 @@
     </div>
 
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
-        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl">
+        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl overflow-hidden">
             <div class="relative h-full">
-                <div class="absolute w-full mt-6 z-10">
-                    <Calendar
+                <div class="absolute w-full mt-12">
+                    <CalendarSlider
+                        bind:this="{calendarSlider}"
                         events="{events}"
-                        bind:this="{calendar}"
-                        on:change="{(event) => {
-                            dateActive = event.detail;
-                            filterEvents();
+                        on:dateActiveChange="{(event) => {
+                            if (sync) {
+                                dateActive = event.detail;
+                                if (calendar)
+                                    calendar.setActiveDate(dateActive);
+                                filterEvents();
+                            }
                         }}"
                     />
                 </div>
-                <div class="h-full scrollable-y">
+                <div
+                    class="h-full transition-all"
+                    class:scrollable-y="{!calendarOpen}"
+                    class:overflow-y-hidden="{calendarOpen}"
+                    class:opacity-20="{calendarOpen}"
+                >
                     {#if $eventsFeedLoading || eventsFilterLoading}
                         <div class="w-full h-full flex justify-center items-center">
                             <span class="loading loading-bars text-front laoding-lg"></span>
@@ -201,7 +259,7 @@
                     {:else}
                         {#each eventsFiltered as event}
                             <div
-                                class="mb-5 first:mt-[140px]"
+                                class="mb-5 first:mt-[164px]"
                                 in:fade="{{ duration: 100 }}"
                             >
                                 {#if event.id == -1}
@@ -212,6 +270,22 @@
                             </div>
                         {/each}
                     {/if}
+                </div>
+                <div class="absolute top-0 left-[4px]">
+                    <div id="events-swiper" style="height: 500px;">
+                        <Calendar
+                            bind:this="{calendar}"
+                            events="{events}"
+                            on:dateActiveChange="{(event) => {
+                                dateActive = event.detail;
+                                if (calendarSlider)
+                                    calendarSlider.setActiveDate(dateActive);
+                                filterEvents();
+                                if (swiperIntance)
+                                    swiperIntance.moveToBreak('bottom');
+                            }}"
+                        />
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,12 +1,11 @@
 <script lang="ts">
     import { EVENTS } from '@/config/events.cfg';
 
-    import { dateKey } from '@/utils/dates';
+    import { monthes, weekdaysShort, dateKey } from '@/utils/dates';
 
 
     export let date: Date;
-    export let active: boolean;
-    export let month: number;
+    export let active: boolean = false;
     export let events: { [key: string]: { [key: string]: any }[] };
 
 
@@ -22,31 +21,29 @@
     $: formats = getDateEvents(events, date).map(event => EVENTS.find(f => f.format == event.format));
 </script>
 
-<button
+<div
     class="relative w-full h-full rounded-2xl overflow-hidden"
     class:text-base-100="{active}"
-    on:click
 >
     <div
-        class="absolute w-full h-full bg-base-200"
+        class="absolute w-full h-full"
         class:bg-base-200="{!active}"
+        class:opacity-90="{!active}"
         class:bg-scene="{active}"
-        class:opacity-90="{!active && date.getMonth() == month}"
-        class:opacity-30="{!active && date.getMonth() != month}"
     ></div>
     <div class="relative w-full h-full flex flex-col items-center justify-between ">
-        <div class="text-center mt-4">
-            <div
-                class="text-lg font-semibold leading-[21px]"
-                class:opacity-60="{!active && date.getMonth() != month}"
-            >{date.getDate()}</div>
+        <div class="h-[14px] text-[10px] opacity-70 mt-[4px] leading-[14px]">{active ? monthes[date.getMonth()] : ' '}</div>
+        <div class="text-center">
+            <div class="text-lg font-semibold leading-[21px]">{date.getDate()}</div>
+            <div class="text-sm opacity-90 leading-[17px]">{weekdaysShort[date.getDay()]}</div>
         </div>
-        <div class="w-full h-[8px] mb-2 mt-1 flex justify-center">
+        <div class="w-full h-[20px] mb-[6px] flex justify-center">
             {#each formats as format}
-                <div class="w-2.5 h-2.5 mx-0.5">
-                    <div class="w-full h-full bg-{format?.color} rounded-full"></div>
+                <div class="relative w-5 h-5 mx-0.5">
+                    <div class="absolute w-full h-full bg-{format?.color} rounded-full"></div>
+                    <div class="relative w-full h-full p-1 text-base-100">{@html format?.icon}</div>
                 </div>
             {/each}
         </div>
     </div>
-</button>
+</div>

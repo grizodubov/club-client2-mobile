@@ -55,3 +55,11 @@ main {
     width: calc(100% - 32px) !important;
     max-width: calc(100% - 32px) !important;
 }
+
+.swiper-fix .pane {
+    position: absolute !important;
+    top: -500px !important;
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    z-index: 9 !important;
+}
