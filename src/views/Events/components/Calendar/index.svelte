@@ -12,8 +12,8 @@
     const dispatch = createEventDispatcher();
 
 
-    let range: [ Date[], Date[], Date[] ] = [ [], [], [] ];
-    let rangeMonthes: [ number, number, number ] = [ 0, 0, 0 ];
+    let range: [ Date[], Date[], Date[], Date[], Date[], Date[], Date[] ] = [ [], [], [], [], [], [], [] ];
+    let rangeMonthes: [ number, number, number, number, number, number, number ] = [ 0, 0, 0, 0, 0, 0, 0 ];
 
     let dateActive: Date = new Date();
     dateActive.setHours(0, 0, 0, 0);
@@ -23,14 +23,14 @@
     function createCalendarRange() {
         const d = new Date();
         const m = d.getMonth();
-        rangeMonthes = [ m > 0 ? m - 1 : 11, m, m < 11 ? m + 1 : 0 ];
-        for(let i = 0; i <= 2; i++) {
-            const dStart = new Date(d.getFullYear(), rangeMonthes[i], 1, 0, 0, 0, 0);
-            const dd = d.getDay() ? d.getDay() - 1 : 6;
+        for(let i = -3; i <= 3; i++) {
+            rangeMonthes[i + 3] = m + i >= 0 ? m + i : 12 + m + i;
+            const dStart = new Date(d.getFullYear(), rangeMonthes[i + 3], 1, 0, 0, 0, 0);
+            const dd = dStart.getDay() ? dStart.getDay() - 1 : 6;
             if (dd)
                 dStart.setDate(dStart.getDate() - dd);
             for(let j = 0; j < 42; j++)
-                range[i].push(new Date(dStart.getFullYear(), dStart.getMonth(), dStart.getDate() + j, 0, 0, 0, 0));
+                range[i + 3].push(new Date(dStart.getFullYear(), dStart.getMonth(), dStart.getDate() + j, 0, 0, 0, 0));
         }
     }
 
@@ -56,7 +56,7 @@
 
     /* EXPORT: getFinishDate */
     export function getFinishDate() {
-        return range[2][range[2].length - 1];
+        return range[6][range[6].length - 1];
     }
 
 
@@ -66,9 +66,9 @@
 
 <swiper-container
     slides-per-view="1"
-    initial-slide="1"
+    initial-slide="3"
 >
-    {#each [0, 1, 2] as i}
+    {#each [0, 1, 2, 3, 4, 5, 6] as i}
         <swiper-slide>
             <div class="text-center mb-2">{monthes[rangeMonthes[i]]}</div>
             <div class="grid grid-cols-7 gap-1 px-2">

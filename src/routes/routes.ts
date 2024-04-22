@@ -25,7 +25,19 @@ const routes: PathRoute[] = [
 			name: 'События',
 		},
 	},
-	/* **** */
+    /* **** */
+    {
+        path: '/events/:id',
+        constraints: {
+            'id': '\\d+',
+        },
+        layout: 'Main',
+        component: 'Event',
+        meta: {
+            name: 'Событие',
+        },
+    },
+    /* **** */
 	{
 		path: '/communities',
 		layout: 'Main',

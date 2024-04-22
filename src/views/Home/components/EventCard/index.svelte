@@ -21,22 +21,23 @@
 </script>
 
 
-<div class="w-[258px] h-[176px] px-1.5">
-    <div class="relative rounded-2xl w-full h-[176px] overflow-hidden p-4">
+<div class="w-[258px] h-[202px] px-1.5">
+    <div class="relative rounded-2xl w-full h-[202px] overflow-hidden p-4">
         <div class="absolute w-full h-full top-0 left-0 bg-{currentFormat?.color} opacity-15">
         </div>
-        <div class="relative flex justify-start items-start">
+        <div class="relative flex justify-between items-start w-full">
             <div class="relative w-[66px] h-[66px] rounded-box flex flex-col items-center justify-center shrink-0 grow-0">
                 <div class="absolute w-[66px] h-[66px] rounded-box bg-{currentFormat?.color} top-0 left-0"></div>
                 <div class="relative text-2xl leading-7 font-bold text-base-100">{currentDate[0]}</div>
                 <div class="relative text-xs font-medium mb-0.5 text-base-100">{currentDate[1]}</div>
             </div>
-            <div class="ml-3 h-[66px] flex flex-col justify-start items-start shrink-1 grow-1 w-full">
-                <div class="mt-2 flex items-start text-{currentFormat?.color}">
-                    <div class="w-4 h-4 shrink-0 grow-0">{@html currentFormat?.icon}</div>
-                    <div class="text-xs leading-4 ml-1.5">{currentFormat?.name}</div>
-                </div>
+            <div class="w-[66px] h-[66px] shrink-0 grow-0 rounded-full overflow-hidden">
+                <img class="max-w-full max-h-full" src="https://static.clubgermes.ru/events/{event.id}/icon.png" alt="{event.name}" />
             </div>
+        </div>
+        <div class="mt-2.5 flex items-start text-{currentFormat?.color}">
+            <div class="w-4 h-4 shrink-0 grow-0">{@html currentFormat?.icon}</div>
+            <div class="text-xs leading-4 ml-1.5">{currentFormat?.name}</div>
         </div>
         <div class="text-sm font-semibold mt-2 leading-[18px] w-full h-[72px] overflow-hidden flex justify-start items-start"><span>{event.name}</span></div>
     </div>

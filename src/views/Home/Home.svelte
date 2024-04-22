@@ -115,13 +115,13 @@
 
             <!-- События-->
             <div class="font-semibold text-lg px-3 mt-6 mb-5">События</div>
-            <div class="h-[176px] overflow-y-hidden">
+            <div class="h-[202px] overflow-y-hidden">
                 {#if $eventsFeedLoading}
-                    <div class="w-full h-[176px] flex justify-center items-center">
+                    <div class="w-full h-[202px] flex justify-center items-center">
                         <span class="loading loading-bars text-front laoding-lg"></span>
                     </div>
                 {:else}
-                    <div class="carousel w-full h-[176px]">
+                    <div class="carousel w-full h-[202px]">
                         {#each events as event (event.id)}
                             <div
                                 class="carousel-item first:pl-1.5 last:pr-1.5"
