@@ -2,6 +2,8 @@
     import { EVENTS } from '@/config/events.cfg';
     import { type Event } from './types';
 
+    import { router } from '@/libs/Router';
+
 
     export let event: Event;
 
@@ -21,7 +23,10 @@
 </script>
 
 
-<div class="w-full px-4">
+<button
+    class="w-full px-4"
+    on:click="{() => { router.go('/events/' + event.id.toString()); }}"
+>
     <div class="relative rounded-2xl w-full overflow-hidden p-4">
         <div class="absolute w-full h-full top-0 left-0 bg-{currentFormat?.color} opacity-15">
         </div>
@@ -43,4 +48,4 @@
         </div>
         <div class="text-sm font-semibold mt-2 leading-[18px] w-full overflow-hidden flex justify-start items-start"><span>{event.name}</span></div>
     </div>
-</div>
+</button>

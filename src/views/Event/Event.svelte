@@ -15,8 +15,8 @@
 	export { className as class }; className;
 
 
-    let event = null;
-    let residents = [];
+    let event: any;
+    let residents: any[] = [];
 
 
     /* DATA: eventInfoHandler */
@@ -63,7 +63,7 @@
 <div 
     class="w-full h-full flex flex-col"
 >
-<!--
+
     <div class="bg-front w-full h-[112px] flex flex-col justify-between shrink-0 grow-0">
         <div class="flex justify-between items-start">
             <div class="w-[56px] h-[56px] ml-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
@@ -76,29 +76,27 @@
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" fill="currentColor"></path></svg>
                 </button>
             </div>
-            <div class="mt-4 leading-[56px] h-[56px] shrink-1 grow-1 text-center text-base-100 text-xl font-medium">
-                События
+            <div class="shrink-1 grow-1 flex jsutify-center">
+                <div class="mt-6 w-[88px] h-[12px]">
+                    <div class="absolute w-[92px] h-[92px] rounded-full overflow-hidden paddin-2 border-4 border-base-100 bg-base-100">
+                        {#if event}
+                            <img class="max-w-full max-h-full" src="https://static.clubgermes.ru/events/{event.id}/icon.png" alt="{event.name}" />
+                        {/if}
+                    </div>
+                </div>
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
-                <button
-                    class="relative text-base-100 w-8 h-8 flex items-center justify-center"
-                    on:click="{() => {
-                        modalShow();
-                    }}"
-                >
-                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 8h-4.1c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2h14.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30V8zm-9 4c-1.7 0-3-1.3-3-3s1.3-3 3-3s3 1.3 3 3s-1.3 3-3 3z" fill="currentColor"></path><path d="M2 24h4.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30v-2H15.9c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2zm9-4c1.7 0 3 1.3 3 3s-1.3 3-3 3s-3-1.3-3-3s1.3-3 3-3z" fill="currentColor"></path></svg>
-                    {#if $activeEventsFiltersAmount}
-                        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-5 left-5"><span>{$activeEventsFiltersAmount}</span></div>
-                    {/if}
-                </button>
+                &nbsp;
             </div>
         </div>
         <div class="bg-base-100 rounded-t-2xl h-5"></div>
     </div>
 
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
-        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl overflow-hidden">
-            <div class="relative h-full">
+        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
+
+
+                <!--
                 <div class="absolute w-full mt-12">
                     <CalendarSlider
                         bind:this="{calendarSlider}"
@@ -154,8 +152,9 @@
                         />
                     </div>
                 </div>
-            </div>
+                -->
+
         </div>
     </div>
--->
+
 </div>
