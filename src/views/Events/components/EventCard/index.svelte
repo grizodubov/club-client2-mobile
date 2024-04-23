@@ -4,28 +4,33 @@
 
     import { router } from '@/libs/Router';
 
+    import { toDateText } from '@/utils/dates';
+
 
     export let event: Event;
-
-
-    /* toDateText */
-    export function toDateText(n: number) {
-        const monthes =
-            [ 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' ];
-        const d = new Date(n);
-        return d.getUTCDate().toString() + ' ' + monthes[d.getUTCMonth()];
-    }
+    export let clickable: boolean = true;
 
 
     $: currentFormat = EVENTS.find(f => f.format == event.format);
 
     $: currentDate = toDateText(event.time_event).split(/\s+/);
+
+
+    const bgImageUrlFallback = 'https://static.clubgermes.ru/events/event.png';
+
+    $: bgImageUrl = event ? 'https://static.clubgermes.ru/events/' + event.id.toString() + '/icon.png' : bgImageUrlFallback;
+
+
+    /* handleBgImageError */
+    function handleBgImageError() {
+        bgImageUrl = bgImageUrlFallback;
+    }
 </script>
 
 
 <button
-    class="w-full px-4"
-    on:click="{() => { router.go('/events/' + event.id.toString()); }}"
+    class="w-full px-3"
+    on:click="{() => { if (clickable) router.go('/events/' + event.id.toString()); }}"
 >
     <div class="relative rounded-2xl w-full overflow-hidden p-4">
         <div class="absolute w-full h-full top-0 left-0 bg-{currentFormat?.color} opacity-15">
@@ -39,13 +44,17 @@
                 </div>
                 <div class="mt-2.5 flex items-start text-{currentFormat?.color}">
                     <div class="w-4 h-4 shrink-0 grow-0">{@html currentFormat?.icon}</div>
-                    <div class="text-xs leading-4 ml-1.5">{currentFormat?.name}</div>
+                    <div class="text-xs leading-4 ml-1.5 text-left">{currentFormat?.name}</div>
                 </div>
             </div>
             <div class="w-[86px] h-[86px] shrink-0 grow-0 rounded-full overflow-hidden">
-                <img class="max-w-full max-h-full" src="https://static.clubgermes.ru/events/{event.id}/icon.png" alt="{event.name}" />
+                <img
+                    alt=""
+                    src="{bgImageUrl}"
+                    on:error={handleBgImageError}
+                />
             </div>
         </div>
-        <div class="text-sm font-semibold mt-2 leading-[18px] w-full overflow-hidden flex justify-start items-start"><span>{event.name}</span></div>
+        <div class="text-sm font-semibold mt-2 leading-[18px] w-full text-left">{event.name}</div>
     </div>
 </button>

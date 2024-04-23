@@ -124,7 +124,7 @@
                     <div class="carousel w-full h-[202px]">
                         {#each events as event (event.id)}
                             <div
-                                class="carousel-item first:pl-1.5 last:pr-1.5"
+                                class="carousel-item last:pr-3"
                                 in:fade="{{ duration: 100 }}"
                             >
                                 <EventCard event="{event}" />

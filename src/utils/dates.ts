@@ -30,3 +30,12 @@ export function compareDates(d1: Date | undefined, d2: Date | undefined): boolea
             return true;
     return false;
 };
+
+
+/* EXPORT: toDateText */
+export function toDateText(n: Date | number) {
+    const monthes =
+        [ 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' ];
+    const d = typeof n === 'number' ? new Date(n) : n;
+    return d.getUTCDate().toString() + ' ' + monthes[d.getUTCMonth()];
+}

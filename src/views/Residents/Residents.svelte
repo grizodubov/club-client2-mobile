@@ -28,7 +28,6 @@
     $: filters = $residentsFilters as ResidentsFilters;
 
 
-    let resident: { [key: string]: any } | undefined = undefined;
     let residents: { [key: string]: any }[] = [];
     let residentsFiltered: { [key: string]: any }[] = [];
     let contacts: { [key: string]: any } = {};
@@ -45,7 +44,7 @@
 		model: residentsList.model,
 		retriever: residentsList.retriever,
         onSuccess: data => {
-            resident = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
+            const resident = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
             residents = [
                 ...data.residents.filter((r: { [key: string]: any }) => r.id != currentUser.id).map((r: { [key: string]: any }) => {
                     if (resident) {
@@ -76,6 +75,7 @@
             clearTimeout(tmFilter);
         tmFilter = setTimeout(
             () => {
+                residentsFilters.save();
                 if ($activeResidentsFiltersAmount || filters.name) {
                     const fn = filters.name.toLowerCase();
                     residentsFiltered = residents.filter(
@@ -146,6 +146,7 @@
 
     /* onMount */
 	onMount(() => {
+        residentsFilters.load();
         modalCreate(Filters, undefined);
         get();
         const sub = subscribe('events', refresh);
@@ -196,7 +197,7 @@
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl">
             <div class="relative h-full">
-                <div class="absolute w-full px-4 mt-5 h-16 z-10">
+                <div class="absolute w-full px-3 mt-5 h-16 z-10">
                     <InputText
                         placeholder="Имя / Компания"
                         bind:value="{filters.name}"
@@ -210,7 +211,7 @@
                     <div class="h-full scrollable-y">
                         {#each residentsFiltered as resident (resident.id)}
                             <div
-                                class="mb-6 first:mt-[104px]"
+                                class="mb-5 first:mt-[104px]"
                                 in:fade="{{ duration: 100 }}"
                             >
                                 <ResidentCard

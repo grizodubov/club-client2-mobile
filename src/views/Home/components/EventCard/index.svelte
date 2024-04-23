@@ -4,27 +4,31 @@
 
     import { router } from '@/libs/Router';
 
+    import { toDateText } from '@/utils/dates';
+
 
     export let event: Event;
-
-
-    /* toDateText */
-    export function toDateText(n: number) {
-        const monthes =
-            [ 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' ];
-        const d = new Date(n);
-        return d.getUTCDate().toString() + ' ' + monthes[d.getUTCMonth()];
-    }
 
 
     $: currentFormat = EVENTS.find(f => f.format == event.format);
 
     $: currentDate = toDateText(event.time_event).split(/\s+/);
+
+
+    const bgImageUrlFallback = 'https://static.clubgermes.ru/events/event.png';
+
+    $: bgImageUrl = event ? 'https://static.clubgermes.ru/events/' + event.id.toString() + '/icon.png' : bgImageUrlFallback;
+
+
+    /* handleBgImageError */
+    function handleBgImageError() {
+        bgImageUrl = bgImageUrlFallback;
+    }
 </script>
 
 
 <button
-    class="w-[258px] h-[202px] px-1.5"
+    class="w-[264px] h-[202px] pl-3"
     on:click="{() => { router.go('/events/' + event.id.toString()); }}"
 >
     <div class="relative rounded-2xl w-full h-[202px] overflow-hidden p-4">
@@ -37,13 +41,17 @@
                 <div class="relative text-xs font-medium mb-0.5 text-base-100">{currentDate[1]}</div>
             </div>
             <div class="w-[66px] h-[66px] shrink-0 grow-0 rounded-full overflow-hidden">
-                <img class="max-w-full max-h-full" src="https://static.clubgermes.ru/events/{event.id}/icon.png" alt="{event.name}" />
+                <img
+                    alt=""
+                    src="{bgImageUrl}"
+                    on:error={handleBgImageError}
+                />
             </div>
         </div>
         <div class="mt-2.5 flex items-start text-{currentFormat?.color}">
             <div class="w-4 h-4 shrink-0 grow-0">{@html currentFormat?.icon}</div>
-            <div class="text-xs leading-4 ml-1.5">{currentFormat?.name}</div>
+            <div class="text-xs leading-4 ml-1.5 text-left">{currentFormat?.name}</div>
         </div>
-        <div class="text-sm font-semibold mt-2 leading-[18px] w-full h-[72px] overflow-hidden flex justify-start items-start"><span>{event.name}</span></div>
+        <div class="text-sm font-semibold mt-2 leading-[18px] w-full h-[72px] text-left">{event.name}</div>
     </div>
 </button>

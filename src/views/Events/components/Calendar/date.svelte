@@ -28,8 +28,8 @@
     on:click
 >
     <div
-        class="absolute w-full h-full bg-base-200"
-        class:bg-base-200="{!active}"
+        class="absolute w-full h-full bg-base-100"
+        class:bg-base-100="{!active}"
         class:bg-scene="{active}"
         class:opacity-90="{!active && date.getMonth() == month}"
         class:opacity-30="{!active && date.getMonth() != month}"

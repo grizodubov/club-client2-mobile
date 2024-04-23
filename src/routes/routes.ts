@@ -57,7 +57,10 @@ const routes: PathRoute[] = [
 	},
 	/* **** */
 	{
-		path: '/profile',
+		path: '/residents/:id',
+        constraints: {
+            'id': '\\d+',
+        },
 		layout: 'Main',
 		component: 'Profile',
 		meta: {

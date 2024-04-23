@@ -81,12 +81,14 @@
     /* filterEvents */
     function filterEvents() {
         if (dateActive) {
+            eventsFilters.push({ 'dateActive': dateActive });
             eventsFiltered = [];
             eventsFilterLoading = true;
             if (tmFilter)
                 clearTimeout(tmFilter);
             tmFilter = setTimeout(
                 () => {
+                    eventsFilters.save();
                     const temp: any[] = [];
                     if (dateActive) {
                         const k = dateKey(dateActive);
@@ -117,10 +119,11 @@
 
     /* swiperCreate */
     function swiperCreate() {
+        calendarOpen = eventsFilters.pull('showCalendar');
         swiperIntance = new CupertinoPane('#events-swiper', {
             inverse: true,
             bottomClose: false,
-            initialBreak: 'top',
+            initialBreak: calendarOpen ? 'top' : 'bottom',
             backdrop: false,
             breaks: {
                 top: { enabled: true, height: 500 },
@@ -146,7 +149,7 @@
                 }
             }, 20);
         });
-        swiperIntance.present({animate: false});
+        swiperIntance.present({ animate: false });
     }
 
 
@@ -176,9 +179,14 @@
 
     /* onMount */
 	onMount(() => {
+        eventsFilters.load();
         modalCreate(Filters, undefined);
         swiperCreate();
         if (calendar && calendarSlider) {
+            const dateTemp = eventsFilters.pull('dateActive');
+            if (dateTemp) {
+                calendar.setActiveDate(new Date(dateTemp));
+            }
             calendarSlider.createCalendarRange(calendar.getStartDate(), calendar.getFinishDate());
             calendarSlider.setActiveDate(calendar.getActiveDate());
             sync = true;
@@ -259,23 +267,24 @@
                     {:else}
                         {#each eventsFiltered as event}
                             <div
-                                class="mb-5 first:mt-[164px]"
+                                class="mb-4 first:mt-[164px]"
                                 in:fade="{{ duration: 100 }}"
                             >
                                 {#if event.id == -1}
                                     <div class="font-semibold text-lg px-3">Ближайшие события</div>
                                 {:else}
-                                    <EventCard event="{event}" />
+                                    <EventCard event="{event}" clickable="{!calendarOpen}" />
                                 {/if}
                             </div>
                         {/each}
                     {/if}
                 </div>
-                <div class="absolute top-0 left-[4px]">
+                <div class="absolute top-0 left-[6px]">
                     <div id="events-swiper" style="height: 500px;">
                         <Calendar
                             bind:this="{calendar}"
                             events="{events}"
+                            state="{calendarOpen}"
                             on:dateActiveChange="{(event) => {
                                 dateActive = event.detail;
                                 if (calendarSlider)

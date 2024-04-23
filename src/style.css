@@ -52,14 +52,19 @@ main {
 }
 
 .modal-fix .pane {
-    width: calc(100% - 32px) !important;
-    max-width: calc(100% - 32px) !important;
+    width: calc(100% - 36px) !important;
+    max-width: calc(100% - 36px) !important;
+    box-shadow: none;
 }
 
 .swiper-fix .pane {
     position: absolute !important;
     top: -500px !important;
-    width: calc(100vw - 32px) !important;
-    max-width: calc(100vw - 32px) !important;
+    width: calc(100vw - 36px) !important;
+    min-width: 284px;
+    max-width: calc(100vw - 36px) !important;
+    background-color: oklch(0.86 0 0);
+    box-shadow: none;
     z-index: 9 !important;
+    --cupertino-pane-move-background: #ffffff;
 }
