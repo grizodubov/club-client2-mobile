@@ -25,7 +25,7 @@
     class="w-[264px] pl-3"
     class:h-[142px]="{!showTags}"
     class:h-[186px]="{showTags}"
-    on:click="{() => { router.go('/residents/' + user.id.toString()); }}"
+    on:click="{() => { if (user.id != 12114) router.go('/residents/' + user.id.toString()); }}"
 >
     <div class="relative rounded-2xl w-full h-full overflow-hidden p-4">
         <div class="absolute w-full h-full top-0 left-0 bg-{currentFormat?.color} opacity-15"></div>

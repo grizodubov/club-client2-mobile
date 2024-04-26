@@ -212,6 +212,7 @@
 
                     <div class="h-full pb-5 scrollable-y">
                         <div class="font-semibold text-lg px-3 leading-[25px] mt-[128px]">{event.name}</div>
+                        <div class="text-sm opacity-70 px-3 leading-[18px] mt-1">{event.place}</div>
                         <button
                             class="btn btn-sm btn-front mx-3 mt-5 text-base-100"
                             on:click="{toggle}"
