@@ -46,6 +46,18 @@ const routes: PathRoute[] = [
 			name: 'Сообщества',
 		},
 	},
+    /* **** */
+    {
+        path: '/communities/:id',
+        constraints: {
+            'id': '\\d+',
+        },
+        layout: 'Main',
+        component: 'Community',
+        meta: {
+            name: 'Сообщество',
+        },
+    },
 	/* **** */
 	{
 		path: '/residents',
