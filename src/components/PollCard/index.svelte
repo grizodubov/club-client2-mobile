@@ -1,23 +1,30 @@
 <script lang="ts">
     export let poll: { [key: string]: any };
 
-    let selected: number | undefined = undefined;
+    let selected: number[] = [];
 </script>
 
 
 <div class="relative bg-moderate rounded-2xl mx-3 mt-3 overflow-hidden">
-    <div class="text-base-100 font-semibold text-sm p-4">{poll.question}</div>
+    <div class="text-base-100 font-semibold text-sm p-4">{poll.text}</div>
     <div>
         {#each poll.answers as answer, i}
             <button
                 class="relative w-full px-4 pt-3 pb-11 mb-[-32px] border-b-base-200 rounded-t-2xl overflow-hidden"
                 on:click="{() => {
-                    if (selected === i) {
-                        selected = undefined; 
+                    const idx = selected.indexOf(i);
+                    if (idx > -1) {
+                        selected.splice(idx, 1);
                     }
                     else {
-                        selected = i;
+                        if (poll.many) {
+                            selected.push(i);
+                        }
+                        else {
+                            selected = [ i ];
+                        }
                     }
+                    selected = [ ...selected ];
                 }}"
             >
                 <div
@@ -27,12 +34,20 @@
                 ></div>
                 <div class="relative w-full h-full flex justify-between items-center">
                     <div class="text-sm text-left">{answer}</div>
-                    {#if selected === i}
-                        <div class="rounded-full border-2 border-front bg-front w-7 h-7 flex items-center justify-center text-base-100">
+                    {#if selected.indexOf(i) > -1}
+                        <div
+                            class="border-2 border-front bg-front w-7 h-7 flex items-center justify-center text-base-100"
+                            class:rounded-full="{!poll.many}"
+                            class:rounded-lg="{poll.many}"
+                        >
                             <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                         </div>
                     {:else}
-                        <div class="rounded-full border-2 border-front w-7 h-7"></div>
+                        <div
+                            class="border-2 border-front w-7 h-7"
+                            class:rounded-full="{!poll.many}"
+                            class:rounded-lg="{poll.many}"
+                        ></div>
                     {/if}
                 </div>
             </button>
@@ -48,10 +63,10 @@
             <div class="relative flex justify-center">
                 <button
                     class="btn btn-front text-base-100"
-                    class:btn-active="{selected === undefined}"
-                    class:opacity-60="{selected === undefined}"
+                    class:btn-active="{selected.length == 0}"
+                    class:opacity-60="{selected.length == 0}"
                     on:click="{() => {
-                        if (selected !== undefined) {
+                        if (selected.length > 0) {
                         }
                     }}"
                 >Проголосовать</button>

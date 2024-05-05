@@ -109,7 +109,7 @@
             <div class="shrink-1 grow-1 flex jsutify-center">
                 <div class="relative mt-7 w-[132px] h-[1px]">
                     <div
-                        class="absolute w-[132px] h-[132px] rounded-full overflow-hidden paddin-2 border-4 border-base-100 bg-front z-[11]"
+                        class="absolute w-[132px] h-[132px] rounded-full overflow-hidden border-4 border-base-100 bg-front z-[11]"
                     >
                         {#if resident && !$residentInfoLoading}
                             <Avatar

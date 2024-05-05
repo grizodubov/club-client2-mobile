@@ -1,6 +1,8 @@
 <script lang="ts">
     import { InputText } from './components';
 
+    import { router } from '@/libs/Router';
+
 	import { Entity, collector } from '@/helpers/entity';
 	import {
 		userLogin,
@@ -99,7 +101,7 @@
 
 <div class="w-full h-full flex flex-col justify-between">
     <!-- -->
-    <div class="flex p-8 shrink-0 grow-0">
+    <div class="flex p-6 shrink-0 grow-0">
         <button
             class="border-b-2 px-2 py-1.5 text-sm text-base-200 transition-all"
             class:border-scene="{step != 1}"
@@ -142,11 +144,11 @@
     </div>
     <!-- -->
     <div class="shrink-0 grow-0">
-        <div class="px-8 mb-1 flex items-center">
+        <div class="px-6 mb-1 flex items-center">
             <img src="/germes-logo-orange.svg" class="h-10 w-auto mt-1" alt="Гермес" />
             <div class="ml-3 text-[40px] text-base-200 whitespace-nowrap">Клуб Гермес</div>
         </div>
-        <div class="px-8 text-sm text-base-200 mb-8">Войдите, чтобы продолжить</div>
+        <div class="px-6 text-sm text-base-200 mb-8">Войдите, чтобы продолжить</div>
         <div class="relative overflow-hidden w-full h-[200px]">
             <div
                 class="absolute h-full w-[300%] flex transition-all"
@@ -155,7 +157,7 @@
                 class:ml-[-200%]="{step == 3}"
             >
                 <div class="w-full">
-                    <div class="px-8">
+                    <div class="px-6">
                         <div class="w-[240px] mb-1">
                             <InputText
                                 placeholder="Телефон"
@@ -170,7 +172,7 @@
                             class:ml-0="{!code}"
                             class:ml-[-100%]="{code}"
                         >
-                            <div class="flex flex-col w-full px-8">
+                            <div class="flex flex-col w-full px-6">
                                 <div class="mt-5 w-[160px]">
                                     <button
                                         class="btn btn-front w-full text-base-100"
@@ -185,7 +187,7 @@
                                     >Получить код</button>
                                 </div>
                             </div>
-                            <div class="flex flex-col w-full px-8">
+                            <div class="flex flex-col w-full px-6">
                                 <div class="w-[200px] flex justify-between">
                                     <div class="w-[140px]">
                                         <InputText
@@ -210,7 +212,7 @@
                     </div>
                 </div>
                 <div class="w-full">
-                    <div class="px-8">
+                    <div class="px-6">
                         <div class="w-[240px] mb-1">
                             <InputText
                                 placeholder="Email"
@@ -225,7 +227,7 @@
                             class:ml-0="{!code}"
                             class:ml-[-100%]="{code}"
                         >
-                            <div class="flex flex-col w-full px-8">
+                            <div class="flex flex-col w-full px-6">
                                 <div class="mt-5 w-[160px]">
                                     <button
                                         class="btn btn-front w-full text-base-100"
@@ -240,7 +242,7 @@
                                     >Получить код</button>
                                 </div>
                             </div>
-                            <div class="flex flex-col w-full px-8">
+                            <div class="flex flex-col w-full px-6">
                                 <div class="w-[200px] flex justify-between">
                                     <div class="w-[140px]">
                                         <InputText
@@ -265,7 +267,7 @@
                     </div>
                 </div>
                 <div class="w-full">
-                    <div class="flex flex-col w-full px-8">
+                    <div class="flex flex-col w-full px-6">
                         <div class="w-[240px] mb-1">
                             <InputText
                                 placeholder="Телефон / Email"
@@ -296,5 +298,12 @@
         </div>
     </div>
     <!-- -->
-    <div class="h-[120px]">&nbsp;</div>
+    <div class="p-6 shrink-0 grow-0">
+        <button
+            class="px-2 py-1.5 text-sm text-base-200 transition-all shrink-0 grow-0 items-center mb-0.5"
+            on:click="{() => {
+                router.go('/register');
+            }}"
+        >Регистрация</button>
+    </div>
 </div>

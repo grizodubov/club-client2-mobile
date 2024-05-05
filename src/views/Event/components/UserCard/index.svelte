@@ -55,7 +55,7 @@
                 </div>
             </div>
             {#if showTags}
-                <div class="overflow-hidden">
+                <div class="relative overflow-hidden">
                     {#if user.tagsLinked.length > 0}
                         <div class="flex flex-wrap">
                             <div class="mt-1">

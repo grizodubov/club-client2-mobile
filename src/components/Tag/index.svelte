@@ -14,7 +14,7 @@
     </div>
 {:else}
     <div
-        class="text-base-100 rounded-xl pr-1.5 h-[20px] flex items-center"
+        class="text-base-100 rounded-xl pr-1.5 min-h-[20px] flex items-center"
         class:pl-1 ="{type == 'tag' || type == 'interest'}"
         class:pl-1.5="{type == 'catalog'}"
         class:bg-success="{type == 'tag'}"
@@ -28,7 +28,7 @@
         {/if}
         <div
             class:ml-1="{type == 'tag' || type == 'interest'}"
-            class="text-xs leading-14 mb-[1px] font-medium"
+            class="text-xs leading-[14px] mt-[2px] mb-[3px] font-medium"
         >{tag}</div>
     </div>
 {/if}

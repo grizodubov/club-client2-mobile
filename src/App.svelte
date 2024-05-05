@@ -7,6 +7,10 @@
 
     import { type Modal, modal } from '@/helpers/modal';
 
+    import { subscribe } from '@/helpers/notification';
+
+    import { alertsSetup, alertsPush, notificationsSetup, notificationsPush } from '@/components';
+
 
     /* web components */
     register();
@@ -19,6 +23,24 @@
 
 
     $: modalData = $modal as Modal;
+
+
+    /* Alerts */
+    alertsSetup({
+        max: 1,
+        duration: 5000,
+        top: 24,
+        right: 'calc(50% - 150px)',
+    });
+
+
+    /* Notifications */
+    notificationsSetup({
+        max: 1,
+        duration: 5000,
+        top: 24,
+        right: 24,
+    });
 
 
     /* userChange */
@@ -43,6 +65,23 @@
             }
         }
     }
+
+
+    /* pushNotification */
+    function pushNotification(data: any) {
+        notificationsPush(data.message);
+    }
+
+
+    /* pushAlert */
+    function pushAlert(data: any) {
+        alertsPush(data.message);
+    }
+
+
+    // subscriptions
+    subscribe('notifications', pushNotification);
+    subscribe('alerts', pushAlert);
 </script>
 
 

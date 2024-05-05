@@ -35,7 +35,7 @@ export class Store {
 
     /* Store.constructor */
     constructor(name: string, _default: Storage) {
-        const temp = writable(Object.assign({}, _default));
+        const temp = writable(typeof _default !== 'object' ? _default : Object.assign({}, _default));
         this.name = name;
         this._default = _default;
         this.subscribe = temp.subscribe;

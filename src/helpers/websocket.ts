@@ -127,7 +127,7 @@ export const websocket: WeboscketInstance = {
 
 	/* dispatch */
 	dispatch: function(event, data) {
-        if (user.pull('id')) {
+        if (user.pull('id') && !states.pull('lockEvents')) {
             this.subscriptions[event].forEach(
                 call => {
                     call[0](data);

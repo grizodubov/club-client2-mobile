@@ -13,6 +13,7 @@ const _default: {
     loading: boolean,
     connect: boolean,
     websocket: WeboscketInstance | null,
+    lockEvents: boolean,
 } = Object.assign(
     {
         api: '',
@@ -22,6 +23,7 @@ const _default: {
         loading: false,
         connect: false,
         websocket: null,
+        lockEvents: false,
     },
     STATES
 );

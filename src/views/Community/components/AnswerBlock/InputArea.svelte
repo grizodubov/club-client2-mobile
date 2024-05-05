@@ -8,24 +8,20 @@
 </script>
 
 
-<div
-    class="relative h-16 w-full rounded-sm overflow-hidden"
-    class:opacity-50="{disabled}"
->
+<div class="relative h-full w-full overflow-hidden">
     <div
         class="absolute top-0 h-full w-full pt-1 pl-3 bg-base-200 text-xs border-l-2 opacity-90"
         class:border-transparent="{!focus}"
         class:border-neutral="{focus}"
     >
         <span
-            class:opacity-50="{!disabled}"
-            class:opacity-30="{disabled}"
+            class="opacity-30"
         >{placeholder}</span>
     </div>
-    <input
-        type="text"
+    <textarea
         class="absolute top-0 left-[2px] h-full w-[calc(100%-2px)] px-3 m-0 bg-transparent
-            outline-none border-0 focus:outline-none focus:border-0 shadow-none focus:shadow-none"
+            outline-none border-0 focus:outline-none focus:border-0 shadow-none focus:shadow-none
+            leading-[20px] pt-[22px] pb-[6px] resize-none"
         disabled="{disabled}"
         bind:value="{value}"
         on:focus="{() => { focus = true; }}"

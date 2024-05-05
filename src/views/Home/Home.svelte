@@ -2,10 +2,12 @@
     import { onMount } from 'svelte';
     import { fade } from 'svelte/transition';
 
+    import { router } from '@/libs/Router';
+
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard, PollCard } from './components';
-    import { Avatar } from '@/components';
+    import { type Event, EventCard } from './components';
+    import { Avatar, PollCard } from '@/components';
 
     import { subscribe } from '@/helpers/notification';
 
@@ -79,7 +81,8 @@
 
     const polls: { [key: string]: any }[] = [
         {
-            question: 'Оцените по пятибалльной шкале Ваш общий интерес к мероприятиям Клуба',
+            text: 'Оцените по пятибалльной шкале Ваш общий интерес к мероприятиям Клуба',
+            many: false,
             answers: [
                 '5 - Отлично',
                 '4 - Многое интересно',
@@ -98,14 +101,20 @@
 
     <!-- Добро пожаловать -->
     <div class="bg-front w-full h-[128px] flex flex-col justify-between shrink-0 grow-0">
-        <div class="flex justify-between items-start">
-            <div class="mt-7 shrink-1 grow-1 ml-4">
+        <div class="flex justify-between items-center">
+            <div class="shrink-1 grow-1 ml-7 flex flex-col items-start justify-center h-[108px]">
                 <div class="text-sm text-base-100">Добро пожаловать,</div>
-                <div class="text-2xl text-base-100 font-medium"> {$userFirstName}!</div>
+                <div class="text-2xl text-base-100 font-medium leading-[30px]"> {$userFirstName}!</div>
             </div>
-            <div class="w-[56px] h-[56px] mr-4 mt-6 rounded-full border-2 border-base-100 shrink-0 grow-0">
-                <Avatar user="{currentUser}" />
-            </div>
+            <button
+                class="w-[72px] h-[56px] flex items-end mr-3 text-base-100"
+                on:click="{() => { router.go('/me'); }}"
+            >
+                <div class="w-[56px] h-[56px] mt-6 rounded-full border-[2px] border-base-100 shrink-0 grow-0">
+                    <Avatar user="{currentUser}" />
+                </div>
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M10 17l5-5l-5-5v10z" fill="currentColor"></path></svg>
+            </button>
         </div>
         <div class="bg-base-100 rounded-t-2xl h-5"></div>
     </div>

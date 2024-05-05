@@ -10,6 +10,8 @@ export type Modal = {
     component: ComponentType | null,
     params: undefined | { [key: string]: any },
     state: boolean,
+    onOpen: any,
+    onClose: any,
 };
 
 
@@ -18,13 +20,15 @@ const _default: Modal = {
     component: null,
     params: undefined,
     state: false,
+    onOpen: null,
+    onClose: null,
 };
 
 
 export const modal = new Store('modal', _default);
 
 
-export function modalCreate(component: ComponentType, params: undefined | { [key: string]: any }) {
+export function modalCreate(component: ComponentType, params: undefined | { [key: string]: any }, onOpen: any = null, onClose: any = null) {
     const modalInstance = new CupertinoPane('#modal', {
         bottomClose: true,
         backdrop: true,
@@ -47,11 +51,25 @@ export function modalCreate(component: ComponentType, params: undefined | { [key
     modalInstance.on('onDidPresent', () => {
         modal.push({ state: true });
     });
+    modalInstance.on('onTransitionEnd', () => {
+        if (modalInstance.isHidden()) {
+            const call = modal.pull('onClose');
+            if (call)
+                call();
+        }
+        else {
+            const call = modal.pull('onOpen');
+            if (call)
+                call();
+        }
+    });
     modal.push({ 
         instance: modalInstance,
         component: component,
         params: params,
         state: false,
+        onOpen: onOpen,
+        onClose: onClose,
     });
 };
 

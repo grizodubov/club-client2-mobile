@@ -14,7 +14,7 @@
 
 {#if user.avatar_hash}
     <div class="w-full h-full rounded-full overflow-hidden">
-        <img class="w-full h-full" src="https://media.clubgermes.ru/n/{user.avatar_hash}.jpg" alt="{user.name}" />
+        <img class="w-full h-full" src="https://media.clubgermes.ru/n/{user.avatar_hash}.jpg" alt="" />
     </div>
 {:else}
     <div
