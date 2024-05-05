@@ -5,7 +5,7 @@
     export let scaleLetter: '1.1' | '1.2' | '1.3' | '1.4' | '1.5' | '2' | '2.5' | '3' | '3.5' | '4' | '4.5' | '5' | undefined = undefined;
 
 
-    $: letterFirst = name.replace(/[^A-Za-zАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя]+/g, '').charAt(0).toUpperCase();
+    $: letterFirst = name ? name.replace(/[^A-Za-zАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя]+/g, '').charAt(0).toUpperCase() : '';
 </script>
 
 
