@@ -1,4 +1,15 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+
+    import { Device } from '@capacitor/device';
+
+    import {
+        type ActionPerformed,
+        type PushNotificationSchema,
+        PushNotifications,
+        type Token
+     } from '@capacitor/push-notifications';
+
     import { register } from 'swiper/element/bundle';
 
     import { router, RouterView, currentRoute } from '@/libs/Router';
@@ -10,6 +21,18 @@
     import { subscribe } from '@/helpers/notification';
 
     import { alertsSetup, alertsPush, notificationsSetup, notificationsPush } from '@/components';
+
+    import { Entity, collector } from '@/helpers/entity';
+    import {
+		deviceRegister,
+	} from '@/queries/auth';
+
+
+    /* DATA: deviceRegisterHandler */
+	const deviceRegisterHandler = new Entity({
+		model: deviceRegister.model,
+		retriever: deviceRegister.retriever,
+	});
 
 
     /* web components */
@@ -82,6 +105,103 @@
     // subscriptions
     subscribe('notifications', pushNotification);
     subscribe('alerts', pushAlert);
+
+
+    /* getDeviceId */
+    const getDeviceId = async () => {
+        return await Device.getId();
+    };
+
+
+    /* getDeviceInfo */
+    const getDeviceInfo = async () => {
+        return await Device.getInfo();
+    };
+
+
+    /* setupFCM */
+    async function setupFCM() {
+        const deviceId = await getDeviceId();
+        const deviceInfo = await getDeviceInfo();
+        if (typeof deviceInfo === 'object') {
+            if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
+
+                PushNotifications.requestPermissions().then(result => {
+                    if (result.receive === 'granted') {
+                        PushNotifications.register();
+                    }
+                });
+
+                PushNotifications.addListener('registration',
+                    (token: Token) => {
+                        collector.get([
+                            [ 
+                                deviceRegisterHandler,
+                                {
+                                    deviceId: typeof deviceId === 'object' ? deviceId.identifier : null,
+                                    deviceInfo: JSON.stringify(deviceInfo),
+                                    deviceToken: token.value,
+                                }
+                            ],
+                        ]);
+                    }
+                );
+
+                /*
+                PushNotifications.addListener('registrationError',
+                    (error: any) => {
+                        alert('Error on registration: ' + JSON.stringify(error));
+                    }
+                );
+                */
+
+                PushNotifications.addListener('pushNotificationReceived',
+                    (notification: PushNotificationSchema) => {
+                        pushNotification(JSON.stringify(notification))
+                    }
+                );
+
+                /*
+                PushNotifications.addListener('pushNotificationActionPerformed',
+                    (notification: ActionPerformed) => {
+                        alert('Push action performed: ' + JSON.stringify(notification));
+                    }
+                );
+                */
+
+            }
+            else {
+                collector.get([
+                    [ 
+                        deviceRegisterHandler,
+                        {
+                            deviceId: typeof deviceId === 'object' ? deviceId.identifier : null,
+                            deviceInfo: JSON.stringify(deviceInfo),
+                            deviceToken: null,
+                        }
+                    ],
+                ]);
+            }
+        }
+        else {
+            collector.get([
+                [ 
+                    deviceRegisterHandler,
+                    {
+                        deviceId: typeof deviceId === 'object' ? deviceId.identifier : null,
+                        deviceInfo: null,
+                        deviceToken: null,
+                    }
+                ],
+            ]);
+        }
+    }
+
+
+    /* onMount */
+	onMount(() => {
+        setupFCM();
+	});
 </script>
 
 

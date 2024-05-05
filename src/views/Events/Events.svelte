@@ -17,7 +17,7 @@
     import { Entity, collector } from '@/helpers/entity';
     import {
 		eventsFeed,
-	} from '@/queries/event'
+	} from '@/queries/event';
 
 
     // svelte-ignore unused-export-let

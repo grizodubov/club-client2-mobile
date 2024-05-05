@@ -314,3 +314,29 @@ export const userValidate = {
 		return null;
 	}
 };
+
+
+/* deviceRegister */
+export const deviceRegister = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        deviceId = null,
+        deviceInfo = null,
+        deviceToken = null,
+    }) {
+		const response = await request({
+			path: '/register/device',
+			data: {
+                device_id: deviceId,
+                device_info: deviceInfo,
+                device_token: deviceToken,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
