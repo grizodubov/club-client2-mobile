@@ -161,13 +161,11 @@
                     }
                 );
 
-                /*
                 PushNotifications.addListener('pushNotificationActionPerformed',
                     (notification: ActionPerformed) => {
-                        alert('Push action performed: ' + JSON.stringify(notification));
+                        pushNotification(JSON.stringify(notification));
                     }
                 );
-                */
 
             }
             else {
