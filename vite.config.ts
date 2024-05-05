@@ -39,4 +39,8 @@ export default defineConfig(async () => ({
                 ignored: ["**/src-tauri/**"],
             },
     },
+    build: {
+        // file path for the CAPACITOR build output directory
+        outDir: "build",
+    },
 }));

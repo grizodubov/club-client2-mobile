@@ -1,4 +1,5 @@
 import type { View } from '@/libs/Router/types';
+export const prerender = true;
 
 
 const layouts: { [key: string]: View } = {
