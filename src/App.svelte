@@ -157,13 +157,13 @@
 
                 PushNotifications.addListener('pushNotificationReceived',
                     (notification: PushNotificationSchema) => {
-                        pushNotification({ message: JSON.stringify(notification) })
+                        pushNotification({ message: notification.body })
                     }
                 );
 
                 PushNotifications.addListener('pushNotificationActionPerformed',
-                    (notification: ActionPerformed) => {
-                        pushNotification({ message: JSON.stringify(notification) });
+                    (action: ActionPerformed) => {
+                        pushNotification({ action: action.notification.body });
                     }
                 );
 

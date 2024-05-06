@@ -17,7 +17,11 @@
     import { Entity, collector } from '@/helpers/entity';
     import {
 		eventInfo,
-	} from '@/queries/event'
+	} from '@/queries/event';
+    import {
+		userEventAdd,
+        userEventDel,
+	} from '@/queries/user';
 
 
     // svelte-ignore unused-export-let
@@ -37,6 +41,7 @@
     let infoState = false;
 
 
+    $: state = findState(event);
 
     $: currentFormat = event ? EVENTS.find(f => f.format == event.format) : undefined;
 
@@ -111,6 +116,32 @@
 	});
 
     let eventInfoLoading = eventInfoHandler.loading;
+
+
+    /* DATA: userEventAddHandler */
+	const userEventAddHandler = new Entity({
+		model: userEventAdd.model,
+		retriever: userEventAdd.retriever,
+
+	});
+
+
+    /* DATA: userEventDelHandler */
+	const userEventDelHandler = new Entity({
+		model: userEventDel.model,
+		retriever: userEventDel.retriever,
+	});
+
+
+    /* findState */
+    function findState(event: any) {
+        if (event) {
+            const pu = event.participants.find((p: any) => p.id == currentUser.id);
+            if (pu)
+                return pu.confirmation;
+        }
+        return null;
+    }
 
 
     /* get */
@@ -206,7 +237,39 @@
                                     <div class="text-xs leading-4 ml-1.5 text-left">{currentFormat?.name}</div>
                                 </div>
                             </div>
-                            <button class="btn btn-front text-base-100">Участвовать!</button>
+                            {#if state == null}
+                                <button
+                                    class="btn btn-front text-base-100"
+                                    on:click="{() => {
+                                        collector.get([
+                                            [ 
+                                                userEventAddHandler,
+                                                {
+                                                    eventId: event.id
+                                                }
+                                            ],
+                                        ]);
+                                    }}"
+                                >Участвовать!</button>
+                            {:else if state}
+                                <button
+                                    class="btn btn-sm btn-error text-base-100"
+                                    on:click="{() => {
+                                        collector.get([
+                                            [ 
+                                                userEventDelHandler,
+                                                {
+                                                    eventId: event.id
+                                                }
+                                            ],
+                                        ]);
+                                    }}"
+                                >Отказаться</button>
+                            {:else}
+                                <button
+                                    class="btn btn-sm bg-base-300"
+                                >Подтверждается</button>
+                            {/if}
                         </div>
                     </div>
 
