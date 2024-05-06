@@ -3,12 +3,17 @@
 
     import { Device } from '@capacitor/device';
 
+    import { StatusBar, Style } from '@capacitor/status-bar';
+
     import {
         type ActionPerformed,
         type PushNotificationSchema,
         PushNotifications,
         type Token
-     } from '@capacitor/push-notifications';
+    } from '@capacitor/push-notifications';
+
+    StatusBar.setStyle({ style: Style.Light });
+    StatusBar.setBackgroundColor({ color: '#0a2d3c' });
 
     import { register } from 'swiper/element/bundle';
 
@@ -144,6 +149,7 @@
                                 }
                             ],
                         ]);
+                        console.log('Push registration success, token: ' + token.value);
                     }
                 );
 
@@ -206,7 +212,7 @@
 <main>
     <RouterView>
         <div slot="loading" class="w-full h-full flex justify-center items-center">
-            <span class="loading loading-bars text-front laoding-lg"></span>
+            <span class="loading loading-bars text-front loading-lg"></span>
         </div>
     </RouterView>
 </main>

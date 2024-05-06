@@ -67,3 +67,4 @@ Thumbs.db
 
 package-lock.json
 Cargo.lock
+/build/assets/
