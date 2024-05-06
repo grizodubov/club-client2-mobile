@@ -152,10 +152,26 @@
     }
 
 
+    /* ask */
+    function ask() {
+        if (community) {
+            modalCreate(AnswerBlock, { community_id: community?.id, onSubmit: post }, null, modalDestroy);
+            modalShow();
+        }
+    }
+
+
     /* answer */
     function answer(event: any) {
-        modalCreate(AnswerBlock, event.detail.question, null, modalDestroy);
+        modalCreate(AnswerBlock, Object.assign(event.detail.question, { onSubmit: post }), null, modalDestroy);
         modalShow();
+    }
+
+
+    /* post */
+    function post(event: any) {
+        modalDestroy(true);
+        console.log(event.detal);
     }
 
 
@@ -195,6 +211,13 @@
 <div 
     class="w-full h-full flex flex-col"
 >
+
+    <button
+        class="fixed top-[120px] right-6 btn btn-sm btn-front text-base-100 flex z-[12]"
+        on:click="{ask}"
+    >
+        <span>Спросить</span>
+    </button>
 
     <div class="bg-front w-full h-[112px] flex flex-col justify-between shrink-0 grow-0">
         <div class="flex justify-between items-start">

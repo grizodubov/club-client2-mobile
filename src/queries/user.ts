@@ -45,7 +45,6 @@ export const residentInfo = {
 };
 
 
-
 /* userInfo */
 export const userInfo = {
 	/* model */
@@ -88,6 +87,50 @@ export const userInfo = {
 		const response = await request({
 			path: '/new/user/' + userId.toString() + '/info',
 			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+/* userEventAdd */
+export const userEventAdd = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        eventId = 0,
+    }) {
+		const response = await request({
+			path: '/user/event/add',
+			data: {
+                event_id: eventId,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+/* userEventDel */
+export const userEventDel = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        eventId = 0,
+    }) {
+		const response = await request({
+			path: '/user/event/del',
+			data: {
+                event_id: eventId,
+            },
 		});
 		if (response.status == 200)
 			return response.data;

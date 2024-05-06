@@ -82,11 +82,17 @@ export function modalShow() {
 };
 
 
-export function modalDestroy() {
+export function modalDestroy(animate: boolean = false) {
     const temp = modal.pull();
     if (temp.instance) {
-        if (temp.state)
-            temp.instance.destroy();
+        if (temp.state) {
+            if (animate) {
+                temp.instance.destroy({ animate: true });
+            }
+            else {
+                temp.instance.destroy();
+            }
+        }
         modal.push({ 
             instance: null,
             component: null,
