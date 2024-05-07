@@ -137,3 +137,75 @@ export const userEventDel = {
 		return null;
 	}
 };
+
+
+/* userRecommendations */
+export const userRecommendations = {
+	/* model */
+	model: {
+        recommendations: [],
+    },
+	/* retriever */
+	retriever: async function() {
+		const response = await request({
+			path: '/user/recommendations',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+/* userUpdate */
+export const userUpdate = {
+	/* model */
+	model: {},
+	/* retriever */
+	retriever: async function({
+        id = 0,
+        name = '',
+        company = '',
+        position = '',
+        tags = '',
+        interests = '',
+        annual = '',
+        annualPrivacy = '',
+        employees = '',
+        employeesPrivacy = '',
+        catalog = '',
+        city = '',
+        hobby = '',
+        birthdate = '',
+        birthdatePrivacy = '',
+        experience = 0,
+        detail = '',
+    }) {
+		const response = await request({
+			path: '/new/user/update',
+			data: {
+                id: id,
+                name: name,
+                company: company,
+                position: position,
+                tags: tags,
+                interests: interests,
+                annual: annual,
+                annual_privacy: annualPrivacy,
+                employees: employees,
+                employees_privacy: employeesPrivacy,
+                catalog: catalog,
+                city: city,
+                hobby: hobby,
+                birthdate: birthdate,
+                birthdate_privacy: birthdatePrivacy,
+                experience: experience,
+                detail: detail,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

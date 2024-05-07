@@ -4,17 +4,18 @@
 
     import { CommunityIcon, PollCard } from '@/components';
 
-    import { Filters, AnswerBlock, QuestionCard } from './components';
+    import { /* Filters,*/ AnswerBlock, QuestionCard } from './components';
 
     import { modalCreate, modalDestroy, modalShow } from '@/helpers/modal';
 
-    import { type CommunityFilters, communityFilters, activeCommunityFiltersAmount } from '@/stores';
+    /* import { type CommunityFilters, communityFilters, activeCommunityFiltersAmount } from '@/stores'; */
 
     import { subscribe } from '@/helpers/notification';
     
     import { Entity, collector } from '@/helpers/entity';
     import {
         communitiesList,
+        updatePost,
     } from '@/queries/community';
 
 
@@ -24,7 +25,7 @@
 	export { className as class }; className;
 
 
-    $: filters = $communityFilters as CommunityFilters;
+    /* $: filters = $communityFilters as CommunityFilters; */
 
 
     let community: { [key: string]: any } | undefined = undefined;
@@ -32,7 +33,7 @@
     let posts: { [key: string]: any }[] = [];
     let polls: { [key: string]: any }[] = [];
 
-    let postSelected: any = null;
+    /* let postSelected: any = null; */
 
 
     //$: filters, posts, polls, filterPosts();
@@ -100,6 +101,14 @@
 
     let communitiesListLoading = communitiesListHandler.loading;
 
+
+    /* DATA: updatePostHandler */
+	const updatePostHandler = new Entity({
+		model: updatePost.model,
+		retriever: updatePost.retriever,
+	});
+
+
     let communitiesFilterLoading = false;
 
 
@@ -148,8 +157,8 @@
 
 
     /* filterPosts */
-    function filterPosts() {
-    }
+    //function filterPosts() {
+    //}
 
 
     /* ask */
@@ -163,7 +172,7 @@
 
     /* answer */
     function answer(event: any) {
-        modalCreate(AnswerBlock, Object.assign(event.detail.question, { onSubmit: post }), null, modalDestroy);
+        modalCreate(AnswerBlock, Object.assign(event.detail, { onSubmit: post }), null, modalDestroy);
         modalShow();
     }
 
@@ -171,7 +180,52 @@
     /* post */
     function post(event: any) {
         modalDestroy(true);
-        console.log(event.detal);
+        //console.log(event.detal);
+    }
+
+
+    /* open */
+    function open(event: any) {
+        collector.get([
+            [ 
+                updatePostHandler,
+                {
+                    postId: event.detail.id,
+                    closed: false,
+                    helpful: null,
+                }
+            ],
+        ]);
+    }
+
+
+    /* close */
+    function close(event: any) {
+        collector.get([
+            [ 
+                updatePostHandler,
+                {
+                    postId: event.detail.id,
+                    closed: true,
+                    helpful: null,
+                }
+            ],
+        ]);
+    }
+
+
+    /* select */
+    function select(event: any) {
+        collector.get([
+            [ 
+                updatePostHandler,
+                {
+                    postId: event.detail.id,
+                    closed: null,
+                    helpful: !event.detail.helpful,
+                }
+            ],
+        ]);
     }
 
 
@@ -196,7 +250,7 @@
 
     /* onMount */
 	onMount(() => {
-        communityFilters.load();
+        /* communityFilters.load(); */
         //modalCreate(Filters, undefined);
         get();
         const sub = subscribe('events', refresh);
@@ -279,6 +333,9 @@
                             <QuestionCard
                                 post="{post}"
                                 on:answer="{answer}"
+                                on:open="{open}"
+                                on:close="{close}"
+                                on:select="{select}"
                             />
                         </div>
                     {/each}

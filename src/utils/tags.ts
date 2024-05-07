@@ -1,5 +1,6 @@
 /* findTags */
 export function findTags(s1: string, s2: string): string[] {
+    console.log(s1, s2);
     const result: string[] = [];
     if (typeof s1 === 'string' && typeof s2 === 'string' && s1 && s2) {
         const s1s = s1.split(/,/).map(s => s.trim());
