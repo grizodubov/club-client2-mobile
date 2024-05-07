@@ -45,7 +45,8 @@
     <button
         class="relative rounded-2xl w-full overflow-hidden p-4"
         on:click="{() => {
-            open = !open;
+            if (post.answers.length)
+                open = !open;
         }}"
     >
         <div
@@ -55,7 +56,13 @@
         >
         </div>
         <div class="relative w-full">
-            <Post post="{post.question}" isQuestion="{true}" on:answer="{() => { dispatch('answer', post); }}" />
+            <Post
+                post="{post.question}"
+                isQuestion="{true}"
+                on:answer="{() => { dispatch('answer', post.question); }}"
+                on:open="{() => { dispatch('open', post.question); }}"
+                on:close="{() => { dispatch('close', post.question); }}"
+            />
             <div class="flex w-full justify-between items-center mt-3">
                 <div
                     class="h-7"
@@ -98,7 +105,11 @@
                             >
                                 <div class="absolute w-full h-full top-0 left-0 opacity-15 bg-moderate"></div>
                                 <div class="relative w-full">
-                                    <Post post="{answer}" />
+                                    <Post
+                                        post="{answer}"
+                                        question="{post.question}"
+                                        on:select="{() => { dispatch('select', answer); }}"                
+                                    />
                                 </div>
                             </div>
                         {/each}
