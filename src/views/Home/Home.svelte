@@ -6,7 +6,7 @@
 
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard } from './components';
+    import { type Event, EventCard, UserCard } from './components';
     import { Avatar, PollCard } from '@/components';
 
     import { subscribe } from '@/helpers/notification';
@@ -15,6 +15,9 @@
     import {
 		eventsFeed,
 	} from '@/queries/event';
+    import {
+		userRecommendations,
+	} from '@/queries/user';
 
 
     // svelte-ignore unused-export-let
@@ -37,16 +40,44 @@
     let eventsFeedLoading = eventsFeedHandler.loading;
 
 
+    /* DATA: userRecommendationsHandler */
+	const userRecommendationsHandler = new Entity({
+		model: userRecommendations.model,
+		retriever: userRecommendations.retriever,
+        onSuccess: data => {
+            const temp: any[] = [
+                ...data.interests.map((u: any) => {
+                    u.interestsLinked = u.tags.split(/,/).filter((t: string) => t.indexOf('~') > -1).map((t: string) => t.replace(/~/g, '').trim());
+                    u.tagsLinked = [];
+                    u.interests = '';
+                    u.tags = '';
+                    return u;
+                }),
+                ...data.tags.map((u: any) => {
+                    u.tagsLinked = u.tags.split(/,/).filter((t: string) => t.indexOf('~') > -1).map((t: string) => t.replace(/~/g, '').trim());
+                    u.interestsLinked = [];
+                    u.interests = '';
+                    u.tags = '';
+                    return u;
+                }),
+            ];
+            recommendations = temp;
+        },
+	});
+
+
     let events: Event[] = [];
     let eventsSelectedCache = {};
     let eventsThumbsupCache = {};
+
+    let recommendations: any[] = [];
 
 
     $: currentUser = $user as User;
 
 
-    /* get */
-    function get() {
+    /* getEvents */
+    function getEvents() {
         const dt = new Date();
         dt.setHours(0, 0, 0, 0);
         collector.get([
@@ -61,16 +92,28 @@
         ]);
     }
 
+
+    /* getRecommendations */
+    function getRecommendations() {
+        collector.get([
+            [ 
+                userRecommendationsHandler,
+                {}
+            ],
+        ]);
+    }
+
     
     /* refresh */
     function refresh() {
-        get();
+        getEvents();
+        getRecommendations();
     }
 
 
     /* onMount */
 	onMount(() => {
-        get();
+        refresh();
 		const sub = subscribe('events', refresh);
 		return () => {
             sub.close();
@@ -145,19 +188,35 @@
 
             <!-- Опросы -->
             <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
-            {#each polls as poll (poll.id)}
-                <div
-                    in:fade="{{ duration: 100 }}"
-                >
-                    <PollCard poll="{poll}" />
-                </div>
-            {/each}
+            <div class="mb-5">
+                {#each polls as poll (poll.id)}
+                    <div
+                        in:fade="{{ duration: 100 }}"
+                    >
+                        <PollCard poll="{poll}" />
+                    </div>
+                {/each}
+            </div>
 
             <!-- Партнеры -->
-            <div class="flex w-full justify-between items-end px-3 mt-6 mb-5">
-                <div class="font-semibold text-lg leading-5">Партнеры</div>
-                <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button>
-            </div>
+            {#if recommendations.length}
+                <div class="flex w-full justify-between items-end px-3 mt-6 mb-5">
+                    <div class="font-semibold text-lg leading-5">Потенциальные партнеры</div>
+                    <!-- <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button> -->
+                </div>
+                <div class="h-[186px] overflow-y-hidden mb-5">
+                    <div class="carousel w-full h-full">
+                        {#each recommendations as userRecommended (userRecommended.id)}
+                            <div
+                                class="carousel-item last:pr-3"
+                                in:fade="{{ duration: 100 }}"
+                            >
+                                <UserCard user="{userRecommended}" showTags="{true}" />
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            {/if}
 
         </div>
     </div>

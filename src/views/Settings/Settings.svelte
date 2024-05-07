@@ -14,6 +14,7 @@
     import { Entity, collector } from '@/helpers/entity';
     import {
         userInfo,
+        userUpdate,
     } from '@/queries/user';
     import {
         userLogout,
@@ -41,6 +42,10 @@
 
     let resident: any;
 
+    let residentForm: any = undefined;
+
+    $: formUpdate = resident && residentForm ? checkUpdate(resident, residentForm) : false;
+
     let accountEmail: string = '';
     let codeEmail: string = '';
     let flagEmail: boolean = false;
@@ -61,6 +66,18 @@
 		retriever: userInfo.retriever,
         onSuccess: data => {
             resident = Object.assign({}, data);
+            if (!residentForm) {
+                residentForm = Object.assign({}, resident);
+                const temp = resident.name.split(' ', 2);
+                if (temp.length == 1) {
+                    residentForm.nameFirst = temp[0];
+                    residentForm.nameLast = '';
+                }
+                else {
+                    residentForm.nameFirst = temp[1];
+                    residentForm.nameLast = temp[0];
+                }
+            }
         },
 	});
 
@@ -138,6 +155,15 @@
 	});
 
     let userChangeCredentialsLoading = userChangeCredentialsHandler.loading;
+
+
+    /* DATA: userUpdateHandler */
+	const userUpdateHandler = new Entity({
+		model: userUpdate.model,
+		retriever: userUpdate.retriever,
+	});
+
+    let userUpdateLoading = userUpdateHandler.loading;
 
 
     /* DATA: userTerminateHandler */
@@ -243,6 +269,45 @@
     }
 
 
+    /* checkUpdate */
+    function checkUpdate(r: any, rf: any) {
+        return (
+            (rf.nameLast.trim() + ' ' + rf.nameFirst.trim()) != r.name ||
+            rf.company != r.company ||
+            rf.position != r.position
+        );
+    }
+
+
+    /* update */
+    function update() {
+        collector.get([
+            [ 
+                userUpdateHandler,
+                {
+                    id: resident.id,
+                    name: residentForm.nameLast.trim() + ' ' + residentForm.nameFirst.trim(),
+                    company: residentForm.company,
+                    position: residentForm.company,
+                    annual: resident.annual,
+                    annualPrivacy: resident.annualPrivacy,
+                    employees: resident.employees,
+                    employeesPrivacy: resident.employeesPrivacy,
+                    catalog: resident.catalog,
+                    tags: resident.tags,
+                    interests: resident.interests,
+                    city: resident.city,
+                    hobby: resident.hobby,
+                    birthdate: resident.birthdate || resident.birthdate != 'не указано' ? resident.birthdate : null,
+                    birthdatePrivacy: resident.birthdatePrivacy,
+                    experience: resident.experience ? parseInt(resident.experience) : null,
+                    detail: resident.detail,
+                }
+            ],
+        ]);
+    }
+
+
     /* get */
     function get() {
         collector.get([
@@ -345,6 +410,60 @@
                     {#if resident.company}
                         <div class="px-3 text-left text-[12px] text-front mt-1 text-center">{resident.company.toUpperCase()}</div>
                     {/if}
+
+                    <div class="px-3 flex justify-between mt-6">
+                        <div
+                            class="w-full srink-1 grow-1"
+                        >
+                            <InputText
+                                placeholder="Имя"
+                                bind:value="{residentForm.nameFirst}"
+                            />
+                        </div>
+                        <div
+                            class="w-full srink-1 grow-1 ml-1"
+                        >
+                            <InputText
+                                placeholder="Фамилия"
+                                bind:value="{residentForm.nameLast}"
+                            />
+                        </div>
+                    </div>
+                    <div class="px-3 flex justify-between mt-1">
+                        <div
+                            class="w-full srink-1 grow-1"
+                        >
+                            <InputText
+                                placeholder="Компания"
+                                bind:value="{residentForm.company}"
+                            />
+                        </div>
+                        <div
+                            class="w-full srink-1 grow-1 ml-1"
+                        >
+                            <InputText
+                                placeholder="Должность"
+                                bind:value="{residentForm.position}"
+                            />
+                        </div>
+                    </div>
+                    <div class="w-[160px] mt-3 ml-3">
+                        <button
+                            class="btn btn-front w-full text-base-100"
+                            class:btn-active="{!formUpdate}"
+                            class:opacity-60="{!formUpdate}"
+                            on:click="{() => {
+                                if (formUpdate)
+                                    update();
+                            }}"
+                        >
+                            {#if $userUpdateLoading}
+                                <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                            {:else}
+                                <span>Изменить</span>
+                            {/if}
+                        </button>
+                    </div>
 
                     <!-- Смена email-->
                     <div class="font-semibold text-lg px-3 mt-6 mb-5">Изменить email</div>
