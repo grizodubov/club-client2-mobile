@@ -16,7 +16,7 @@
 
 
 <div
-    class="relative h-16 w-full rounded-sm overflow-hidden"
+    class="relative h-16 w-full overflow-hidden"
 >
     <div
         class="absolute top-0 h-full w-full pt-1 pl-3 bg-base-200 text-xs border-l-2"

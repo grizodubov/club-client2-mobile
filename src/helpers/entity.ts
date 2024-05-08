@@ -146,10 +146,13 @@ export class Collector {
         for (let i = ln - 1; i > 0; i--) {
             let check: boolean = false;
             for (let j = i - 1; j > -1; j--) {
+                /*
                 if (pool[i][0] == pool[j][0] || compare(pool[i][1], pool[j][1])) {
+                    console.log('wow', pool[i], pool[j]);
                     check = true;
                     break;
                 }
+                */
             }
             if (!check)
                 temp.unshift(pool[i]);

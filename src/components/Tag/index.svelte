@@ -1,6 +1,13 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+
+
     export let tag: string;
     export let type: 'tag' | 'interest' | 'catalog';
+    export let deleteButton: boolean = false;
+
+
+    const dispatch = createEventDispatcher();
 </script>
 
 {#if tag == '...'}
@@ -14,9 +21,10 @@
     </div>
 {:else}
     <div
-        class="text-base-100 rounded-xl pr-1.5 min-h-[20px] flex items-center"
+        class="text-base-100 rounded-xl min-h-[20px] flex items-center"
         class:pl-1 ="{type == 'tag' || type == 'interest'}"
-        class:pl-1.5="{type == 'catalog'}"
+        class:pl-2="{type == 'catalog'}"
+        class:pr-2="{!deleteButton}"
         class:bg-success="{type == 'tag'}"
         class:bg-secondary="{type == 'interest'}"
         class:bg-moderate="{type == 'catalog'}"
@@ -28,7 +36,16 @@
         {/if}
         <div
             class:ml-1="{type == 'tag' || type == 'interest'}"
-            class="text-xs leading-[14px] mt-[2px] mb-[3px] font-medium"
-        >{tag}</div>
+            class="text-xs leading-[18px] mt-[2px] mb-[3px] font-medium"
+        >{tag.toLowerCase()}</div>
+        {#if deleteButton}
+            <button
+                on:click="{() => {
+                    dispatch('delete');
+                }}"
+            >
+                <svg class="ml-1 mr-0.5 w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14s14-6.2 14-14S23.8 2 16 2zm5.4 21L16 17.6L10.6 23L9 21.4l5.4-5.4L9 10.6L10.6 9l5.4 5.4L21.4 9l1.6 1.6l-5.4 5.4l5.4 5.4l-1.6 1.6z" fill="currentColor"></path></svg>
+            </button>
+        {/if}
     </div>
 {/if}

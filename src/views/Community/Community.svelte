@@ -267,7 +267,7 @@
 >
 
     <button
-        class="fixed top-[120px] right-6 btn btn-sm btn-front text-base-100 flex z-[12]"
+        class="fixed top-[108px] right-3 btn btn-sm btn-front text-base-100 flex z-[12]"
         on:click="{ask}"
     >
         <span>Спросить</span>
