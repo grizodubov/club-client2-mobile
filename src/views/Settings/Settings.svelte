@@ -3,7 +3,7 @@
 
     import { Avatar } from '@/components';
 
-    import { InputText } from './components';
+    import { InputText, InputSlider, InputTags, InputRadio } from './components';
 
     import { states, type User, user } from '@/stores';
 
@@ -11,11 +11,15 @@
 
     import { subscribe } from '@/helpers/notification';
 
+    import { compareTags } from '@/utils/tags';
+
     import { Entity, collector } from '@/helpers/entity';
+
     import {
         userInfo,
         userUpdate,
     } from '@/queries/user';
+ 
     import {
         userLogout,
         userChangeEmail,
@@ -25,6 +29,12 @@
         userChangeCredentials,
         userTerminate,
     } from '@/queries/auth';
+
+    import {
+        tagList,
+    } from '@/queries/tag';
+
+    const year = (new Date()).getFullYear();
 
 
     // svelte-ignore unused-export-let
@@ -60,6 +70,9 @@
     $: validPhone = testPhone.test(accountPhone);
 
 
+    let tags: any[] = [];
+
+
     /* DATA: userInfoHandler */
 	const userInfoHandler = new Entity({
 		model: userInfo.model,
@@ -82,6 +95,14 @@
 	});
 
     let userInfoLoading = userInfoHandler.loading;
+
+
+    /* DATA: tagListHandler */
+	const tagListHandler = new Entity({
+		model: tagList.model,
+		retriever: tagList.retriever,
+        onSuccess: data => tags = data.tags,
+	});
 
 
     /* DATA: userLogoutHandler */
@@ -272,9 +293,24 @@
     /* checkUpdate */
     function checkUpdate(r: any, rf: any) {
         return (
-            (rf.nameLast.trim() + ' ' + rf.nameFirst.trim()) != r.name ||
-            rf.company != r.company ||
-            rf.position != r.position
+            (
+                rf.nameLast.trim() &&
+                rf.nameFirst.trim()
+            ) && (
+                (rf.nameLast.trim() + ' ' + rf.nameFirst.trim()) != r.name ||
+                rf.company != r.company ||
+                rf.position != r.position ||
+                rf.experience != r.experience ||
+                rf.annual != r.annual ||
+                rf.annualPrivacy != r.annualPrivacy ||
+                rf.employees != r.employees ||
+                rf.employeesPrivacy != r.employeesPrivacy ||
+                !compareTags(rf.catalog, r.catalog) ||
+                !compareTags(rf.city, r.city) ||
+                !compareTags(rf.hobby, r.hobby) ||
+                !compareTags(rf.tags, r.tags) ||
+                !compareTags(rf.interests, r.interests)
+            )
         );
     }
 
@@ -288,20 +324,20 @@
                     id: resident.id,
                     name: residentForm.nameLast.trim() + ' ' + residentForm.nameFirst.trim(),
                     company: residentForm.company,
-                    position: residentForm.company,
-                    annual: resident.annual,
-                    annualPrivacy: resident.annualPrivacy,
-                    employees: resident.employees,
-                    employeesPrivacy: resident.employeesPrivacy,
-                    catalog: resident.catalog,
-                    tags: resident.tags,
-                    interests: resident.interests,
-                    city: resident.city,
-                    hobby: resident.hobby,
-                    birthdate: resident.birthdate || resident.birthdate != 'не указано' ? resident.birthdate : null,
-                    birthdatePrivacy: resident.birthdatePrivacy,
-                    experience: resident.experience ? parseInt(resident.experience) : null,
-                    detail: resident.detail,
+                    position: residentForm.position,
+                    annual: residentForm.annual,
+                    annualPrivacy: residentForm.annualPrivacy,
+                    employees: residentForm.employees,
+                    employeesPrivacy: residentForm.employeesPrivacy,
+                    catalog: residentForm.catalog,
+                    tags: residentForm.tags,
+                    interests: residentForm.interests,
+                    city: residentForm.city,
+                    hobby: residentForm.hobby,
+                    birthdate: residentForm.birthdate || residentForm.birthdate != 'не указано' ? residentForm.birthdate : null,
+                    birthdatePrivacy: residentForm.birthdatePrivacy,
+                    experience: residentForm.experience ? parseInt(residentForm.experience) : null,
+                    detail: residentForm.detail,
                 }
             ],
         ]);
@@ -320,16 +356,29 @@
         ]);
     }
 
-    
+
+    /* getTags */
+    function getTags() {
+        collector.get([
+            [ 
+                tagListHandler,
+                {}
+            ],
+        ]);
+    }
+
+
     /* refresh */
     function refresh() {
         get();
+        getTags();
     }
 
 
     /* onMount */
 	onMount(() => {
         get();
+        getTags();
         const sub = subscribe('events', refresh);
         return () => {
             sub.close();
@@ -343,7 +392,7 @@
 >
 
     <button
-        class="fixed top-[136px] right-6 btn btn-sm btn-error text-base-100 flex z-[12]"
+        class="fixed top-[124px] right-3 btn btn-sm btn-error text-base-100 flex z-[12]"
         on:click="{logout}"
     >
         <span>Выйти</span>
@@ -446,6 +495,92 @@
                                 bind:value="{residentForm.position}"
                             />
                         </div>
+                    </div>
+                    <div class="px-3 flex justify-between mt-1">
+                        <div
+                            class="w-full srink-1 grow-1"
+                        >
+                            <InputText
+                                placeholder="Годовой оборот, руб."
+                                bind:value="{residentForm.annual}"
+                            />
+                        </div>
+                        <div
+                            class="w-full srink-1 grow-1 ml-1"
+                        >
+                            <InputRadio
+                                placeholder="Приватность"
+                                options="{[ 'показывать', 'показывать диапазон', 'скрывать' ]}"
+                                value="{residentForm.annualPrivacy}"
+                                on:change="{event => { residentForm.annualPrivacy = event.detail; }}"
+                            />
+                        </div>
+                    </div>
+                    <div class="px-3 flex justify-between mt-1">
+                        <div
+                            class="w-full srink-1 grow-1"
+                        >
+                            <InputText
+                                placeholder="Количество сотрудников"
+                                bind:value="{residentForm.employees}"
+                            />
+                        </div>
+                        <div
+                            class="w-full srink-1 grow-1 ml-1"
+                        >
+                            <InputRadio
+                                placeholder="Приватность"
+                                options="{[ 'показывать', 'показывать диапазон', 'скрывать' ]}"
+                                value="{residentForm.employeesPrivacy}"
+                                on:change="{event => { residentForm.employeesPrivacy = event.detail; }}"
+                            />
+                        </div>
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputSlider
+                            placeholder="В бизнесе с"
+                            min="{1985}"
+                            max="{year}"
+                            bind:value="{residentForm.experience}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Отрасли бизнеса"
+                            type="catalog"
+                            bind:value="{residentForm.catalog}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Личная экспертиза"
+                            type="tag"
+                            list="{tags.map(t => { return { tag: t.tag, amount: t.interests }; })}"
+                            bind:value="{residentForm.tags}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Потребности в экспертизе"
+                            type="interest"
+                            list="{tags.map(t => { return { tag: t.tag, amount: t.competency }; })}"
+                            bind:value="{residentForm.interests}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Город"
+                            type="catalog"
+                            list="{[ 'Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Владивосток', 'Калининград', 'Воронеж', 'Ростов-на-Дону' ]}"
+                            bind:value="{residentForm.city}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Хобби и увлечения"
+                            type="catalog"
+                            bind:value="{residentForm.hobby}"
+                        />
                     </div>
                     <div class="w-[160px] mt-3 ml-3">
                         <button

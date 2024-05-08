@@ -12,12 +12,18 @@
     import { subscribe } from '@/helpers/notification';
 
     import { Entity, collector } from '@/helpers/entity';
+
     import {
 		eventsFeed,
 	} from '@/queries/event';
+
     import {
 		userRecommendations,
 	} from '@/queries/user';
+
+    import {
+		getRatingPolls,
+	} from '@/queries/poll';
 
 
     // svelte-ignore unused-export-let
@@ -66,11 +72,25 @@
 	});
 
 
+    /* DATA: getRatingPollsHandler */
+	const getRatingPollsHandler = new Entity({
+		model: getRatingPolls.model,
+		retriever: getRatingPolls.retriever,
+        onSuccess: data => {
+            ratingPolls = data.polls;
+            ratingVotes = data.votes;
+        },
+	});
+
+
     let events: Event[] = [];
     let eventsSelectedCache = {};
     let eventsThumbsupCache = {};
 
     let recommendations: any[] = [];
+
+    let ratingPolls: any[] = [];
+    let ratingVotes: any[] = [];
 
 
     $: currentUser = $user as User;
@@ -103,10 +123,22 @@
         ]);
     }
 
+
+    /* getPolls */
+    function getPolls() {
+        collector.get([
+            [ 
+                getRatingPollsHandler,
+                {}
+            ],
+        ]);
+    }
+
     
     /* refresh */
     function refresh() {
         getEvents();
+        getPolls();
         getRecommendations();
     }
 
@@ -119,22 +151,6 @@
             sub.close();
         };
 	});
-
-
-
-    const polls: { [key: string]: any }[] = [
-        {
-            text: 'Оцените по пятибалльной шкале Ваш общий интерес к мероприятиям Клуба',
-            many: false,
-            answers: [
-                '5 - Отлично',
-                '4 - Многое интересно',
-                '3 - Скорее интересно',
-                '2 - Мало пользы',
-                '1 - Негативное отношение',
-            ],
-        },
-    ];
 </script>
 
 
@@ -166,37 +182,45 @@
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
 
             <!-- События-->
-            <div class="font-semibold text-lg px-3 mt-6 mb-5">События</div>
-            <div class="h-[202px] overflow-y-hidden">
-                {#if $eventsFeedLoading}
-                    <div class="w-full h-[202px] flex justify-center items-center">
-                        <span class="loading loading-bars text-front laoding-lg"></span>
-                    </div>
-                {:else}
-                    <div class="carousel w-full h-[202px]">
-                        {#each events as event (event.id)}
-                            <div
-                                class="carousel-item last:pr-3"
-                                in:fade="{{ duration: 100 }}"
-                            >
-                                <EventCard event="{event}" />
-                            </div>
-                        {/each}
-                    </div>
-                {/if}
-            </div>
+            {#if events.length}
+                <div class="font-semibold text-lg px-3 mt-6 mb-5">События</div>
+                <div class="h-[202px] overflow-y-hidden">
+                    <!--
+                    {#if $eventsFeedLoading}
+                        <div class="w-full h-[202px] flex justify-center items-center">
+                            <span class="loading loading-bars text-front laoding-lg"></span>
+                        </div>
+                    {:else}
+                    -->
+                        <div class="carousel w-full h-[202px]">
+                            {#each events as event (event.id)}
+                                <div
+                                    class="carousel-item last:pr-3"
+                                    in:fade="{{ duration: 100 }}"
+                                >
+                                    <EventCard event="{event}" />
+                                </div>
+                            {/each}
+                        </div>
+                    <!--
+                    {/if}
+                    -->
+                </div>
+            {/if}
 
             <!-- Опросы -->
-            <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
-            <div class="mb-5">
-                {#each polls as poll (poll.id)}
-                    <div
-                        in:fade="{{ duration: 100 }}"
-                    >
-                        <PollCard poll="{poll}" />
-                    </div>
-                {/each}
-            </div>
+            {#if ratingPolls.length}
+                <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
+                <div class="mb-5">
+                    {#each ratingPolls as poll (poll.id)}
+                        <div
+                            in:fade="{{ duration: 100 }}"
+                        >
+                            <PollCard poll="{poll}" />
+                        </div>
+                    {/each}
+                </div>
+            {/if}
 
             <!-- Партнеры -->
             {#if recommendations.length}
@@ -206,7 +230,7 @@
                 </div>
                 <div class="h-[186px] overflow-y-hidden mb-5">
                     <div class="carousel w-full h-full">
-                        {#each recommendations as userRecommended (userRecommended.id)}
+                        {#each recommendations as userRecommended}
                             <div
                                 class="carousel-item last:pr-3"
                                 in:fade="{{ duration: 100 }}"

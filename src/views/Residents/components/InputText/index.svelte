@@ -9,7 +9,7 @@
 
 
 <div
-    class="relative h-16 w-full rounded-sm overflow-hidden"
+    class="relative h-16 w-full overflow-hidden"
     class:opacity-50="{disabled}"
 >
     <div
