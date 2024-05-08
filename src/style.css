@@ -52,17 +52,17 @@ main {
 }
 
 .modal-fix .pane {
-    width: calc(100% - 36px) !important;
-    max-width: calc(100% - 36px) !important;
+    width: calc(100% - 12px) !important;
+    max-width: calc(100% - 12px) !important;
     box-shadow: none;
 }
 
 .swiper-fix .pane {
     position: absolute !important;
     top: -500px !important;
-    width: calc(100vw - 36px) !important;
-    min-width: 284px;
-    max-width: calc(100vw - 36px) !important;
+    width: calc(100vw - 12px) !important;
+    min-width: 308px;
+    max-width: calc(100vw - 12px) !important;
     background-color: oklch(0.86 0 0);
     box-shadow: none;
     z-index: 9 !important;

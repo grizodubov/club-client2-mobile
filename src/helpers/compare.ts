@@ -8,8 +8,8 @@ export function compare(data1: Data | null | undefined, data2: Data | null | und
     if (data1 === data2)
         return true;
     if (data1 && data2) {
-        const data1Keys: string[] = Object(data1).keys().sort();
-        const data2Keys: string[] = Object(data2).keys().sort();
+        const data1Keys: string[] = Object.getOwnPropertyNames(data1).sort();
+        const data2Keys: string[] = Object.getOwnPropertyNames(data2).sort();
         const data1KeysLen: number = data1Keys.length;
         const data2KeysLen: number = data2Keys.length;
         if (data1KeysLen != data2KeysLen)
