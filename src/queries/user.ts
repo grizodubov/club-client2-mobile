@@ -209,3 +209,47 @@ export const userUpdate = {
 		return null;
 	}
 };
+
+
+/* userContactAdd */
+export const userContactAdd = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        contactId = 0,
+    }) {
+		const response = await request({
+			path: '/user/contact/add',
+			data: {
+                contact_id: contactId,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+/* userContactDel */
+export const userContactDel = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        contactId = 0,
+    }) {
+		const response = await request({
+			path: '/user/contact/del',
+			data: {
+                contact_id: contactId,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
