@@ -26,7 +26,7 @@
     class:text-base-100="{active}"
 >
     <div
-        class="absolute w-full h-full"
+        class="absolute w-full h-full rounded-2xl overflow-hidden"
         class:bg-base-200="{!active}"
         class:opacity-90="{!active}"
         class:bg-scene="{active}"

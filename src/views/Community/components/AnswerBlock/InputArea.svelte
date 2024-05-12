@@ -1,10 +1,30 @@
 <script lang="ts">
+    import { Keyboard } from '@capacitor/keyboard';
+    import { Device } from '@capacitor/device';
+
+    import { onMount } from 'svelte';
+
+
     export let placeholder: string;
     export let value: string;
     export let disabled: boolean = false;
 
 
     let focus: boolean = false;
+
+    let deviceInfo: any = {};
+
+
+    /* getDeviceInfo */
+    const getDeviceInfo = async () => {
+        return await Device.getInfo();
+    };
+
+
+     /* onMount */
+	onMount(async () => {
+        deviceInfo = await getDeviceInfo();
+	});
 </script>
 
 
@@ -25,6 +45,10 @@
         disabled="{disabled}"
         bind:value="{value}"
         on:focus="{() => { focus = true; }}"
-        on:blur="{() => { focus = false; }}"
+        on:blur="{() => {
+            if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
+                Keyboard.hide();
+            focus = false;
+        }}"
     />
 </div>
