@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { Keyboard } from '@capacitor/keyboard';
+
     import { createEventDispatcher } from 'svelte';
 
 
@@ -35,7 +37,10 @@
         disabled="{disabled}"
         bind:value="{value}"
         on:focus="{() => { focus = true; }}"
-        on:blur="{() => { focus = false; }}"
+        on:blur="{() => {
+            Keyboard.hide();
+            focus = false;
+        }}"
     />
     {#if disabled && clearButton}
         <button

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { Keyboard } from '@capacitor/keyboard';
+
     export let placeholder: string;
     export let value: string;
     export let disabled: boolean = false;
@@ -25,6 +27,9 @@
         disabled="{disabled}"
         bind:value="{value}"
         on:focus="{() => { focus = true; }}"
-        on:blur="{() => { focus = false; }}"
+        on:blur="{() => {
+            Keyboard.hide();
+            focus = false;
+        }}"
     />
 </div>
