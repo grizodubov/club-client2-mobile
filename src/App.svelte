@@ -163,7 +163,9 @@
 
                 PushNotifications.addListener('pushNotificationReceived',
                     (notification: PushNotificationSchema) => {
-                        pushNotification({ message: notification.body })
+                        pushNotification({ message: notification.body });
+                        if (notification.data && notification.data.link)
+                            router.go(notification.data.link);
                     }
                 );
 
