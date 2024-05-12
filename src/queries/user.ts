@@ -158,6 +158,25 @@ export const userRecommendations = {
 };
 
 
+/* userContacts */
+export const userContacts = {
+	/* model */
+	model: {
+        contacts: [],
+    },
+	/* retriever */
+	retriever: async function() {
+		const response = await request({
+			path: '/user/contacts',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
 /* userUpdate */
 export const userUpdate = {
 	/* model */
