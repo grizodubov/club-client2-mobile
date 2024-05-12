@@ -19,6 +19,7 @@
 
     import {
 		userRecommendations,
+        userContacts,
 	} from '@/queries/user';
 
     import {
@@ -72,6 +73,16 @@
 	});
 
 
+    /* DATA: userContactsHandler */
+	const userContactsHandler = new Entity({
+		model: userContacts.model,
+		retriever: userContacts.retriever,
+        onSuccess: data => {
+            contacts = data.contacts.filter((c: any) => c.type == 'person' && c.id != 8000);
+        },
+	});
+
+
     /* DATA: getRatingPollsHandler */
 	const getRatingPollsHandler = new Entity({
 		model: getRatingPolls.model,
@@ -88,6 +99,8 @@
     let eventsThumbsupCache = {};
 
     let recommendations: any[] = [];
+
+    let contacts: any[] = [];
 
     let ratingPolls: any[] = [];
     let ratingVotes: any[] = [];
@@ -124,6 +137,17 @@
     }
 
 
+    /* getContacts */
+    function getContacts() {
+        collector.get([
+            [ 
+                userContactsHandler,
+                {}
+            ],
+        ]);
+    }
+
+
     /* getPolls */
     function getPolls() {
         collector.get([
@@ -139,6 +163,7 @@
     function refresh() {
         getEvents();
         getPolls();
+        getContacts();
         getRecommendations();
     }
 
@@ -221,6 +246,28 @@
                     {/each}
                 </div>
             {/if}
+
+
+            <!-- Контакты -->
+            {#if contacts.length}
+                <div class="flex w-full justify-between items-end px-3 mt-6 mb-5">
+                    <div class="font-semibold text-lg leading-5">Ваши контакты</div>
+                    <!-- <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button> -->
+                </div>
+                <div class="h-[142px] overflow-y-hidden mb-5">
+                    <div class="carousel w-full h-full">
+                        {#each contacts as contact}
+                            <div
+                                class="carousel-item last:pr-3"
+                                in:fade="{{ duration: 100 }}"
+                            >
+                                <UserCard user="{contact}" showTags="{false}" />
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            {/if}
+
 
             <!-- Партнеры -->
             {#if recommendations.length}
