@@ -214,9 +214,11 @@
 	onMount(() => {
         setupFCM();
         if (main)
-            main.addEventListener('click', function() {
-                blurInputs();
-            });
+            main.addEventListener('click', blurInputs);
+        return () => {
+            if (main)
+                main.removeEventListener('click', blurInputs);
+        };
 	});
 </script>
 
