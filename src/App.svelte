@@ -41,6 +41,8 @@
 
     let userId = user.pull('id');
 
+    let main:any;
+
 
     $: $user, userChange();
 
@@ -211,11 +213,15 @@
     /* onMount */
 	onMount(() => {
         setupFCM();
+        if (main)
+            main.addEventListener('click', function() {
+                blurInputs();
+            });
 	});
 </script>
 
 
-<main on:click="{blurInputs}">
+<main bind:this="{main}">
     <RouterView>
         <div slot="loading" class="w-full h-full flex justify-center items-center">
             <span class="loading loading-bars text-front laoding-lg"></span>
