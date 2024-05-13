@@ -2,8 +2,6 @@ import { Store } from '@/helpers/store';
 
 import { STATES } from '@/config/states.cfg';
 
-import { type WeboscketInstance } from '@/helpers/websocket';
-
 
 const _default: {
     api: string,
@@ -12,7 +10,7 @@ const _default: {
     start: boolean,
     loading: boolean,
     connect: boolean,
-    websocket: WeboscketInstance | null,
+    websocket: any,
     lockEvents: boolean,
 } = Object.assign(
     {
