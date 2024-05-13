@@ -18,7 +18,7 @@
 
     import { type Modal, modal } from '@/helpers/modal';
 
-    import { subscribe } from '@/helpers/notification';
+    import { subscribe, push as notify } from '@/helpers/notification';
 
     import { alertsSetup, alertsPush, notificationsSetup, notificationsPush } from '@/components';
 
@@ -102,6 +102,12 @@
     }
 
 
+    /* blurInputs */
+    function blurInputs() {
+        notify('forceBlur', '');
+    }
+
+
     // subscriptions
     subscribe('notifications', pushNotification);
     subscribe('alerts', pushAlert);
@@ -157,10 +163,13 @@
 
                 PushNotifications.addListener('pushNotificationReceived',
                     (notification: PushNotificationSchema) => {
-                        pushNotification({ message: notification.body });
-                        alert(JSON.stringify(notification));
-                        if (notification.data && notification.data.link)
-                            router.go(notification.data.link);
+                        if (notification.body) {
+                            pushNotification({ message: notification.body });
+                        }
+                        else {
+                            if (notification.data && notification.data && notification.data.link)
+                                router.go(notification.data.link);
+                        }
                     }
                 );
 
@@ -206,7 +215,7 @@
 </script>
 
 
-<main>
+<main on:click="{blurInputs}">
     <RouterView>
         <div slot="loading" class="w-full h-full flex justify-center items-center">
             <span class="loading loading-bars text-front laoding-lg"></span>

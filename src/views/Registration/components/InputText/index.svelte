@@ -3,7 +3,9 @@
     import { Device } from '@capacitor/device';
 
     import { onMount } from 'svelte';
-    
+
+    import { subscribe } from '@/helpers/notification';
+
     import { createEventDispatcher } from 'svelte';
 
 
@@ -20,6 +22,8 @@
 
     let deviceInfo: any = {};
 
+    let input: any;
+
 
     /* getDeviceInfo */
     const getDeviceInfo = async () => {
@@ -27,9 +31,26 @@
     };
 
 
-     /* onMount */
-	onMount(async () => {
+    /* getDevice */
+    async function getDevice() {
         deviceInfo = await getDeviceInfo();
+    }
+
+
+    /* blur */
+    function blur() {
+        if (input && focus && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
+            input.blur();
+    }
+
+
+     /* onMount */
+     onMount(() => {
+        getDevice();
+        const sub = subscribe('forceBlur', blur);
+        return () => {
+            sub.close();
+        };
 	});
 </script>
 
@@ -52,13 +73,15 @@
         class="absolute top-0 left-[2px] h-full w-[calc(100%-2px)] px-3 m-0 bg-transparent text-base-200
             outline-none border-0 focus:outline-none focus:border-0 shadow-none focus:shadow-none"
         disabled="{disabled}"
+        on:click|stopPropagation
         bind:value="{value}"
-        on:focus="{() => { focus = true; }}"
+        on:focus="{() => {
+            focus = true;
+        }}"
         on:blur="{() => {
-            if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
-                Keyboard.hide();
             focus = false;
         }}"
+        bind:this="{input}"
     />
     {#if disabled && clearButton}
         <button
