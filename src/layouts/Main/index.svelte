@@ -68,6 +68,9 @@
         class="shrink-1 grow-1 w-full h-full bg-base-100 overflow-hidden"
         class:rounded-b-2xl="{!showKeyboard}"
     >
+        {#if top}
+            <div class="w-full bg-front" style="height: {top}px;">&nbsp;</div>
+        {/if}
         <RouterView>
             <div slot="loading" class="w-full h-full flex justify-center items-center">
                 <span class="loading loading-bars text-front laoding-lg"></span>
