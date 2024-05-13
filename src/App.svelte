@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SafeArea } from 'capacitor-plugin-safe-area';
     import { onMount } from 'svelte';
 
     import { Device } from '@capacitor/device';
@@ -132,6 +133,14 @@
     };
 
 
+    async function setSafeAreas() {
+        const safeAreaData = await SafeArea.getSafeAreaInsets();
+        const {insets} = safeAreaData;
+
+        alert(JSON.stringify(insets));
+    }
+
+
     /* setupFCM */
     async function setupFCM() {
         const deviceId = await getDeviceId();
@@ -219,6 +228,7 @@
     /* onMount */
 	onMount(() => {
         setupFCM();
+        setSafeAreas();
         if (main)
             main.addEventListener('click', blurInputs);
         return () => {

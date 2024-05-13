@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Keyboard } from '@capacitor/keyboard';
     import { Device } from '@capacitor/device';
 
     import { onMount } from 'svelte';
