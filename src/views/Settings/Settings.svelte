@@ -45,6 +45,10 @@
 
     let start = true;
 
+    let area: any;
+
+    let scrollPosition = 0;
+
 
     $: currentUser = $user as User;
 
@@ -374,6 +378,23 @@
     }
 
 
+    /* scrollUp */
+    function scrollUp() {
+        const h = states.pull('keyboardHeight');
+        if (area) {
+            scrollPosition = area.scrollTop;
+            const n = scrollPosition > h ? scrollPosition - h : 0;
+            area.scrollTo({ top: n });
+        }
+    }
+
+
+    /* scrollDown */
+    function scrollDown() {
+        area.scrollTo({ top: scrollPosition });
+    }
+
+
     /* refresh */
     function refresh() {
         get();
@@ -386,8 +407,12 @@
         get();
         getTags();
         const sub = subscribe('events', refresh);
+        const subKeyboardShow = subscribe('keyboardShow', scrollUp);
+        const subKeyboardHide = subscribe('keyboardHide', scrollDown);
         return () => {
             sub.close();
+            subKeyboardShow.close();
+            subKeyboardHide.close();
         };
 	});
 </script>
@@ -452,7 +477,7 @@
     </div>
 
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
-        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
+        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y" bind:this="{area}">
             {#if !resident || ($userInfoLoading && start)}
                 <div class="w-full h-full flex justify-center items-center">
                     <span class="loading loading-bars text-front laoding-lg"></span>

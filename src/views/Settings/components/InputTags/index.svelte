@@ -16,7 +16,8 @@
     export let list: any[] = [];
 
 
-    let focus = false;
+    let focus: boolean = false;
+
     let valueTag = '';
 
     let deviceInfo: any = {};
@@ -105,20 +106,14 @@
 
     /* blur */
     function blur() {
+        //console.log(input, focus, deviceInfo.platform);
         if (input && focus && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
             input.blur();
     }
 
 
-    /* scrollOnMobbile */
-    function scrollOnMobile() {
-        if (input && focus && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
-            input.scrollIntoView({ block: 'center' });
-    }
-
-
-     /* onMount */
-     onMount(() => {
+    /* onMount */
+    onMount(() => {
         getDevice();
         const sub = subscribe('forceBlur', blur);
         return () => {
@@ -185,7 +180,6 @@
             on:focus="{() => {
                 focus = true;
                 createSuggestions();
-                scrollOnMobile();
             }}"
             on:blur="{() => {
                 focus = false;
