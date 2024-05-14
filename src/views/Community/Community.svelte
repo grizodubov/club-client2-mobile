@@ -38,6 +38,8 @@
     let posts: { [key: string]: any }[] = [];
     let polls: { [key: string]: any }[] = [];
 
+    let start = true;
+
     /* let postSelected: any = null; */
 
 
@@ -49,6 +51,7 @@
 		model: communitiesList.model,
 		retriever: communitiesList.retriever,
         onSuccess: data => {
+            start = false;
             let ct: any = undefined;
             // community
             data.communities.forEach((c: any) => {
@@ -296,7 +299,7 @@
                     <div
                         class="absolute w-[100px] h-[100px] z-[6]"
                     >
-                        {#if community || !$communitiesListLoading}
+                        {#if community || (!$communitiesListLoading && !start)}
                             <CommunityIcon
                                 id="{community?.id}"
                                 name="{community?.name}"
@@ -316,7 +319,7 @@
 
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
-            {#if !community || $communitiesListLoading}
+            {#if !community || ($communitiesListLoading && start)}
                 <div class="w-full h-full flex justify-center items-center">
                     <span class="loading loading-bars text-front laoding-lg"></span>
                 </div>

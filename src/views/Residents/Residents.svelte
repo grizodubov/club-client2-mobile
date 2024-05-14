@@ -44,6 +44,7 @@
 		model: residentsList.model,
 		retriever: residentsList.retriever,
         onSuccess: data => {
+            start = false;
             const resident = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
             residents = [
                 ...data.residents.filter((r: { [key: string]: any }) => r.id != currentUser.id).map((r: { [key: string]: any }) => {
@@ -65,6 +66,8 @@
     let residentsListLoading = residentsListHandler.loading;
 
     let residentFilterLoading = false;
+
+    let start = true;
 
 
     /* filterResidents */
@@ -175,7 +178,7 @@
                 </button>
             </div>
             <div class="mt-4 leading-[56px] h-[56px] shrink-1 grow-1 text-center text-base-100 text-xl font-medium">
-                Резиденты {#if !$residentsListLoading && !residentFilterLoading}<span class="ml-1 text-base-300 text-lg font-extralight">(<span class="text-base-100">{residentsFiltered.length}</span> / <span>{residents.length}</span>)</span>{/if}
+                Резиденты {#if (!$residentsListLoading || !start) && !residentFilterLoading}<span class="ml-1 text-base-300 text-lg font-extralight">(<span class="text-base-100">{residentsFiltered.length}</span> / <span>{residents.length}</span>)</span>{/if}
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
                 <button
@@ -203,7 +206,7 @@
                         bind:value="{filters.name}"
                     />
                 </div>
-                {#if $residentsListLoading || residentFilterLoading}
+                {#if ($residentsListLoading && start) || residentFilterLoading}
                     <div class="w-full h-full flex justify-center items-center">
                         <span class="loading loading-bars text-front laoding-lg"></span>
                     </div>

@@ -33,11 +33,15 @@
 	export { className as class }; className;
 
 
+    let start = true;
+
+
     /* DATA: eventsFeedHandler */
 	const eventsFeedHandler = new Entity({
 		model: eventsFeed.model,
 		retriever: eventsFeed.retriever,
         onSuccess: data => {
+            start = false;
             eventsSelectedCache = Object.assign({}, data.events_selected);
             eventsThumbsupCache = Object.assign({}, data.events_thumbsup);
             events = [ ...data.events ];
@@ -72,15 +76,20 @@
         },
 	});
 
+    let userRecommendationsLoading = userRecommendationsHandler.loading;
+
 
     /* DATA: userContactsHandler */
 	const userContactsHandler = new Entity({
 		model: userContacts.model,
 		retriever: userContacts.retriever,
         onSuccess: data => {
+            start = false;
             contacts = data.contacts.filter((c: any) => c.type == 'person' && c.id != 8000);
         },
 	});
+
+    let userContactsLoading = userContactsHandler.loading;
 
 
     /* DATA: getRatingPollsHandler */
@@ -88,10 +97,13 @@
 		model: getRatingPolls.model,
 		retriever: getRatingPolls.retriever,
         onSuccess: data => {
+            start = false;
             ratingPolls = data.polls;
             ratingVotes = data.votes;
         },
 	});
+
+    let getRatingPollsLoading = getRatingPollsHandler.loading;
 
 
     let events: Event[] = [];
@@ -210,13 +222,11 @@
             {#if events.length}
                 <div class="font-semibold text-lg px-3 mt-6 mb-5">События</div>
                 <div class="h-[202px] overflow-y-hidden">
-                    <!--
-                    {#if $eventsFeedLoading}
+                    {#if start && $eventsFeedLoading}
                         <div class="w-full h-[202px] flex justify-center items-center">
                             <span class="loading loading-bars text-front laoding-lg"></span>
                         </div>
                     {:else}
-                    -->
                         <div class="carousel w-full h-[202px]">
                             {#each events as event (event.id)}
                                 <div
@@ -227,9 +237,7 @@
                                 </div>
                             {/each}
                         </div>
-                    <!--
                     {/if}
-                    -->
                 </div>
             {/if}
 
@@ -237,13 +245,19 @@
             {#if ratingPolls.length}
                 <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
                 <div class="mb-5">
-                    {#each ratingPolls as poll (poll.id)}
-                        <div
-                            in:fade="{{ duration: 100 }}"
-                        >
-                            <PollCard poll="{poll}" />
+                    {#if start && $getRatingPollsLoading}
+                        <div class="w-full py-6 flex justify-center items-center">
+                            <span class="loading loading-bars text-front laoding-lg"></span>
                         </div>
-                    {/each}
+                    {:else}
+                        {#each ratingPolls as poll (poll.id)}
+                            <div
+                                in:fade="{{ duration: 100 }}"
+                            >
+                                <PollCard poll="{poll}" />
+                            </div>
+                        {/each}
+                    {/if}
                 </div>
             {/if}
 
@@ -255,16 +269,22 @@
                     <!-- <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button> -->
                 </div>
                 <div class="h-[142px] overflow-y-hidden mb-5">
-                    <div class="carousel w-full h-full">
-                        {#each contacts as contact}
-                            <div
-                                class="carousel-item last:pr-3"
-                                in:fade="{{ duration: 100 }}"
-                            >
-                                <UserCard user="{contact}" showTags="{false}" />
-                            </div>
-                        {/each}
-                    </div>
+                    {#if start && $userContactsLoading}
+                        <div class="w-full h-[142px] flex justify-center items-center">
+                            <span class="loading loading-bars text-front laoding-lg"></span>
+                        </div>
+                    {:else}
+                        <div class="carousel w-full h-full">
+                            {#each contacts as contact}
+                                <div
+                                    class="carousel-item last:pr-3"
+                                    in:fade="{{ duration: 100 }}"
+                                >
+                                    <UserCard user="{contact}" showTags="{false}" />
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
                 </div>
             {/if}
 
@@ -276,16 +296,22 @@
                     <!-- <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button> -->
                 </div>
                 <div class="h-[186px] overflow-y-hidden mb-5">
-                    <div class="carousel w-full h-full">
-                        {#each recommendations as userRecommended}
-                            <div
-                                class="carousel-item last:pr-3"
-                                in:fade="{{ duration: 100 }}"
-                            >
-                                <UserCard user="{userRecommended}" showTags="{true}" />
-                            </div>
-                        {/each}
-                    </div>
+                    {#if start && $userRecommendationsLoading}
+                        <div class="w-full h-[186px] flex justify-center items-center">
+                            <span class="loading loading-bars text-front laoding-lg"></span>
+                        </div>
+                    {:else}
+                        <div class="carousel w-full h-full">
+                            {#each recommendations as userRecommended}
+                                <div
+                                    class="carousel-item last:pr-3"
+                                    in:fade="{{ duration: 100 }}"
+                                >
+                                    <UserCard user="{userRecommended}" showTags="{true}" />
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
                 </div>
             {/if}
 

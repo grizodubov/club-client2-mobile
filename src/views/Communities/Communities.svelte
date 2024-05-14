@@ -33,6 +33,9 @@
 
     let tmFilter: ReturnType<typeof setTimeout> | null = null;
 
+    
+    let start = true;
+
 
     $: filters, communities, filterCommunities();
 
@@ -42,6 +45,7 @@
 		model: communitiesList.model,
 		retriever: communitiesList.retriever,
         onSuccess: data => {
+            start = false;
             communities = [
                 ...data.communities.map((c: any) => {
                     const temp = {
@@ -236,7 +240,7 @@
                         bind:value="{filters.name}"
                     />
                 </div>
-                {#if $communitiesListLoading || communitiesFilterLoading}
+                {#if ($communitiesListLoading && start) || communitiesFilterLoading}
                     <div class="w-full h-full flex justify-center items-center">
                         <span class="loading loading-bars text-front laoding-lg"></span>
                     </div>

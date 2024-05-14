@@ -40,6 +40,8 @@
 
     let infoState = false;
 
+    let start = true;
+
 
     $: state = findState(event);
 
@@ -79,6 +81,7 @@
 		model: eventInfo.model,
 		retriever: eventInfo.retriever,
         onSuccess: data => {
+            start = false;
             event = data.event;
             const cUser = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
             let temp = event.participants.filter(
@@ -195,7 +198,7 @@
                     <div
                         class="absolute w-[118px] h-[118px] rounded-full overflow-hidden paddin-2 border-8 border-front bg-front z-[11]"
                     >
-                        {#if event && !$eventInfoLoading}
+                        {#if event && (!$eventInfoLoading || !start)}
                             <img
                                 alt=""
                                 src="{bgImageUrl}"
@@ -215,7 +218,7 @@
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl">
 
-            {#if !event || $eventInfoLoading}
+            {#if !event || ($eventInfoLoading && start)}
                 <div class="w-full h-full flex justify-center items-center">
                     <span class="loading loading-bars text-front laoding-lg"></span>
                 </div>

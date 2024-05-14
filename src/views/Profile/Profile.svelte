@@ -44,12 +44,15 @@
 
     let contact: any;
 
+    let start = true;
+
 
     /* DATA: residentInfoHandler */
 	const residentInfoHandler = new Entity({
 		model: residentInfo.model,
 		retriever: residentInfo.retriever,
         onSuccess: data => {
+            start = false;
             const cUser = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
             const temp = data.residents.find((r: { [key: string]: any }) => r.id == params?.id);
             if (temp) {
@@ -81,7 +84,6 @@
 		retriever: userContactAdd.retriever,
 	});
     
-
     
 	/* DATA: userContactDelHandler */
 	const userContactDelHandler = new Entity({
@@ -196,7 +198,7 @@
                     <div
                         class="absolute w-[132px] h-[132px] rounded-full overflow-hidden border-4 border-base-100 bg-front z-[11]"
                     >
-                        {#if resident && !$residentInfoLoading}
+                        {#if resident && (!start || !$residentInfoLoading)}
                             <Avatar
                                 user="{{
                                     id: resident.id,
@@ -209,7 +211,7 @@
                             />
                         {/if}
                     </div>
-                    {#if resident && !$residentInfoLoading && resident.rating}
+                    {#if resident && (!start || !$residentInfoLoading) && resident.rating}
                         <div class="absolute top-[78px] left-[100px] w-[48px] h-[48px] z-[12] rounded-box flex flex-col items-center justify-center bg-info text-base-100">
                             <div class="leading-5 text-sm font-medium text-base-100">{resident.rating}</div>
                             <svg class="w-5 h-5 shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="currentColor"></path></svg>
@@ -226,7 +228,7 @@
 
     <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
-            {#if !resident || $residentInfoLoading}
+            {#if !resident || (start && $residentInfoLoading)}
                 <div class="w-full h-full flex justify-center items-center">
                     <span class="loading loading-bars text-front laoding-lg"></span>
                 </div>
