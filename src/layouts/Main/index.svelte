@@ -10,6 +10,7 @@
 
     import { RouterView } from '@/libs/Router';
 
+    import { push as notify } from '@/helpers/notification';
 
 
     // svelte-ignore unused-export-let
@@ -40,6 +41,13 @@
                 });
                 Keyboard.addListener('keyboardWillHide', () => {
                     showKeyboard = false;
+                });
+                Keyboard.addListener('keyboardDidShow', (info: any) => {
+                    states.push({ keyboardHeight: info.keyboardHeight });
+                    notify('keyboardShow', '');
+                });
+                Keyboard.addListener('keyboardDidHide', () => {
+                    notify('keyboardHide', '');
                 });
             }
     }

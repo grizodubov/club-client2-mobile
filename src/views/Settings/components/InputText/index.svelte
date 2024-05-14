@@ -44,15 +44,8 @@
     }
 
 
-    /* scrollOnMobbile */
-    function scrollOnMobile() {
-        if (input && focus && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
-            input.scrollIntoView({ block: 'center' });
-    }
-
-
-     /* onMount */
-     onMount(() => {
+    /* onMount */
+    onMount(() => {
         getDevice();
         const sub = subscribe('forceBlur', blur);
         return () => {
@@ -86,7 +79,6 @@
         bind:value="{value}"
         on:focus="{() => {
             focus = true;
-            scrollOnMobile();
         }}"
         on:blur="{() => {
             focus = false;

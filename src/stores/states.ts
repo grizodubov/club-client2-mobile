@@ -14,6 +14,7 @@ const _default: {
     lockEvents: boolean,
     safeTop: number,
     safeBottom: number,
+    keyboardHeight: number;
 } = Object.assign(
     {
         api: '',
@@ -26,6 +27,7 @@ const _default: {
         lockEvents: false,
         safeTop: 0,
         safeBottom: 0,
+        keyboardHeight: 0,
     },
     STATES
 );
