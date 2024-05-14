@@ -4,6 +4,8 @@
 
     import { CommunityIcon, PollCard } from '@/components';
 
+    import { states } from '@/stores';
+
     import { /* Filters,*/ AnswerBlock, QuestionCard } from './components';
 
     import { modalCreate, modalDestroy, modalShow } from '@/helpers/modal';
@@ -26,6 +28,9 @@
 
 
     /* $: filters = $communityFilters as CommunityFilters; */
+
+
+    $: currentStates = $states as any;
 
 
     let community: { [key: string]: any } | undefined = undefined;
@@ -267,7 +272,8 @@
 >
 
     <button
-        class="fixed top-[108px] right-3 btn btn-sm btn-front text-base-100 flex z-[12]"
+        class="fixed right-3 btn btn-sm btn-front text-base-100 flex z-[12]"
+        style="top: {108 + currentStates.safeTop}px"
         on:click="{ask}"
     >
         <span>Спросить</span>

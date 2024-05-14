@@ -45,6 +45,8 @@
 
     $: currentUser = $user as User;
 
+    $: currentStates = $states as any;
+
 
     const testEmail = new RegExp('[^@]+@[^@]+\\.[^@\\.]{2,}');
     const testPhone = new RegExp('[\\d\\s\\(\\)\\-]{10,20}');
@@ -392,7 +394,8 @@
 >
 
     <button
-        class="fixed top-[124px] right-3 btn btn-sm btn-error text-base-100 flex z-[12]"
+        class="fixed right-3 btn btn-sm btn-error text-base-100 flex z-[12]"
+        style="top: {124 + currentStates.safeTop}px"
         on:click="{logout}"
     >
         <span>Выйти</span>

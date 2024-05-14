@@ -1,6 +1,12 @@
 <script lang="ts">
     import { fade } from 'svelte/transition';
 
+    import { Device } from '@capacitor/device';
+
+    import { onMount } from 'svelte';
+
+    import { subscribe } from '@/helpers/notification';
+
     import { Tag } from '@/components';
 
 
@@ -12,6 +18,10 @@
 
     let focus = false;
     let valueTag = '';
+
+    let deviceInfo: any = {};
+
+    let input: any;
 
 
     let suggestions: any[] = [];
@@ -79,6 +89,42 @@
         }
         suggestions = [];
     }
+
+
+    /* getDeviceInfo */
+    const getDeviceInfo = async () => {
+        return await Device.getInfo();
+    };
+
+
+    /* getDevice */
+    async function getDevice() {
+        deviceInfo = await getDeviceInfo();
+    }
+
+
+    /* blur */
+    function blur() {
+        if (input && focus && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
+            input.blur();
+    }
+
+
+    /* scrollOnMobbile */
+    function scrollOnMobile() {
+        if (input && focus && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android'))
+            input.scrollIntoView({ block: 'center' });
+    }
+
+
+     /* onMount */
+     onMount(() => {
+        getDevice();
+        const sub = subscribe('forceBlur', blur);
+        return () => {
+            sub.close();
+        };
+	});
 </script>
 
 
@@ -138,19 +184,17 @@
             bind:value="{valueTag}"
             on:focus="{() => {
                 focus = true;
+                createSuggestions();
+                scrollOnMobile();
             }}"
             on:blur="{() => {
                 focus = false;
+                suggestions = [];
             }}"
             on:keyup="{() => {
                 createSuggestions();
             }}"
-            on:blur="{() => {
-                suggestions = [];
-            }}"
-            on:focus="{() => {
-                createSuggestions();
-            }}"
+            bind:this="{input}"
         />
         {#if valueTag.length}
             <button

@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { SafeArea } from 'capacitor-plugin-safe-area';
     import { Keyboard } from '@capacitor/keyboard';
     import { Device } from '@capacitor/device';
 
     import { onMount } from 'svelte';
+
+    import { states } from '@/stores';
 
     import { MenuButton } from './components';
 
@@ -17,27 +18,16 @@
 	export { className as class }; className;
 
 
-    let top = 0;
-    let bottom = 4;
-
     let showKeyboard = false;
+
+
+    $: currentStates = $states as any;
 
 
     /* getDeviceInfo */
     const getDeviceInfo = async () => {
         return await Device.getInfo();
     };
-
-
-    /* setSafeAreas */
-    async function setSafeAreas() {
-        const safeAreaData = await SafeArea.getSafeAreaInsets();
-        const { insets } = safeAreaData;
-        if (insets.top)
-            top = insets.top;
-        if (insets.bottom)
-            bottom = insets.bottom + 4;
-    }
 
 
     /* setKeyboard */
@@ -57,20 +47,19 @@
 
     /* onMount */
 	onMount(() => {
-        setSafeAreas();
         setKeyboard();
     });
 </script>
 
 
-<div class="w-full h-full bg-scene flex flex-col min-w-[320px] overflow-hidden" style="padding-bottom: {showKeyboard ? 0 : bottom}px">
+<div class="bg-scene flex flex-col w-full h-full min-w-[320px]">
+    {#if currentStates.safeTop}
+        <div class="w-full overflow-hidden shrink-0 grow-0 bg-front" style="height: {currentStates.safeTop}px;">&nbsp;</div>
+    {/if}
     <div
         class="shrink-1 grow-1 w-full h-full bg-base-100 overflow-hidden"
         class:rounded-b-2xl="{!showKeyboard}"
     >
-        {#if top}
-            <div class="w-full bg-front" style="height: {top}px;">&nbsp;</div>
-        {/if}
         <RouterView>
             <div slot="loading" class="w-full h-full flex justify-center items-center">
                 <span class="loading loading-bars text-front laoding-lg"></span>
@@ -92,5 +81,6 @@
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 30h-2v-5a5.006 5.006 0 0 0-5-5v-2a7.008 7.008 0 0 1 7 7z" fill="currentColor"></path><path d="M22 30h-2v-5a5.006 5.006 0 0 0-5-5H9a5.006 5.006 0 0 0-5 5v5H2v-5a7.008 7.008 0 0 1 7-7h6a7.008 7.008 0 0 1 7 7z" fill="currentColor"></path><path d="M20 2v2a5 5 0 0 1 0 10v2a7 7 0 0 0 0-14z" fill="currentColor"></path><path d="M12 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path></svg>
             </MenuButton>
         </div>
+        <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {currentStates.safeBottom + 2}px;">&nbsp;</div>
     {/if}
 </div>

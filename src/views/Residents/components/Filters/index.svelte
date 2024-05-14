@@ -1,8 +1,11 @@
 <script lang="ts">
-    import { type ResidentsFilters, residentsFilters } from '@/stores';
+    import { type ResidentsFilters, residentsFilters, states } from '@/stores';
 
 
     $: filters = $residentsFilters as ResidentsFilters;
+
+
+    $: currentStates = $states as any;
 
 
     // svelte-ignore unused-export-let
@@ -12,7 +15,7 @@
 </script>
 
 
-<div class="px-4 pb-[39px]">
+<div class="px-4" style="padding-bottom: {currentStates.safeBottom + 41}px">
     <div class="font-semibold text-lg mt-6 mb-5">Фильтры</div>
     <button
         class="w-full mb-5"

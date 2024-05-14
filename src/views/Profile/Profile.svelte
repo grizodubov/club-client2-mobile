@@ -3,7 +3,7 @@
 
    import { Avatar, Tag } from '@/components';
 
-   import { type User, user } from '@/stores';
+   import { type User, user, states } from '@/stores';
 
    import { type WordForms, nwfi } from '@/utils/numword';
 
@@ -31,6 +31,8 @@
 
 
     $: currentUser = $user as User;
+
+    $: currentStates = $states as any;
 
 
     const wordForms: WordForms = {
@@ -159,7 +161,8 @@
 
     {#if contact && contact.contact}
         <button
-            class="fixed top-[122px] right-3 btn btn-sm btn-error text-base-100 flex z-[12]"
+            class="fixed right-3 btn btn-sm btn-error text-base-100 flex z-[12]"
+            style="top: {122 + currentStates.safeTop}px"
             on:click="{delContact}"
         >
             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45L7.77 18l1.12-4.81l-3.73-3.23l4.92-.42L12 5l1.92 4.53l4.92.42l-3.73 3.23L16.23 18z" fill="currentColor"></path></svg>
@@ -167,7 +170,8 @@
         </button>
     {:else}
         <button
-            class="fixed top-[122px] right-3 btn btn-sm btn-warning text-base-100 flex z-[12]"
+            class="fixed right-3 btn btn-sm btn-warning text-base-100 flex z-[12]"
+            style="top: {122 + currentStates.safeTop}px"
             on:click="{addContact}"
         >
             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45L7.77 18l1.12-4.81l-3.73-3.23l4.92-.42L12 5l1.92 4.53l4.92.42l-3.73 3.23L16.23 18z" fill="currentColor"></path></svg>
