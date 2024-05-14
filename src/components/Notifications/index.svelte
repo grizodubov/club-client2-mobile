@@ -8,7 +8,7 @@
   let size = 0;
   let position = '{"top":0,"right":0}';
 
-  let config = {
+  let config: any = {
     max: 7,
     duration: 3000,
     top: 0,
@@ -20,7 +20,7 @@
 
   export function setup(_config: any) {
     Object.assign(config, _config);
-    const temp = {};
+    const temp: any = {};
     [ 'top', 'right', 'bottom', 'left' ].forEach(
       k => {
         if (typeof config[k] === 'number' || typeof config[k] === 'string')
@@ -30,9 +30,10 @@
     position = JSON.stringify(temp);
   }
 
-  export function push(notification: any) {
+  export function push(notification: any, onClick: any = null) {
     pool.push({ 
       notification: notification,
+      onClick: onClick,
     });
     show();
   }
@@ -59,7 +60,7 @@
           onCloseStart: (data: any) => {
             const i = lane.indexOf(data.self);
             if (i > -1) {
-              const d = {};
+              const d: any = {};
               if (config.direction === 'column')
                 d.top = -1 * data.height;
               lane.slice(i + 1).forEach(item => item.move(d));
@@ -71,7 +72,7 @@
             updateLock();
             show();
           },
-          styling: n.styling,
+          onClick: n.onClick ? n.onClick : null,
         });
         toast.open();
       }

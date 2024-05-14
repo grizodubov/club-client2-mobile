@@ -12,6 +12,8 @@ const _default: {
     connect: boolean,
     websocket: any,
     lockEvents: boolean,
+    safeTop: number,
+    safeBottom: number,
 } = Object.assign(
     {
         api: '',
@@ -22,6 +24,8 @@ const _default: {
         connect: false,
         websocket: null,
         lockEvents: false,
+        safeTop: 0,
+        safeBottom: 0,
     },
     STATES
 );

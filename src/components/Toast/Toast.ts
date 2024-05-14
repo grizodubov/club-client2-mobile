@@ -8,6 +8,7 @@
     onMount: any;
     onClose: any;
     onCloseStart: any;
+    onClick: any;
     _height: any;
     _toastView: any;
 
@@ -19,13 +20,15 @@
       onMount = null,
       onClose = null,
       onCloseStart = null,
-    }) {
+      onClick = null,
+    }: any) {
       this.position = position;
       this.message = message;
       this.duration = duration;
       this.onMount = onMount;
       this.onClose = onClose;
       this.onCloseStart = onCloseStart;
+      this.onClick = onClick;
       this._height = 0;
       this._toastView = null;
 		}
@@ -43,6 +46,7 @@
             _onMount: this._setHeight.bind(this),
             _onClose: this._destroy.bind(this),
             _onCloseStart: this._closeStart.bind(this),
+            _onClick: this._onClick.bind(this),
           },
         },
       });
@@ -85,7 +89,15 @@
       if (this.onCloseStart)
         this.onCloseStart(this._getData());
     }
+
+
+    /* Toast._onClick */
+    _onClick() {
+        if (this.onClick)
+            this.onClick();
+    }
     
+
     /* Toast._getData */
     _getData() {
       return {

@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { notificationsPush } from '@/components';
-
     import { Entity, collector } from '@/helpers/entity';
 
     import {

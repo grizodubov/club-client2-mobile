@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+    import { states } from '@/stores';
+
 	export let position = null;
 	export let message = '';
 	export let duration = 0;
@@ -58,6 +60,14 @@
 		const styles = window.getComputedStyle(wrapper);
 		return wrapper.offsetHeight + Math.round(parseFloat(styles['marginBottom']));
 	}
+
+
+    function processClick() {
+        if (_events && _events._onClick) {
+            _events._onClick();
+            close();
+        }
+    }
 </script>
 
 
@@ -79,13 +89,14 @@
 </style>
 
 
-<div
-	class="flex justify-between items-start box-border p-4 w-[240px] bg-scene text-base-100 rounded-lg mt-3 mb-6 text-sm transition-all opacity-0 border-2 border-base-100"
+<button
+	class="flex justify-between items-start box-border p-4 w-[75%] bg-scene text-base-100 rounded-lg mt-3 mb-6 text-sm transition-all opacity-0 border-2 border-base-100"
 	class:positioned="{pos}"
 	class:opened="{_state == 'open'}"
 	class:closed="{_state == 'close'}"
 	style="{pos}"
 	bind:this="{wrapper}"
+    on:click="{processClick}"
 >
 	<div class="text-sm">{message}</div>
-</div>
+</button>
