@@ -10,9 +10,9 @@ PODS:
     - Capacitor
   - CapacitorKeyboard (6.0.0):
     - Capacitor
-  - CapacitorPushNotifications (6.0.0):
+  - CapacitorPluginSafeArea (3.0.1):
     - Capacitor
-  - CapacitorStatusBar (6.0.0):
+  - CapacitorPushNotifications (6.0.0):
     - Capacitor
   - Firebase/CoreOnly (10.21.0):
     - FirebaseCore (= 10.21.0)
@@ -74,8 +74,8 @@ DEPENDENCIES:
   - "CapacitorDevice (from `../../node_modules/@capacitor/device`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
+  - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
   - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
-  - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - Firebase/Messaging
 
 SPEC REPOS:
@@ -103,10 +103,10 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/haptics"
   CapacitorKeyboard:
     :path: "../../node_modules/@capacitor/keyboard"
+  CapacitorPluginSafeArea:
+    :path: "../../node_modules/capacitor-plugin-safe-area"
   CapacitorPushNotifications:
     :path: "../../node_modules/@capacitor/push-notifications"
-  CapacitorStatusBar:
-    :path: "../../node_modules/@capacitor/status-bar"
 
 SPEC CHECKSUMS:
   Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
@@ -115,8 +115,8 @@ SPEC CHECKSUMS:
   CapacitorDevice: f8fd88f9edd1261c55a109f32015b09bbbfdc4a0
   CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
   CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
+  CapacitorPluginSafeArea: b99681e1d9986ae1c059ca0e1b5e7025916e5e04
   CapacitorPushNotifications: e18636e8a96f1d70b4c669e21c730e995bf5e5c9
-  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   Firebase: 4453b799f72f625384dc23f412d3be92b0e3b2a0
   FirebaseCore: 74f647ad9739ea75112ce6c3b3b91f5488ce1122
   FirebaseCoreInternal: 43c1788eaeee9d1b97caaa751af567ce11010d00
@@ -127,6 +127,6 @@ SPEC CHECKSUMS:
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: eb6b46e186e23fb60c8e534ce2581683ef15a948
+PODFILE CHECKSUM: 349e74b97260f1ca19c2dad920c500c94ddc289a
 
 COCOAPODS: 1.15.2
