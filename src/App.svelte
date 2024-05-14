@@ -138,7 +138,6 @@
         const deviceInfo = await getDeviceInfo();
         if (typeof deviceInfo === 'object') {
             if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
-
                 PushNotifications.requestPermissions().then(result => {
                     if (result.receive === 'granted') {
                         PushNotifications.register();
@@ -171,6 +170,8 @@
 
                 PushNotifications.addListener('pushNotificationReceived',
                     (notification: PushNotificationSchema) => {
+                        alert('notification\n' + JSON.stringify(notification, null, ' '));
+
                         if (notification.body) {
                             pushNotification({ message: notification.body });
                         }
@@ -183,6 +184,8 @@
 
                 PushNotifications.addListener('pushNotificationActionPerformed',
                     (action: ActionPerformed) => {
+                        alert('action\n' + JSON.stringify(action, null, ' '));
+
                         pushNotification({ action: action.notification.body });
                     }
                 );
