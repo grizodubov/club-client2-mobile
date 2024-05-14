@@ -58,6 +58,7 @@
 		model: eventsFeed.model,
 		retriever: eventsFeed.retriever,
         onSuccess: data => {
+            start = false;
             eventsSelectedCache = Object.assign({}, data.events_selected);
             eventsThumbsupCache = Object.assign({}, data.events_thumbsup);
             const temp: { [key: string]: any } = {};
@@ -78,6 +79,9 @@
     let calendarOpen = true;
 
 
+    let start = true;
+
+
     /* filterEvents */
     function filterEvents() {
         if (dateActive) {
@@ -93,7 +97,7 @@
                     if (dateActive) {
                         const k = dateKey(dateActive);
                         if (events.hasOwnProperty(k))
-                            temp.push(...events[k]);
+                            temp.push(...events[k].map((e: any) => { return { event: e, future: 0 }; }));
                         if (filters.future) {
                             const t = new Date();
                             const tk = dateKey(t);
@@ -102,10 +106,10 @@
                             let flag = true;
                             dates.filter(d => d >= tk).map(ck => {
                                 if (flag) {
-                                    temp.push({ id: -1 });
+                                    temp.push({ event: { id: -1 }, future: 1 });
                                     flag = false;
                                 }
-                                temp.push(...events[ck]);
+                                temp.push(...events[ck].map((e: any) => { return { event: e, future: 1 }; }));
                             });
                         }
                     }
@@ -260,20 +264,20 @@
                     class:overflow-y-hidden="{calendarOpen}"
                     class:opacity-20="{calendarOpen}"
                 >
-                    {#if $eventsFeedLoading || eventsFilterLoading}
+                    {#if (start && $eventsFeedLoading) || eventsFilterLoading}
                         <div class="w-full h-full flex justify-center items-center">
                             <span class="loading loading-bars text-front laoding-lg"></span>
                         </div>
                     {:else}
-                        {#each eventsFiltered as event}
+                        {#each eventsFiltered as data (data.event.id + '-' + data.future)}
                             <div
                                 class="mb-4 first:mt-[164px]"
                                 in:fade="{{ duration: 100 }}"
                             >
-                                {#if event.id == -1}
+                                {#if data.event.id == -1}
                                     <div class="font-semibold text-lg px-3">Ближайшие события</div>
                                 {:else}
-                                    <EventCard event="{event}" clickable="{!calendarOpen}" />
+                                    <EventCard event="{data.event}" clickable="{!calendarOpen}" />
                                 {/if}
                             </div>
                         {/each}

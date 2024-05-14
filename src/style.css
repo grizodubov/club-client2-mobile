@@ -51,10 +51,15 @@ main {
 
 }
 
+.modal-fix {
+    z-index: 14;
+}
+
 .modal-fix .pane {
     width: calc(100% - 12px) !important;
     max-width: calc(100% - 12px) !important;
     box-shadow: none;
+    z-index: 14;
 }
 
 .swiper-fix .pane {

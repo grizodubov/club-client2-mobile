@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { states } from '@/stores';
+
     import InputArea from './InputArea.svelte';
 
     import { Entity, collector } from '@/helpers/entity';
@@ -14,6 +16,9 @@
 
 
     let text: string = '';
+
+
+    $: currentStates = $states as any;
 
 
     /* DATA: addPostHandler */
@@ -50,7 +55,7 @@
 </script>
 
 
-<div class="px-4 pb-[39px]">
+<div class="px-4" style="padding-bottom: {currentStates.safeBottom + 41}px">
     {#if params?.id}
         <div class="text-xs opacity-50 pt-4">{params?.text.substring(0, 100)}{params?.text.length > 100 ? ' …' : ''}</div>
     {/if}
