@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
+    import { SafeArea } from 'capacitor-plugin-safe-area';
     import { Device } from '@capacitor/device';
 
     import { StatusBar, Style } from '@capacitor/status-bar';
@@ -55,24 +56,6 @@
     $: modalData = $modal as Modal;
 
 
-    /* Alerts */
-    alertsSetup({
-        max: 1,
-        duration: 5000,
-        top: 24,
-        right: 'calc(50% - 150px)',
-    });
-
-
-    /* Notifications */
-    notificationsSetup({
-        max: 1,
-        duration: 5000,
-        top: 24,
-        right: 24,
-    });
-
-
     /* userChange */
     function userChange() {
         const id = user.pull('id');
@@ -99,7 +82,7 @@
 
     /* pushNotification */
     function pushNotification(data: any) {
-        notificationsPush(data.message);
+        notificationsPush(data.message, data.onClick);
     }
 
 
@@ -115,11 +98,6 @@
     }
 
 
-    // subscriptions
-    subscribe('notifications', pushNotification);
-    subscribe('alerts', pushAlert);
-
-
     /* getDeviceId */
     const getDeviceId = async () => {
         return await Device.getId();
@@ -130,6 +108,48 @@
     const getDeviceInfo = async () => {
         return await Device.getInfo();
     };
+
+
+    /* setSafeAreas */
+    async function setSafeAreas() {
+        const safeAreaData = await SafeArea.getSafeAreaInsets();
+        const { insets } = safeAreaData;
+        const top = insets.top ? insets.top : 0;
+        const bottom = insets.bottom ? insets.bottom : 0;
+        states.push({
+            safeTop: top,
+            safeBottom: bottom,
+        });
+
+        /* Alerts */
+        alertsSetup({
+            max: 1,
+            duration: 6000,
+            top: top + 32,
+            right: 'calc(50% - 150px)',
+        });
+
+        /* Notifications */
+        notificationsSetup({
+            max: 1,
+            duration: 6000,
+            top: top + 24,
+            right: 12,
+        });
+
+        // subscriptions
+        subscribe('notifications', pushNotification);
+        subscribe('alerts', pushAlert);
+
+        /*
+        pushNotification(
+            {
+                message: 'Вот такое сообщение',
+                onClick: () => { router.go('/residents'); },
+            }
+        );
+        */
+    }
 
 
     /* setupFCM */
@@ -170,10 +190,12 @@
 
                 PushNotifications.addListener('pushNotificationReceived',
                     (notification: PushNotificationSchema) => {
-                        alert('notification\n' + JSON.stringify(notification, null, ' '));
-
+                        //alert('notification\n' + JSON.stringify(notification, null, ' '));
                         if (notification.body) {
-                            pushNotification({ message: notification.body });
+                            pushNotification({ 
+                                message: notification.body,
+                                onClick: notification.data && notification.data.link ? () => { router.go(notification.data.link); } : null,
+                            });
                         }
                         else {
                             if (notification.data && notification.data && notification.data.link)
@@ -184,9 +206,9 @@
 
                 PushNotifications.addListener('pushNotificationActionPerformed',
                     (action: ActionPerformed) => {
-                        alert('action\n' + JSON.stringify(action, null, ' '));
-
-                        pushNotification({ action: action.notification.body });
+                        //alert('action\n' + JSON.stringify(action, null, ' '));
+                        if (action.notification && action.notification.data && action.notification.data.link)
+                            setTimeout(() => { router.go(action.notification.data.link); }, 100);
                     }
                 );
 
@@ -221,6 +243,7 @@
 
     /* onMount */
 	onMount(() => {
+        setSafeAreas();
         setupFCM();
         if (main)
             main.addEventListener('click', blurInputs);
