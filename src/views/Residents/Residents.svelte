@@ -175,7 +175,7 @@
                 </button>
             </div>
             <div class="mt-4 leading-[56px] h-[56px] shrink-1 grow-1 text-center text-base-100 text-xl font-medium">
-                Резиденты <span class="ml-1 text-base-300 text-lg font-extralight">(<span class="text-base-100">{residentsFiltered.length}</span> / <span>{residents.length}</span>)</span>
+                Резиденты {#if !$residentsListLoading && !residentFilterLoading}<span class="ml-1 text-base-300 text-lg font-extralight">(<span class="text-base-100">{residentsFiltered.length}</span> / <span>{residents.length}</span>)</span>{/if}
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
                 <button
