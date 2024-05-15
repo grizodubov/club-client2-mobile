@@ -189,6 +189,7 @@
                 createSuggestions();
             }}"
             bind:this="{input}"
+            on:click|stopPropagation
         />
         {#if valueTag.length}
             <button

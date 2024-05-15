@@ -41,13 +41,11 @@
                 });
                 Keyboard.addListener('keyboardWillHide', () => {
                     showKeyboard = false;
+                    notify('keyboardHide', '');
                 });
                 Keyboard.addListener('keyboardDidShow', (info: any) => {
                     states.push({ keyboardHeight: info.keyboardHeight });
                     notify('keyboardShow', '');
-                });
-                Keyboard.addListener('keyboardDidHide', () => {
-                    notify('keyboardHide', '');
                 });
             }
     }

@@ -378,20 +378,22 @@
     }
 
 
-    /* scrollUp */
-    function scrollUp() {
+    /* moveUp */
+    function moveUp() {
         const h = states.pull('keyboardHeight');
         if (area) {
             scrollPosition = area.scrollTop;
-            const n = scrollPosition > h ? scrollPosition - h : 0;
-            area.scrollTo({ top: n });
+            const n = scrollPosition + h;
+            area.scrollTo({ top: n, behavior: 'instant' });
         }
     }
 
 
-    /* scrollDown */
-    function scrollDown() {
-        area.scrollTo({ top: scrollPosition });
+    /* moveDown */
+    function moveDown() {
+        if (area) {
+            area.scrollTo({ top: scrollPosition, behavior: 'instant' });
+        }
     }
 
 
@@ -407,8 +409,8 @@
         get();
         getTags();
         const sub = subscribe('events', refresh);
-        const subKeyboardShow = subscribe('keyboardShow', scrollUp);
-        const subKeyboardHide = subscribe('keyboardHide', scrollDown);
+        const subKeyboardShow = subscribe('keyboardShow', moveUp);
+        const subKeyboardHide = subscribe('keyboardHide', moveDown);
         return () => {
             sub.close();
             subKeyboardShow.close();
