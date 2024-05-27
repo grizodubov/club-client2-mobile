@@ -19,6 +19,7 @@
     "@capacitor/ios": "6.0.0",
     "@capacitor/keyboard": "^6.0.0",
     "@capacitor/push-notifications": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
     "@tauri-apps/api": ">=2.0.0-beta.0",
     "@tauri-apps/plugin-shell": ">=2.0.0-beta.0",
     "capacitor-plugin-safe-area": "^3.0.1"
@@ -32,7 +33,7 @@
     "@types/node": "^20.12.8",
     "autoprefixer": "^10.4.19",
     "cupertino-pane": "^1.4.21",
-    "daisyui": "^4.10.5",
+    "daisyui": "^4.11.1",
     "internal-ip": "^8.0.0",
     "path": "^0.12.7",
     "postcss": "^8.4.38",
