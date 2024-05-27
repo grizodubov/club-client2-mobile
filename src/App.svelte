@@ -107,10 +107,15 @@
 
     /* setSafeAreas */
     async function setSafeAreas() {
-        const safeAreaData = await SafeArea.getSafeAreaInsets();
-        const { insets } = safeAreaData;
-        const top = insets.top ? insets.top : 0;
-        const bottom = insets.bottom ? insets.bottom : 0;
+        const deviceInfo = await getDeviceInfo();
+        let top = 0;
+        let bottom = 0;
+        if (typeof deviceInfo === 'object' && deviceInfo.platform && deviceInfo.platform == 'ios') {
+            const safeAreaData = await SafeArea.getSafeAreaInsets();
+            const { insets } = safeAreaData;
+            top = insets.top ? insets.top : 0;
+            bottom = insets.bottom ? insets.bottom : 0;
+        }
         states.push({
             safeTop: top,
             safeBottom: bottom,

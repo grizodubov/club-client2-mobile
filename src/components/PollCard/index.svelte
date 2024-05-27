@@ -32,6 +32,12 @@
                 ],
             ]);
     }
+
+
+    /* calculateWidth */
+    function calculateWidth(votes: number): number {
+        return poll.votes_max ? Math.round(votes / poll.votes_max * 80) : 0;
+    }
 </script>
 
 
@@ -84,6 +90,25 @@
                         </div>
                     </button>
                 {/each}
+            {:else if poll.show_results}
+                {#each poll.answers as answer, i}
+                    <div
+                        class="relative w-full px-4 pt-3 pb-11 mb-[-32px] border-b-base-200 rounded-t-2xl overflow-hidden"
+                    >
+                        <div
+                            class="absolute top-0 right-0 bottom-0 left-0 bg-base-200"
+                            class:brightness-100="{i % 2 == 0}"
+                            class:brightness-105="{i % 2 == 1}"
+                        ></div>
+                        <div class="relative w-full">
+                            <div class="flex rounded-full bg-white w-full overflow-hidden">
+                                <div class="bg-primary shrink-0 grow-0 rounded-full overflow-hidden" style="width: {calculateWidth(poll.votes[(i + 1).toString()])}%"></div>
+                                <div class="text-sm font-semibold ml-3 shrink-0 grow-0">{poll.votes[(i + 1).toString()]}</div>
+                            </div>
+                            <div class="text-sm text-left mt-1">{answer.replace(/^\{[gyr]\}/, '')}</div>
+                        </div>
+                    </div>
+                {/each}
             {/if}
             <div
                 class="relative w-full px-4 py-3 border-b-base-200 rounded-t-2xl overflow-hidden"
@@ -95,7 +120,7 @@
                 ></div>
                 <div class="relative flex justify-center">
                     {#if poll.answered}
-                        Ваш голос уже принят
+                        <div class="py-1">Ваш голос уже принят</div>
                     {:else}
                         <button
                             class="btn btn-front text-base-100"
