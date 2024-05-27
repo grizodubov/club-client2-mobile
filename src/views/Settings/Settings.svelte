@@ -380,11 +380,9 @@
 
     /* moveUp */
     function moveUp() {
-        const h = states.pull('keyboardHeight');
         if (area) {
             scrollPosition = area.scrollTop;
-            const n = scrollPosition + h;
-            area.scrollTo({ top: n, behavior: 'instant' });
+            setTimeout(() => { document.activeElement?.scrollIntoView({ behavior: 'instant', block: 'center' }) }, 20);
         }
     }
 
@@ -392,7 +390,7 @@
     /* moveDown */
     function moveDown() {
         if (area) {
-            area.scrollTo({ top: scrollPosition, behavior: 'instant' });
+            setTimeout(() => { area.scrollTo({ top: scrollPosition, behavior: 'instant' }) }, 20);
         }
     }
 
