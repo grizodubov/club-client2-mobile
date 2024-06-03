@@ -68,7 +68,8 @@ main {
     width: calc(100vw - 12px) !important;
     min-width: 308px;
     max-width: calc(100vw - 12px) !important;
-    background-color: oklch(0.86 0 0);
+    /*background-color: oklch(0.86 0 0);*/
+    background-color: hsl(223.81 0% 82%);
     box-shadow: none;
     z-index: 9 !important;
     --cupertino-pane-move-background: #ffffff;

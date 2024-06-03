@@ -4,7 +4,7 @@
     import { SafeArea } from 'capacitor-plugin-safe-area';
     import { Device } from '@capacitor/device';
 
-    // import { StatusBar, Style } from '@capacitor/status-bar';
+    import { StatusBar, Style } from '@capacitor/status-bar';
 
     import {
         type ActionPerformed,
@@ -13,8 +13,8 @@
         type Token
     } from '@capacitor/push-notifications';
 
-    // StatusBar.setStyle({ style: Style.Light });
-    // StatusBar.setBackgroundColor({ color: '#0a2d3c' });
+    StatusBar.setStyle({ style: Style.Light });
+    StatusBar.setBackgroundColor({ color: '#0a2d3c' });
 
     import { register } from 'swiper/element/bundle';
 
