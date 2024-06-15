@@ -11,6 +11,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@capacitor/camera": "^6.0.1",
     "@capacitor/device": "^6.0.0",
     "@capacitor/keyboard": "^6.0.0",
     "@capacitor/push-notifications": "^6.0.0",

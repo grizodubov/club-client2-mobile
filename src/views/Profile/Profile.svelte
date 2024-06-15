@@ -303,6 +303,8 @@
                         {/if}
                     </div>
 
+                    <!--
+
                     <div class="px-4 mb-4 flex flex-col items-center">
                         <div class="flex items-center opacity-50">
                             <div class="w-5 h-5 shrink-0 grow-0">
@@ -339,6 +341,112 @@
                         {/if}
                     </div>
 
+                    -->
+
+                    <div class="px-4 mb-4 flex flex-col items-center">
+                        <div class="flex items-center opacity-50">
+                            <div class="w-5 h-5 shrink-0 grow-0">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M7 6.253V7H4.25A2.25 2.25 0 0 0 2 9.25v8.497a2.25 2.25 0 0 0 2.25 2.25h15.5a2.25 2.25 0 0 0 2.25-2.25V9.25A2.25 2.25 0 0 0 19.75 7H17v-.747a2.25 2.25 0 0 0-2.25-2.25h-5.5A2.25 2.25 0 0 0 7 6.253zm2.25-.75h5.5a.75.75 0 0 1 .75.75V7h-7v-.747a.75.75 0 0 1 .75-.75zm-2.25 3h1.5V8.5h7v.003H17V8.5h2.75a.75.75 0 0 1 .75.75v2.25h-3v-.75a.75.75 0 0 0-1.5 0v.75H8v-.75a.75.75 0 0 0-1.5 0v.75h-3V9.25a.75.75 0 0 1 .75-.75H7v.003zM16 13v1.25a.75.75 0 0 0 1.5 0V13h3v4.747a.75.75 0 0 1-.75.75H4.25a.75.75 0 0 1-.75-.75V13h3v1.25a.75.75 0 0 0 1.5 0V13h8z" fill="currentColor"></path></g></svg>
+                            </div>
+                            <div class="text-xs leading-4 ml-[5px] text-left">Специализация компании</div>
+                        </div>
+                        {#if resident.tags_1_company_scope}
+                            <div class="flex flex-wrap justify-center mt-1">
+                                {#each resident.tags_1_company_scope.split(/\s*\|\s*/) as tag}
+                                    <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="italic opacity-50">не указано</div>
+                        {/if}
+                    </div>
+                    <div class="px-4 mb-4 flex flex-col items-center">
+                        <div class="flex items-center opacity-50">
+                            <div class="w-5 h-5 shrink-0 grow-0">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.591 2.513a3.75 3.75 0 0 1 2.818 0l7.498 3.04A1.75 1.75 0 0 1 22 7.175V16.5c0-1.462-.57-2.79-1.5-3.775V7.773l-7.75 2.992v1.712a5.502 5.502 0 0 0-1.5 2.379v-4.092L3.5 7.75v9.078a.25.25 0 0 0 .156.231l7.499 3.04c.024.01.048.02.072.028l.212.086a1.5 1.5 0 0 0 1.035.035c.394.424.854.785 1.364 1.067l-.43.174a3.75 3.75 0 0 1-2.817 0l-7.498-3.04A1.75 1.75 0 0 1 2 16.827V7.176a1.75 1.75 0 0 1 1.093-1.622l7.498-3.04zm2.254 1.39a2.25 2.25 0 0 0-1.69 0L9.24 4.68l7.527 2.927l2.669-1.03l-6.592-2.673zm1.846 4.505L7.215 5.5L4.59 6.564l7.411 2.882l2.69-1.038zM22 16.563v-.062v.062zm-1.832 2.545a4.5 4.5 0 1 0-1.06 1.06l2.612 2.613a.75.75 0 1 0 1.06-1.06l-2.612-2.613zm-.668-2.607a3 3 0 1 1-6 0a3 3 0 0 1 6 0z" fill="currentColor"></path></g></svg>
+                            </div>
+                            <div class="text-xs leading-4 ml-[5px] text-left">Потребности компании</div>
+                        </div>
+                        {#if resident.tags_1_company_needs}
+                            <div class="flex flex-wrap justify-center mt-1">
+                                {#each resident.tags_1_company_needs.split(/\s*\|\s*/) as tag}
+                                    <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="italic opacity-50">не указано</div>
+                        {/if}
+                    </div>
+                    <div class="px-4 mb-4 flex flex-col items-center">
+                        <div class="flex items-center opacity-50">
+                            <div class="w-5 h-5 shrink-0 grow-0">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M18 10a4 4 0 0 1 3 6.648v4.6a.75.75 0 0 1-1.09.67l-.09-.055L18 20.591l-1.82 1.272a.75.75 0 0 1-1.172-.51l-.007-.105v-4.602A4 4 0 0 1 18 10zm1.5 7.71a3.99 3.99 0 0 1-1.5.291a3.99 3.99 0 0 1-1.5-.291v2.099l1.071-.747a.75.75 0 0 1 .759-.06l.1.06l1.07.747V17.71zm-.25-14.706a2.75 2.75 0 0 1 2.745 2.582l.005.168l.001 5.246a5.027 5.027 0 0 0-1.5-1.331L20.5 5.754a1.25 1.25 0 0 0-1.122-1.244l-.128-.006H4.75a1.25 1.25 0 0 0-1.244 1.122l-.006.128v9.5c0 .647.492 1.18 1.122 1.243l.128.007l8.922.001l.123.203l.134.196l.071.094l-.001 1.006H4.75a2.75 2.75 0 0 1-2.745-2.583L2 15.254v-9.5a2.75 2.75 0 0 1 2.582-2.745l.168-.005h14.5zM18 11.5a2.5 2.5 0 1 0 0 5.001a2.5 2.5 0 0 0 0-5.001zm-6.75 1a.75.75 0 0 1 .102 1.493L11.25 14h-4.5a.75.75 0 0 1-.102-1.493l.102-.007h4.5zm6-5.5a.75.75 0 0 1 .102 1.493l-.102.007H6.75a.75.75 0 0 1-.102-1.493L6.75 7h10.5z" fill="currentColor"></path></g></svg>
+                            </div>
+                            <div class="text-xs leading-4 ml-[5px] text-left">Допуски, лицензии, сертификаты</div>
+                        </div>
+                        {#if resident.tags_1_licenses}
+                            <div class="flex flex-wrap justify-center mt-1">
+                                {#each resident.tags_1_licenses.split(/\s*\|\s*/) as tag}
+                                    <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="italic opacity-50">не указано</div>
+                        {/if}
+                    </div>
+                    <div class="px-4 mb-4 flex flex-col items-center">
+                        <div class="flex items-center opacity-50">
+                            <div class="w-5 h-5 shrink-0 grow-0">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M7 6.253V7H4.25A2.25 2.25 0 0 0 2 9.25v8.497a2.25 2.25 0 0 0 2.25 2.25h15.5a2.25 2.25 0 0 0 2.25-2.25V9.25A2.25 2.25 0 0 0 19.75 7H17v-.747a2.25 2.25 0 0 0-2.25-2.25h-5.5A2.25 2.25 0 0 0 7 6.253zm2.25-.75h5.5a.75.75 0 0 1 .75.75V7h-7v-.747a.75.75 0 0 1 .75-.75zm-2.25 3h1.5V8.5h7v.003H17V8.5h2.75a.75.75 0 0 1 .75.75v2.25h-3v-.75a.75.75 0 0 0-1.5 0v.75H8v-.75a.75.75 0 0 0-1.5 0v.75h-3V9.25a.75.75 0 0 1 .75-.75H7v.003zM16 13v1.25a.75.75 0 0 0 1.5 0V13h3v4.747a.75.75 0 0 1-.75.75H4.25a.75.75 0 0 1-.75-.75V13h3v1.25a.75.75 0 0 0 1.5 0V13h8z" fill="currentColor"></path></g></svg>
+                            </div>
+                            <div class="text-xs leading-4 ml-[5px] text-left">Личная экспертиза</div>
+                        </div>
+                        {#if resident.tags_1_personal_expertise}
+                            <div class="flex flex-wrap justify-center mt-1">
+                                {#each resident.tags_1_personal_expertise.split(/\s*\|\s*/) as tag}
+                                    <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="italic opacity-50">не указано</div>
+                        {/if}
+                    </div>
+                    <div class="px-4 mb-4 flex flex-col items-center">
+                        <div class="flex items-center opacity-50">
+                            <div class="w-5 h-5 shrink-0 grow-0">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.591 2.513a3.75 3.75 0 0 1 2.818 0l7.498 3.04A1.75 1.75 0 0 1 22 7.175V16.5c0-1.462-.57-2.79-1.5-3.775V7.773l-7.75 2.992v1.712a5.502 5.502 0 0 0-1.5 2.379v-4.092L3.5 7.75v9.078a.25.25 0 0 0 .156.231l7.499 3.04c.024.01.048.02.072.028l.212.086a1.5 1.5 0 0 0 1.035.035c.394.424.854.785 1.364 1.067l-.43.174a3.75 3.75 0 0 1-2.817 0l-7.498-3.04A1.75 1.75 0 0 1 2 16.827V7.176a1.75 1.75 0 0 1 1.093-1.622l7.498-3.04zm2.254 1.39a2.25 2.25 0 0 0-1.69 0L9.24 4.68l7.527 2.927l2.669-1.03l-6.592-2.673zm1.846 4.505L7.215 5.5L4.59 6.564l7.411 2.882l2.69-1.038zM22 16.563v-.062v.062zm-1.832 2.545a4.5 4.5 0 1 0-1.06 1.06l2.612 2.613a.75.75 0 1 0 1.06-1.06l-2.612-2.613zm-.668-2.607a3 3 0 1 1-6 0a3 3 0 0 1 6 0z" fill="currentColor"></path></g></svg>
+                            </div>
+                            <div class="text-xs leading-4 ml-[5px] text-left">Потребности в экспертизе</div>
+                        </div>
+                        {#if resident.tags_1_personal_needs}
+                            <div class="flex flex-wrap justify-center mt-1">
+                                {#each resident.tags_1_personal_needs.split(/\s*\|\s*/) as tag}
+                                    <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="italic opacity-50">не указано</div>
+                        {/if}
+                    </div>
+                    <div class="px-4 mb-4 flex flex-col items-center">
+                        <div class="flex items-center opacity-50">
+                            <div class="w-5 h-5 shrink-0 grow-0">
+                                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M13.72 9.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l4.5-4.5zM17.75 2A4.25 4.25 0 0 1 22 6.25v1C22 15.396 15.396 22 7.25 22h-1A4.25 4.25 0 0 1 2 17.75v-1C2 8.604 8.604 2 16.75 2h1zm2.75 4.25a2.75 2.75 0 0 0-2.75-2.75h-1c-.403 0-.802.018-1.196.053l4.893 4.893c.035-.394.053-.793.053-1.196v-1zm-.347 4.024l-6.427-6.427a13.27 13.27 0 0 0-9.902 9.977l6.352 6.352a13.269 13.269 0 0 0 9.977-9.902zm-16.61 5.391c-.028.358-.043.72-.043 1.085v1a2.75 2.75 0 0 0 2.75 2.75h1c.365 0 .727-.015 1.085-.044l-4.791-4.791z" fill="currentColor"></path></g></svg>
+                            </div>
+                            <div class="text-xs leading-4 ml-[5px] text-left">Хобби, увлечения</div>
+                        </div>
+                        {#if resident.tags_1_hobbies}
+                            <div class="flex flex-wrap justify-center mt-1">
+                                {#each resident.tags_1_hobbies.split(/\s*\|\s*/) as tag}
+                                    <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <div class="italic opacity-50">не указано</div>
+                        {/if}
+                    </div>
+
+
                     <div class="px-4 mb-4 flex flex-col items-center">
                         <div class="flex items-center opacity-50">
                             <div class="w-5 h-5 shrink-0 grow-0">
@@ -371,6 +479,7 @@
                         {/if}
                     </div>
 
+                    <!--
                     <div class="px-4 mb-4 flex flex-col items-center">
                         <div class="flex items-center opacity-50">
                             <div class="w-5 h-5 shrink-0 grow-0">
@@ -386,6 +495,7 @@
                             <div class="italic opacity-50">не указано</div>
                         {/if}
                     </div>
+                    -->
 
                     <div class="px-4 mb-5 flex flex-col items-center">
                         <div class="flex items-center opacity-50">

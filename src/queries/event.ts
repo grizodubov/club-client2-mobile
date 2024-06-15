@@ -35,6 +35,8 @@ export const eventInfo = {
 	/* model */
 	model: {
         event: {},
+        residents: [],
+        connections: [],
     },
 	/* retriever */
 	retriever: async function({
@@ -46,6 +48,30 @@ export const eventInfo = {
 			data: {
                 id: id,
                 suggestions: suggestions,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+/* eventConnection */
+export const eventConnection = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        eventId = 0,
+        userId = 0,
+    }) {
+		const response = await request({
+			path: '/event/connection',
+			data: {
+                event_id: eventId,
+                user_id: userId,
             },
 		});
 		if (response.status == 200)

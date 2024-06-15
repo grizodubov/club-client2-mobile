@@ -4,7 +4,9 @@
 
     import { EVENTS } from '@/config/events.cfg';
 
-    import { UserCard, Program } from './components';
+    import { UserCard, Program, Visitors } from './components';
+
+    import { Avatar } from '@/components';
 
     import { type User, user } from '@/stores';
 
@@ -13,6 +15,10 @@
     import { subscribe } from '@/helpers/notification';
 
     import { toDateText } from '@/utils/dates';
+
+    import { infoCreate, infoDestroy, infoShow, infoUpdate } from '@/helpers/info';
+
+    import { type WordForms, nwfi } from '@/utils/numword';
 
     import { Entity, collector } from '@/helpers/entity';
     import {
@@ -30,6 +36,12 @@
 	export { className as class }; className;
 
 
+    const wordForms: WordForms = {
+        'встреча': [ 'встреч', 'встреча', 'встречи', 'встреч' ],
+        'партнёр': [ 'партнёров', 'партнёр', 'партнёра', 'партнёров' ],
+    };
+
+
     $: currentUser = $user as User;
 
 
@@ -37,11 +49,15 @@
     let participants: any[] = [];
     let suggestions: any[] = [];
     let speakers: any[] = [];
+    let connections: any[] = [];
 
     let infoState = false;
 
     let start = true;
 
+
+    $: connectionsUsers = connections.map(c => [ ...speakers, ...participants ].find(p => p.id == (c.user_1_id == currentUser.id ? c.user_2_id : c.user_1_id)));
+    
 
     $: state = findState(event);
 
@@ -89,7 +105,7 @@
             ).map(
                 (p: any) => {
                     const r = data.residents.find((r: any) => r.id == p.id);
-                    if (r)
+                    if (r) {
                         if (cUser) {
                             r.tagsLinked = findTags(cUser.tags, r.interests);
                             r.interestsLinked = findTags(cUser.interests, r.tags);
@@ -98,6 +114,9 @@
                             r.tagsLinked = [];
                             r.interestsLinked = [];
                         }
+                        r.audit = p.audit;
+                        r.confirmation = p.confirmation;
+                    }
                     return r;
                 }
             ).filter(
@@ -108,17 +127,30 @@
             temp = event.speakers.map(
                 (p: any) => {
                     const r = data.residents.find((r: any) => r.id == p.id);
+                    r.speaker = p.speaker;
+                    r.audit = p.audit;
                     return r;
                 }
             ).filter(
                 (p: any) => p
             );
+            temp.sort((a: any, b: any) => a.name.toLowerCase() > b.name.toLowerCase());
             speakers = [ ...temp ];
             suggestions = participants.filter((p: any) => p.tagsLinked.length || p.interestsLinked.length);
+            connections = data.connections;
+            infoUpdate({
+                eventId: parseInt(params?.id),
+                state: state,
+                participants: participants,
+                speakers: speakers,
+                connections: connections,
+                suggestions: suggestions,
+            });
         },
 	});
 
     let eventInfoLoading = eventInfoHandler.loading;
+    
 
 
     /* DATA: userEventAddHandler */
@@ -168,9 +200,18 @@
 
     /* onMount */
 	onMount(() => {
+        infoCreate(Visitors, {
+            eventId: parseInt(params?.id),
+            state: null,
+            participants: [],
+            speakers: [],
+            connections: [],
+            suggestions: [],
+        });
         get();
         const sub = subscribe('events', refresh);
         return () => {
+            infoDestroy();
             sub.close();
         };
 	});
@@ -295,12 +336,82 @@
                             <div class="detail text-sm mt-3">{@html event.detail}</div>
                         </div>
 
-                        <!-- Спикеры -->
-                        {#if (speakers.length)}
-                            <div class="flex justify-start items-center h-7 mt-6 mb-5 px-3">
-                                <div class="font-semibold text-lg leading-7">Спикеры</div>
-                                <div class="rounded-full w-7 h-7 text-center leading-7 ml-2.5 font-semibold bg-base-200 text-sm"><span>{speakers.length}</span></div>
+                        <!-- Встречи -->
+                        {#if connections.length}
+                            <div class="px-3 mt-8">
+                                <button
+                                    class="w-full rounded-2xl border-[3px] border-success p-2"
+                                    on:click="{infoShow}"
+                                >
+                                    <div class="w-full flex">
+                                        <div class="w-full shrink-1 grow-1 flex flex-col items-center">
+                                            <div class="text-xs">У вас запланировано</div>
+                                            <div class="text-[28px] text-front font-semibold leading-[32px]">{connections.length}</div>
+                                            <div class="text-sm text-front font-semibold">{wordForms['встреча'][nwfi(connections.length)]}</div>
+                                        </div>
+                                        <div class="w-full shrink-1 grow-1 flex flex-col items-center">
+                                            <div class="text-xs">Уже на мероприятии</div>
+                                            <div class="text-[28px] text-success font-semibold leading-[32px]">{connectionsUsers.filter(c => c.audit == 2).length}</div>
+                                            <div class="text-sm text-success font-semibold">{wordForms['партнёр'][nwfi(connectionsUsers.filter(c => c.audit == 2).length)]}</div>
+                                        </div>
+                                    </div>
+                                    <div class="w-full flex flex-wrap justify-center px-[9px] pt-[17px] pb-[5px]">
+                                        {#each connectionsUsers as participant (participant.id)}
+                                            <div class="relative w-[50px] h-[50px] shrink-0 grow-0">
+                                                <div class="absolute top-[-5px] left-[-5px] w-[60px] h-[60px]">
+                                                    <Avatar
+                                                        user="{{
+                                                            id: participant.id,
+                                                            name: participant.name,
+                                                            avatar_hash: participant.avatar_hash,
+                                                            roles: [ 'client' ],
+                                                            telegram: '',
+                                                        }}"
+                                                        online="{participant.audit && participant.audit == 2}"
+                                                    />
+                                                </div>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                </button>
                             </div>
+                        {/if}
+
+                        <!-- Спикеры -->
+                        {#if speakers.length}
+                            <div class="flex justify-between items-center h-9 mt-8 mb-5 px-3">
+                                <div class="flex justify-start items-center">
+                                    <div class="font-semibold text-lg leading-9">Спикеры</div>
+                                    <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{speakers.length}</span></div>
+                                </div>
+                            </div>
+
+                            <div class="w-full flex flex-wrap px-[17px]">
+                                {#each speakers as participant (participant.id)}
+                                    <div class="relative w-[50px] h-[50px] shrink-0 grow-0">
+                                        <button class="absolute top-[-5px] left-[-5px] w-[60px] h-[60px]" on:click="{infoShow}">
+                                            <Avatar
+                                                user="{{
+                                                    id: participant.id,
+                                                    name: participant.name,
+                                                    avatar_hash: participant.avatar_hash,
+                                                    roles: [ 'client' ],
+                                                    telegram: '',
+                                                }}"
+                                                online="{participant.audit && participant.audit == 2}"
+                                            />
+                                        </button>
+                                    </div>
+                                {/each}
+                            </div>
+
+                            {#if state != null}
+                                <button
+                                    class="btn btn-sm btn-front text-base-100 mt-6 ml-3" on:click="{infoShow}"
+                                >Планировать встречи</button>
+                            {/if}
+
+                            <!--
                             <div class="h-[142px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each speakers as participant (participant.id)}
@@ -313,14 +424,44 @@
                                     {/each}
                                 </div>
                             </div>
+                            -->
                         {/if}
 
                         <!-- Участники -->
-                        {#if (participants.length)}
-                            <div class="flex justify-start items-center h-7 mt-6 mb-5 px-3">
-                                <div class="font-semibold text-lg leading-7">Участники</div>
-                                <div class="rounded-full w-7 h-7 text-center leading-7 ml-2.5 font-semibold bg-base-200 text-sm"><span>{participants.length}</span></div>
+                        {#if participants.length}
+                            <div class="flex justify-between items-center h-9 mt-8 mb-5 px-3">
+                                <div class="flex justify-start items-center">
+                                    <div class="font-semibold text-lg leading-9">Участники</div>
+                                    <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{participants.length}</span></div>
+                                </div>
                             </div>
+
+                            <div class="w-full flex flex-wrap px-[17px]">
+                                {#each participants as participant (participant.id)}
+                                    <div class="relative w-[50px] h-[50px] shrink-0 grow-0">
+                                        <button class="absolute top-[-5px] left-[-5px] w-[60px] h-[60px]" on:click="{infoShow}">
+                                            <Avatar
+                                                user="{{
+                                                    id: participant.id,
+                                                    name: participant.name,
+                                                    avatar_hash: participant.avatar_hash,
+                                                    roles: [ 'client' ],
+                                                    telegram: '',
+                                                }}"
+                                                online="{participant.audit && participant.audit == 2}"
+                                            />
+                                        </button>
+                                    </div>
+                                {/each}
+                            </div>
+
+                            {#if state != null}
+                                <button
+                                    class="btn btn-sm btn-front text-base-100 mt-6 ml-3" on:click="{infoShow}"
+                                >Планировать встречи</button>
+                            {/if}
+
+                            <!--
                             <div class="h-[142px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each participants as participant (participant.id)}
@@ -333,14 +474,42 @@
                                     {/each}
                                 </div>
                             </div>
+                            -->
                         {/if}
 
                         <!-- Потенциальные партнёры -->
-                        {#if (suggestions.length)}
-                            <div class="flex justify-start items-center h-7 mt-6 mb-5 px-3">
-                                <div class="font-semibold text-lg leading-7">Потенциальные партнёры</div>
-                                <div class="rounded-full w-7 h-7 text-center leading-7 ml-2.5 font-semibold bg-base-200 text-sm"><span>{suggestions.length}</span></div>
+                        {#if suggestions.length}
+                            <div class="flex justify-start items-center h-9 mt-8 mb-5 px-3">
+                                <div class="font-semibold text-lg leading-9">Потенциальные партнёры</div>
+                                <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{suggestions.length}</span></div>
                             </div>
+
+                            <div class="w-full flex flex-wrap px-[17px]">
+                                {#each suggestions as participant (participant.id)}
+                                    <div class="relative w-[50px] h-[50px] shrink-0 grow-0">
+                                        <button class="absolute top-[-5px] left-[-5px] w-[60px] h-[60px]" on:click="{infoShow}">
+                                            <Avatar
+                                                user="{{
+                                                    id: participant.id,
+                                                    name: participant.name,
+                                                    avatar_hash: participant.avatar_hash,
+                                                    roles: [ 'client' ],
+                                                    telegram: '',
+                                                }}"
+                                                online="{participant.audit && participant.audit == 2}"
+                                            />
+                                        </button>
+                                    </div>
+                                {/each}
+                            </div>
+
+                            {#if state != null}
+                                <button
+                                    class="btn btn-sm btn-front text-base-100 mt-6 ml-3" on:click="{infoShow}"
+                                >Планировать встречи</button>
+                            {/if}
+
+                            <!--
                             <div class="h-[186px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each suggestions as participant (participant.id)}
@@ -353,11 +522,12 @@
                                     {/each}
                                 </div>
                             </div>
+                            -->
                         {/if}
 
                         <!-- Программа -->
-                        <div class="flex justify-start items-center h-7 mt-6 mb-5 px-3">
-                            <div class="font-semibold text-lg leading-7">Программа</div>
+                        <div class="flex justify-start items-center h-9 mt-8 mb-5 px-3">
+                            <div class="font-semibold text-lg leading-9">Программа</div>
                         </div>
                         <Program event="{event}" speakers="{speakers}" />
                     </div>

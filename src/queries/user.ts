@@ -200,6 +200,12 @@ export const userUpdate = {
         birthdatePrivacy = '',
         experience = 0,
         detail = '',
+        tags1CompanyScope = '',
+        tags1CompanyNeeds = '',
+        tags1Licenses = '',
+        tags1PersonalExpertise = '',
+        tags1PersonalNeeds = '',
+        tags1Hobbies = '',
     }) {
 		const response = await request({
 			path: '/new/user/update',
@@ -221,6 +227,12 @@ export const userUpdate = {
                 birthdate_privacy: birthdatePrivacy,
                 experience: experience,
                 detail: detail,
+                tags_1_company_scope: tags1CompanyScope,
+                tags_1_company_needs: tags1CompanyNeeds,
+                tags_1_licenses: tags1Licenses,
+                tags_1_personal_expertise: tags1PersonalExpertise,
+                tags_1_personal_needs: tags1PersonalNeeds,
+                tags_1_hobbies: tags1Hobbies,
             },
 		});
 		if (response.status == 200)

@@ -1,9 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
+    import { infoCreate, infoDestroy, infoShow } from '@/helpers/info';
+
     import { Avatar } from '@/components';
 
-    import { InputText, InputSlider, InputTags, InputRadio } from './components';
+    import { InputText, InputSlider, InputTags, InputRadio, PhotoEditor } from './components';
 
     import { states, type User, user } from '@/stores';
 
@@ -312,14 +314,20 @@
                 rf.position != r.position ||
                 rf.experience != r.experience ||
                 rf.annual != r.annual ||
-                rf.annualPrivacy != r.annualPrivacy ||
+                rf.annual_privacy != r.annual_privacy ||
                 rf.employees != r.employees ||
-                rf.employeesPrivacy != r.employeesPrivacy ||
+                rf.employees_privacy != r.employees_privacy ||
                 !compareTags(rf.catalog, r.catalog) ||
                 !compareTags(rf.city, r.city) ||
                 !compareTags(rf.hobby, r.hobby) ||
                 !compareTags(rf.tags, r.tags) ||
-                !compareTags(rf.interests, r.interests)
+                !compareTags(rf.interests, r.interests) ||
+                !compareTags(rf.tags_1_company_scope, r.tags_1_company_scope) ||
+                !compareTags(rf.tags_1_company_needs, r.tags_1_company_needs) ||
+                !compareTags(rf.tags_1_licenses, r.tags_1_licenses) ||
+                !compareTags(rf.tags_1_personal_expertise, r.tags_1_personal_expertise) ||
+                !compareTags(rf.tags_1_personal_needs, r.tags_1_personal_needs) ||
+                !compareTags(rf.tags_1_hobbies, r.tags_1_hobbies)
             )
         );
     }
@@ -336,18 +344,25 @@
                     company: residentForm.company,
                     position: residentForm.position,
                     annual: residentForm.annual,
-                    annualPrivacy: residentForm.annualPrivacy,
+                    annualPrivacy: residentForm.annual_privacy,
                     employees: residentForm.employees,
-                    employeesPrivacy: residentForm.employeesPrivacy,
+                    employeesPrivacy: residentForm.employees_privacy,
                     catalog: residentForm.catalog,
                     tags: residentForm.tags,
                     interests: residentForm.interests,
                     city: residentForm.city,
                     hobby: residentForm.hobby,
                     birthdate: residentForm.birthdate || residentForm.birthdate != 'не указано' ? residentForm.birthdate : null,
-                    birthdatePrivacy: residentForm.birthdatePrivacy,
+                    birthdatePrivacy: residentForm.birthdate_privacy,
                     experience: residentForm.experience ? parseInt(residentForm.experience) : null,
                     detail: residentForm.detail,
+                    tags1CompanyScope: residentForm.tags_1_company_scope,
+                    tags1CompanyNeeds: residentForm.tags_1_company_needs,
+                    tags1Licenses: residentForm.tags_1_licenses,
+                    tags1PersonalExpertise: residentForm.tags_1_personal_expertise,
+                    tags1PersonalNeeds: residentForm.tags_1_personal_needs,
+                    tags1Hobbies: residentForm.tags_1_hobbies,
+
                 }
             ],
         ]);
@@ -404,12 +419,14 @@
 
     /* onMount */
 	onMount(() => {
+        infoCreate(PhotoEditor, undefined);
         get();
         getTags();
         const sub = subscribe('events', refresh);
         const subKeyboardShow = subscribe('keyboardShow', moveUp);
         const subKeyboardHide = subscribe('keyboardHide', moveDown);
         return () => {
+            infoDestroy();
             sub.close();
             subKeyboardShow.close();
             subKeyboardHide.close();
@@ -543,8 +560,8 @@
                             <InputRadio
                                 placeholder="Приватность"
                                 options="{[ 'показывать', 'показывать диапазон', 'скрывать' ]}"
-                                value="{residentForm.annualPrivacy}"
-                                on:change="{event => { residentForm.annualPrivacy = event.detail; }}"
+                                value="{residentForm.annual_privacy}"
+                                on:change="{event => { residentForm.annual_privacy = event.detail; }}"
                             />
                         </div>
                     </div>
@@ -563,8 +580,8 @@
                             <InputRadio
                                 placeholder="Приватность"
                                 options="{[ 'показывать', 'показывать диапазон', 'скрывать' ]}"
-                                value="{residentForm.employeesPrivacy}"
-                                on:change="{event => { residentForm.employeesPrivacy = event.detail; }}"
+                                value="{residentForm.employees_privacy}"
+                                on:change="{event => { residentForm.employees_privacy = event.detail; }}"
                             />
                         </div>
                     </div>
@@ -585,6 +602,61 @@
                     </div>
                     <div class="px-3 mt-1">
                         <InputTags
+                            placeholder="Специализация компании"
+                            type="tag"
+                            bind:value="{residentForm.tags_1_company_scope}"
+                            splitChar="|"
+                            readonly="{true}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Потребности компании"
+                            type="interest"
+                            bind:value="{residentForm.tags_1_company_needs}"
+                            splitChar="|"
+                            readonly="{true}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Допуски, лицензии, сертификаты"
+                            type="catalog"
+                            bind:value="{residentForm.tags_1_licenses}"
+                            splitChar="|"
+                            readonly="{true}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Личная экспертиза"
+                            type="tag"
+                            bind:value="{residentForm.tags_1_personal_expertise}"
+                            splitChar="|"
+                            readonly="{true}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Потребности в экспертизе"
+                            type="tag"
+                            bind:value="{residentForm.tags_1_personal_needs}"
+                            splitChar="|"
+                            readonly="{true}"
+                        />
+                    </div>
+                    <div class="px-3 mt-1">
+                        <InputTags
+                            placeholder="Хобби, увлечения"
+                            type="tag"
+                            bind:value="{residentForm.tags_1_hobbies}"
+                            splitChar="|"
+                            readonly="{true}"
+                        />
+                    </div>
+                    <!--
+                    <div class="px-3 mt-1">
+                        <InputTags
                             placeholder="Личная экспертиза"
                             type="tag"
                             list="{tags.map(t => { return { tag: t.tag, amount: t.interests }; })}"
@@ -599,6 +671,7 @@
                             bind:value="{residentForm.interests}"
                         />
                     </div>
+                    -->
                     <div class="px-3 mt-1">
                         <InputTags
                             placeholder="Город"
@@ -607,6 +680,7 @@
                             bind:value="{residentForm.city}"
                         />
                     </div>
+                    <!--
                     <div class="px-3 mt-1">
                         <InputTags
                             placeholder="Хобби и увлечения"
@@ -614,6 +688,7 @@
                             bind:value="{residentForm.hobby}"
                         />
                     </div>
+                    -->
                     <div class="w-[160px] mt-3 ml-3">
                         <button
                             class="btn btn-front w-full text-base-100"
@@ -631,6 +706,20 @@
                             {/if}
                         </button>
                     </div>
+
+                    <!-- Смена avatar -->
+                    <div class="font-semibold text-lg px-3 mt-6 mb-5">Изменить фото</div>
+                    <div class="w-full px-3">
+                        <div class="w-[160px]">
+                            <button
+                                class="btn btn-front w-full text-base-100"
+                                on:click="{infoShow}"
+                            >
+                                <span>Выбрать</span>
+                            </button>
+                        </div>
+                    </div>
+
 
                     <!-- Смена email-->
                     <div class="font-semibold text-lg px-3 mt-6 mb-5">Изменить email</div>
