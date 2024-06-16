@@ -6,9 +6,9 @@
 
     import { UserCard, Program, Visitors } from './components';
 
-    import { Avatar } from '@/components';
+    // import { Avatar } from '@/components';
 
-    import { type User, user } from '@/stores';
+    import { type User, user, events } from '@/stores';
 
     import { findTags } from '@/utils/tags';
 
@@ -200,6 +200,7 @@
 
     /* onMount */
 	onMount(() => {
+        const state = events.pull();
         infoCreate(Visitors, {
             eventId: parseInt(params?.id),
             state: null,

@@ -1,11 +1,13 @@
 <script lang="ts">
-    import { type User, user } from '@/stores';
+    import { type User, user, events } from '@/stores';
 
     import { Avatar } from '@/components';
 
     import { nameNormalization } from '@/utils/names';
 
     import { infoHide } from '@/helpers/info';
+
+    import { router } from '@/libs/Router';
 
     import { Entity, collector } from '@/helpers/entity';
     import {
@@ -165,7 +167,12 @@
                         <div
                             class="relative w-[64px] h-[84px] self-start shrink-0 grow-0"
                         >
-                            <div class="relative top-[0px] w-[64px] h-[64px] mb-[20px]">
+                            <button
+                                class="relative top-[0px] w-[64px] h-[64px] mb-[20px]"
+                                on:click="{() => {
+                                    router.go('/residents/' + user.id.toString());
+                                }}"
+                            >
                                 <Avatar
                                     user="{{
                                         id: user.id,
@@ -176,7 +183,7 @@
                                     }}"
                                     online="{user.audit == 2}"
                                 />
-                            </div>
+                                </button>
                             <!--
                             {#if !connectionsCache[user.id.toString()]}
                                 <div
@@ -190,9 +197,12 @@
                         <div class="ml-4 shrink-1 grow-1 w-full flex flex-col justify-between">
                             <div class="w-full">
                                 <div class="mb-[4px] mt-[2px] flex items-center">
-                                    <span
+                                    <button
                                         class="text-left font-medium text-[16px] leading-[20px]"
-                                    >{nameNormalization(user.name, 2)}</span>
+                                        on:click="{() => {
+                                            router.go('/residents/' + user.id.toString());
+                                        }}"
+                                    >{nameNormalization(user.name, 2)}</button>
                                     {#if user.speaker}
                                         <svg class="w-5 h-5 text-moderate ml-1.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M29.415 19L27.7 17.285A2.97 2.97 0 0 0 28 16a3 3 0 1 0-3 3a2.97 2.97 0 0 0 1.286-.3L28 20.414V28h-6v-3a7.008 7.008 0 0 0-7-7H9a7.008 7.008 0 0 0-7 7v5h28v-9.586A1.988 1.988 0 0 0 29.415 19zM4 25a5.006 5.006 0 0 1 5-5h6a5.006 5.006 0 0 1 5 5v3H4z" fill="currentColor"></path><path d="M12 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path></svg>
                                     {/if}

@@ -419,7 +419,9 @@
 
     /* onMount */
 	onMount(() => {
-        infoCreate(PhotoEditor, undefined);
+        infoCreate(PhotoEditor, {
+            onUpload: refresh
+        });
         get();
         getTags();
         const sub = subscribe('events', refresh);
@@ -636,7 +638,7 @@
                             readonly="{true}"
                         />
                     </div>
-                    <div class="font-medium text-sm px-2 mt-2 mb-3 text-moderate">Персональные теги</div>
+                    <div class="font-medium text-sm px-2 mt-2 mb-3 text-moderate">Теги о человеке</div>
                     <div class="px-3 mt-1">
                         <InputTags
                             placeholder="Личная экспертиза"
