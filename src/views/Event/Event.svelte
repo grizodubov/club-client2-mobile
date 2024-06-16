@@ -55,11 +55,13 @@
 
     let start = true;
 
+    let state = null;
+
 
     $: connectionsUsers = connections.map(c => [ ...speakers, ...participants ].find(p => p.id == (c.user_1_id == currentUser.id ? c.user_2_id : c.user_1_id)));
     
 
-    $: state = findState(event);
+    //$: state = findState(event);
 
     $: currentFormat = event ? EVENTS.find(f => f.format == event.format) : undefined;
 
@@ -138,6 +140,7 @@
             speakers = [ ...temp ];
             suggestions = participants.filter((p: any) => p.tagsLinked.length || p.interestsLinked.length);
             connections = data.connections;
+            state = findState(event);
             infoUpdate({
                 eventId: parseInt(params?.id),
                 state: state,
