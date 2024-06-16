@@ -15,6 +15,7 @@ const _default: {
     safeTop: number,
     safeBottom: number,
     keyboardHeight: number;
+    displayHeight: number;
 } = Object.assign(
     {
         api: '',
@@ -28,6 +29,7 @@ const _default: {
         safeTop: 0,
         safeBottom: 0,
         keyboardHeight: 0,
+        displayHeight: 0,
     },
     STATES
 );

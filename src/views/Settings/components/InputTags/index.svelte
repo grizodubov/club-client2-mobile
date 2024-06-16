@@ -14,6 +14,8 @@
     export let type: 'tag' | 'interest' | 'catalog';
     export let value: string;
     export let list: any[] = [];
+    export let readonly: boolean = false;
+    export let splitChar: string = ',';
 
 
     let focus: boolean = false;
@@ -28,67 +30,76 @@
     let suggestions: any[] = [];
 
 
-    $: valueSplitted = value.split(/\s*,\s*/).map((v: string) => v.trim().toLowerCase()).filter(v => v);
+    const re = new RegExp("\\s*" + splitChar.replace('|', '\\|') + "\\s*");
+
+
+    $: valueSplitted = value.split(re).map((v: string) => v.trim().toLowerCase()).filter(v => v);
 
 
     /* addTag */
     function addTag(tag: string) {
-        const t = tag.trim().toLowerCase();
-        if (tag && valueSplitted.indexOf(t) == -1) {
-            value = value + ',' + tag;
-            valueTag = '';
+        if (!readonly) {
+            const t = tag.trim().toLowerCase();
+            if (tag && valueSplitted.indexOf(t) == -1) {
+                value = value + splitChar + tag;
+                valueTag = '';
+            }
         }
     }
 
 
     /* deleteTag */
     function deleteTag(tag: string) {
-        const t = tag.trim().toLowerCase();
-        const i = valueSplitted.indexOf(t);
-        if (i > -1) {
-            const temp = value.split(/\s*,\s*/);
-            temp.splice(i, 1);
-            value = temp.join(',');
+        if (!readonly) {
+            const t = tag.trim().toLowerCase();
+            const i = valueSplitted.indexOf(t);
+            if (i > -1) {
+                const temp = value.split(re);
+                temp.splice(i, 1);
+                value = temp.join(splitChar);
+            }
         }
     }
 
 
     /* createSuggestions */
     function createSuggestions() {
-        const temp: any[] = [];
-        const test = valueTag.trim().toLowerCase();
-        if (test.length >= 2) {
-            list.forEach((t: any) => {
-                const tt = typeof t === 'string' ? t.toLowerCase() : t.tag.toLowerCase();
-                if (tt.indexOf(test) > -1)
-                    temp.push(t);
-            });
-            if (temp.length) {
-                temp.sort((a, b) => {
-                    if (typeof a == 'string') {
-                        if (a.toLowerCase() > b.toLowerCase())
-                            return 1;
-                        if (a.toLowerCase() < b.toLowerCase())
-                            return -1;
-                        return 0;
-                    }
-                    else {
-                        if (a.amount < b.amount)
-                            return 1;
-                        if (a.amount > b.amount)
-                            return -1;
-                        if (a.tag.toLowerCase() > b.tag.toLowerCase())
-                            return 1;
-                        if (a.tag.toLowerCase() < b.tag.toLowerCase())
-                            return -1;
-                        return 0;
-                    }
+        if (!readonly) {
+            const temp: any[] = [];
+            const test = valueTag.trim().toLowerCase();
+            if (test.length >= 2) {
+                list.forEach((t: any) => {
+                    const tt = typeof t === 'string' ? t.toLowerCase() : t.tag.toLowerCase();
+                    if (tt.indexOf(test) > -1)
+                        temp.push(t);
                 });
-                suggestions = temp;
-                return;
+                if (temp.length) {
+                    temp.sort((a, b) => {
+                        if (typeof a == 'string') {
+                            if (a.toLowerCase() > b.toLowerCase())
+                                return 1;
+                            if (a.toLowerCase() < b.toLowerCase())
+                                return -1;
+                            return 0;
+                        }
+                        else {
+                            if (a.amount < b.amount)
+                                return 1;
+                            if (a.amount > b.amount)
+                                return -1;
+                            if (a.tag.toLowerCase() > b.tag.toLowerCase())
+                                return 1;
+                            if (a.tag.toLowerCase() < b.tag.toLowerCase())
+                                return -1;
+                            return 0;
+                        }
+                    });
+                    suggestions = temp;
+                    return;
+                }
             }
+            suggestions = [];
         }
-        suggestions = [];
     }
 
 
@@ -154,79 +165,88 @@
                     <div class="mt-1"><Tag
                         type="{type}"
                         tag="{tag}"
-                        deleteButton="{true}"
+                        deleteButton="{!readonly}"
                         on:delete="{() => {
-                            deleteTag(tag);
+                            if (!readonly)
+                                deleteTag(tag);
                         }}"
                     /></div>
                 {/each}
             </div>
         </div>
-    {/if}
-    <div
-        class="relative h-16 w-full overflow-hidden"
-    >
-        <div
-            class="absolute top-0 h-full w-full pt-1 pl-3 bg-base-200 text-xs border-l-2"
-            class:border-transparent="{!focus}"
-            class:border-neutral="{focus}"
-        >
+    {:else if readonly}
+        <div class="h-10 w-full">
+            &nbsp;
         </div>
-        <input
-            type="text"
-            class="absolute top-0 left-[2px] h-full w-[calc(100%-2px)] px-3 m-0 bg-transparent
-                outline-none border-0 focus:outline-none focus:border-0 shadow-none focus:shadow-none"
-            bind:value="{valueTag}"
-            on:focus="{() => {
-                focus = true;
-                createSuggestions();
-            }}"
-            on:blur="{() => {
-                focus = false;
-                suggestions = [];
-            }}"
-            on:keyup="{() => {
-                createSuggestions();
-            }}"
-            bind:this="{input}"
-            on:click|stopPropagation
-        />
-        {#if valueTag.length}
-            <button
-                class="absolute rounded-lg w-8 h-8 top-[18px] right-2 flex items-center justify-center bg-primary text-base-100"
-                in:fade="{{ duration: 100 }}"
-                out:fade="{{ duration: 100 }}"
-                on:click="{() => {
-                    addTag(valueTag);
-                }}"
+    {/if}
+    {#if !readonly}
+        <div
+            class="relative h-16 w-full overflow-hidden"
+        >
+            <div
+                class="absolute top-0 h-full w-full pt-1 pl-3 bg-base-200 text-xs border-l-2"
+                class:border-transparent="{!focus}"
+                class:border-neutral="{focus}"
             >
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z" fill="currentColor"></path></svg>
-            </button>
-        {/if}
-    </div>
-</div>
-{#if suggestions.length}
-    <ul
-        class="absolute w-[calc(100%-24px)] max-h-[200px] overflow-y-auto z-[15] bg-base-300 border-l-2 border-l-scene"
-        in:fade="{{ duration: 100 }}"
-        out:fade="{{ duration: 100 }}"
-    >
-        {#each suggestions as s}
-            <li class="relative w-full first:mt-1.5 last:mb-1.5">
+            </div>
+            <input
+                type="text"
+                class="absolute top-0 left-[2px] h-full w-[calc(100%-2px)] px-3 m-0 bg-transparent
+                    outline-none border-0 focus:outline-none focus:border-0 shadow-none focus:shadow-none"
+                bind:value="{valueTag}"
+                on:focus="{() => {
+                    focus = true;
+                    createSuggestions();
+                }}"
+                on:blur="{() => {
+                    focus = false;
+                    suggestions = [];
+                }}"
+                on:keyup="{() => {
+                    createSuggestions();
+                }}"
+                bind:this="{input}"
+                on:click|stopPropagation
+            />
+            {#if valueTag.length}
                 <button
-                    class="w-full flex items-center justify-between"
-                    on:mousedown="{() => {
-                        valueTag = typeof s == 'string' ? s : s.tag;
+                    class="absolute rounded-lg w-8 h-8 top-[18px] right-2 flex items-center justify-center bg-primary text-base-100"
+                    in:fade="{{ duration: 100 }}"
+                    out:fade="{{ duration: 100 }}"
+                    on:click="{() => {
+                        addTag(valueTag);
                     }}"
                 >
-                    {#if typeof s === 'string'}
-                        <span class="mx-2 py-1 text-sm text-left overflow-hidden">{s}</span>
-                    {:else}
-                        <span class="mx-2 py-1 text-sm text-left shrink-1 grow-1 overflow-hidden">{s.tag}</span>
-                        <span class="mx-2 py-1 text-sm text-right shrink-0 grow-0 w-8 opacity-50">{s.amount}</span>
-                    {/if}
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z" fill="currentColor"></path></svg>
                 </button>
-            </li>
-        {/each}
-    </ul>
+            {/if}
+        </div>
+    {/if}
+</div>
+{#if !readonly}
+    {#if suggestions.length}
+        <ul
+            class="absolute w-[calc(100%-24px)] max-h-[200px] overflow-y-auto z-[15] bg-base-300 border-l-2 border-l-scene"
+            in:fade="{{ duration: 100 }}"
+            out:fade="{{ duration: 100 }}"
+        >
+            {#each suggestions as s}
+                <li class="relative w-full first:mt-1.5 last:mb-1.5">
+                    <button
+                        class="w-full flex items-center justify-between"
+                        on:mousedown="{() => {
+                            valueTag = typeof s == 'string' ? s : s.tag;
+                        }}"
+                    >
+                        {#if typeof s === 'string'}
+                            <span class="mx-2 py-1 text-sm text-left overflow-hidden">{s}</span>
+                        {:else}
+                            <span class="mx-2 py-1 text-sm text-left shrink-1 grow-1 overflow-hidden">{s.tag}</span>
+                            <span class="mx-2 py-1 text-sm text-right shrink-0 grow-0 w-8 opacity-50">{s.amount}</span>
+                        {/if}
+                    </button>
+                </li>
+            {/each}
+        </ul>
+    {/if}
 {/if}

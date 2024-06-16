@@ -11,6 +11,7 @@
     export let user: { [key: string]: any };
     export let event: { [key: string]: any };
     export let showTags: boolean = false;
+    export let online: boolean = false;
 
 
     $: currentFormat = event ? EVENTS.find(f => f.format == event.format) : undefined;
@@ -39,7 +40,7 @@
                             avatar_hash: user.avatar_hash,
                             roles: [ 'client' ],
                             telegram: '',
-                        }}" />
+                        }}" online="{online}" />
                     </div>
                 </div>
                 <div class="ml-4 shrink-1 grow-1 w-full">

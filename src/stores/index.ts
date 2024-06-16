@@ -1,5 +1,6 @@
 import { states } from './states';
 import { token } from './token';
+import { events } from './events';
 import { type User, user, userFirstName } from './user';
 import { bindings } from './bindings';
 import { type ResidentsFilters, residentsFilters, activeResidentsFiltersAmount } from './residentsFilters';
@@ -11,6 +12,7 @@ import { type CommunityFilters, communityFilters, activeCommunityFiltersAmount }
 export {
     states,
     token,
+    events,
     type User,
     user,
     userFirstName,

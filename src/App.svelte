@@ -21,6 +21,8 @@
 
     import { type Modal, modal } from '@/helpers/modal';
 
+    import { type Info, info } from '@/helpers/info';
+
     import { subscribe, push as notify } from '@/helpers/notification';
 
     import { alertsSetup, alertsPush, notificationsSetup, notificationsPush } from '@/components';
@@ -51,6 +53,8 @@
 
 
     $: modalData = $modal as Modal;
+
+    $: infoData = $info as Info;
 
 
     /* userChange */
@@ -121,6 +125,7 @@
         states.push({
             safeTop: top,
             safeBottom: bottom,
+            displayHeight: window.innerHeight,
         });
 
         /* Alerts */
@@ -272,5 +277,11 @@
 <div id="modal">
     {#if modalData.component}
         <svelte:component this="{modalData.component}" params="{modalData.params}" />
+    {/if}
+</div>
+
+<div id="info">
+    {#if infoData.component}
+        <svelte:component this="{infoData.component}" params="{infoData.params}" bind:this="{infoData.componentInstance}" />
     {/if}
 </div>

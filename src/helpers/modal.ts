@@ -46,13 +46,14 @@ export function modalCreate(component: ComponentType, params: undefined | { [key
         cssClass: 'modal-fix',
     });
     modalInstance.on('onBackdropTap', () => {
-        modalInstance.hide();
+        if (modalInstance.rendered && !modalInstance.isHidden())
+            modalInstance.hide();
     });
     modalInstance.on('onDidPresent', () => {
         modal.push({ state: true });
     });
     modalInstance.on('onTransitionEnd', () => {
-        if (modalInstance.isHidden()) {
+        if (!modalInstance.rendered || modalInstance.isHidden()) {
             const call = modal.pull('onClose');
             if (call)
                 call();
