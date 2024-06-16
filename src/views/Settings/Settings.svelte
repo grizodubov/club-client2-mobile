@@ -602,6 +602,15 @@
                     </div>
                     <div class="px-3 mt-1">
                         <InputTags
+                            placeholder="Город"
+                            type="catalog"
+                            list="{[ 'Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Владивосток', 'Калининград', 'Воронеж', 'Ростов-на-Дону' ]}"
+                            bind:value="{residentForm.city}"
+                        />
+                    </div>
+                    <div class="font-medium text-sm px-3 mt-2 mb-2 text-moderate">Теги о компании</div>
+                    <div class="px-3 mt-1">
+                        <InputTags
                             placeholder="Специализация компании"
                             type="tag"
                             bind:value="{residentForm.tags_1_company_scope}"
@@ -627,6 +636,7 @@
                             readonly="{true}"
                         />
                     </div>
+                    <div class="font-medium text-sm px-2 mt-2 mb-3 text-moderate">Персональные теги</div>
                     <div class="px-3 mt-1">
                         <InputTags
                             placeholder="Личная экспертиза"
@@ -672,14 +682,6 @@
                         />
                     </div>
                     -->
-                    <div class="px-3 mt-1">
-                        <InputTags
-                            placeholder="Город"
-                            type="catalog"
-                            list="{[ 'Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Владивосток', 'Калининград', 'Воронеж', 'Ростов-на-Дону' ]}"
-                            bind:value="{residentForm.city}"
-                        />
-                    </div>
                     <!--
                     <div class="px-3 mt-1">
                         <InputTags

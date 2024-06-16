@@ -207,6 +207,11 @@
             speakers: [],
             connections: [],
             suggestions: [],
+            filter: {
+                connection: false,
+                online: false,
+                suggestion: false,
+            },
         });
         get();
         const sub = subscribe('events', refresh);
@@ -338,10 +343,19 @@
 
                         <!-- Встречи -->
                         {#if connections.length}
-                            <div class="px-3 mt-8">
+                            <div class="px-3 mt-7">
                                 <button
                                     class="w-full rounded-2xl border-[3px] border-success p-2"
-                                    on:click="{infoShow}"
+                                    on:click="{() => {
+                                        infoUpdate({
+                                            filter: {
+                                                connection: true,
+                                                online: false,
+                                                suggestion: false,
+                                            },
+                                        });
+                                        infoShow();
+                                    }}"
                                 >
                                     <div class="w-full flex">
                                         <div class="w-full shrink-1 grow-1 flex flex-col items-center">
@@ -355,6 +369,7 @@
                                             <div class="text-sm text-success font-semibold">{wordForms['партнёр'][nwfi(connectionsUsers.filter(c => c.audit == 2).length)]}</div>
                                         </div>
                                     </div>
+                                    <!--
                                     <div class="w-full flex flex-wrap justify-center px-[9px] pt-[17px] pb-[5px]">
                                         {#each connectionsUsers as participant (participant.id)}
                                             <div class="relative w-[50px] h-[50px] shrink-0 grow-0">
@@ -373,18 +388,21 @@
                                             </div>
                                         {/each}
                                     </div>
+                                    -->
                                 </button>
                             </div>
                         {/if}
 
                         <!-- Спикеры -->
                         {#if speakers.length}
-                            <div class="flex justify-between items-center h-9 mt-8 mb-5 px-3">
+                            <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
                                 <div class="flex justify-start items-center">
                                     <div class="font-semibold text-lg leading-9">Спикеры</div>
                                     <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{speakers.length}</span></div>
                                 </div>
                             </div>
+
+                            <!--
 
                             <div class="w-full flex flex-wrap px-[17px]">
                                 {#each speakers as participant (participant.id)}
@@ -411,7 +429,8 @@
                                 >Планировать встречи</button>
                             {/if}
 
-                            <!--
+                            -->
+                            
                             <div class="h-[142px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each speakers as participant (participant.id)}
@@ -419,22 +438,35 @@
                                             class="carousel-item last:pr-3"
                                             in:fade="{{ duration: 100 }}"
                                         >
-                                            <UserCard user="{participant}" event="{event}" showTags="{false}" />
+                                            <UserCard user="{participant}" event="{event}" showTags="{false}" online="{participant.audit && participant.audit == 2}" />
                                         </div>
                                     {/each}
                                 </div>
                             </div>
-                            -->
                         {/if}
 
                         <!-- Участники -->
                         {#if participants.length}
-                            <div class="flex justify-between items-center h-9 mt-8 mb-5 px-3">
+                            <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
                                 <div class="flex justify-start items-center">
                                     <div class="font-semibold text-lg leading-9">Участники</div>
                                     <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{participants.length}</span></div>
                                 </div>
+                                <button
+                                    class="btn btn-sm btn-front text-base-100" on:click="{() => {
+                                        infoUpdate({
+                                            filter: {
+                                                connection: false,
+                                                online: false,
+                                                suggestion: false,
+                                            },
+                                        });
+                                        infoShow();
+                                     }}"
+                                >Все участники</button>
                             </div>
+
+                            <!--
 
                             <div class="w-full flex flex-wrap px-[17px]">
                                 {#each participants as participant (participant.id)}
@@ -461,7 +493,8 @@
                                 >Планировать встречи</button>
                             {/if}
 
-                            <!--
+                            -->
+
                             <div class="h-[142px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each participants as participant (participant.id)}
@@ -469,20 +502,21 @@
                                             class="carousel-item last:pr-3"
                                             in:fade="{{ duration: 100 }}"
                                         >
-                                            <UserCard user="{participant}" event="{event}" showTags="{false}" />
+                                            <UserCard user="{participant}" event="{event}" showTags="{false}" online="{participant.audit && participant.audit == 2}" />
                                         </div>
                                     {/each}
                                 </div>
                             </div>
-                            -->
                         {/if}
 
                         <!-- Потенциальные партнёры -->
                         {#if suggestions.length}
-                            <div class="flex justify-start items-center h-9 mt-8 mb-5 px-3">
+                            <div class="flex justify-start items-center h-9 mt-6 mb-5 px-3">
                                 <div class="font-semibold text-lg leading-9">Потенциальные партнёры</div>
                                 <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{suggestions.length}</span></div>
                             </div>
+
+                            <!--
 
                             <div class="w-full flex flex-wrap px-[17px]">
                                 {#each suggestions as participant (participant.id)}
@@ -509,7 +543,8 @@
                                 >Планировать встречи</button>
                             {/if}
 
-                            <!--
+                            -->
+
                             <div class="h-[186px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each suggestions as participant (participant.id)}
@@ -517,16 +552,16 @@
                                             class="carousel-item last:pr-3"
                                             in:fade="{{ duration: 100 }}"
                                         >
-                                            <UserCard user="{participant}" event="{event}" showTags="{true}" />
+                                            <UserCard user="{participant}" event="{event}" showTags="{true}" online="{participant.audit && participant.audit == 2}" />
                                         </div>
                                     {/each}
                                 </div>
                             </div>
-                            -->
+
                         {/if}
 
                         <!-- Программа -->
-                        <div class="flex justify-start items-center h-9 mt-8 mb-5 px-3">
+                        <div class="flex justify-start items-center h-9 mt-6 mb-5 px-3">
                             <div class="font-semibold text-lg leading-9">Программа</div>
                         </div>
                         <Program event="{event}" speakers="{speakers}" />
