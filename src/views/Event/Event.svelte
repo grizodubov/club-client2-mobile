@@ -58,7 +58,7 @@
     let state = null;
 
 
-    $: connectionsUsers = connections.map(c => [ ...speakers, ...participants ].find(p => p.id == (c.user_1_id == currentUser.id ? c.user_2_id : c.user_1_id)));
+    $: connectionsUsers = setConnectionsUsers(connections, speakers, participants);
     
 
     //$: state = findState(event);
@@ -71,6 +71,13 @@
     const bgImageUrlFallback = 'https://static.clubgermes.ru/events/event.png';
 
     $: bgImageUrl = event ? 'https://static.clubgermes.ru/events/' + event.id.toString() + '/icon.png' : bgImageUrlFallback;
+
+
+    /* setConnectionsUsers */
+    function setConnectionsUsers(cs, sp, pa) {
+        //console.log(cs, sp, pa);
+        return cs.map(c => [ ...sp, ...pa ].find(p => p.id == (c.user_1_id == currentUser.id ? c.user_2_id : c.user_1_id)));
+    }
 
 
     /* handleBgImageError */
@@ -103,7 +110,7 @@
             event = data.event;
             const cUser = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
             let temp = event.participants.filter(
-                (p: any) => p.confirmation
+                (p: any) => p.confirmation || true
             ).map(
                 (p: any) => {
                     const r = data.residents.find((r: any) => r.id == p.id);
