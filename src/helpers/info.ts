@@ -132,4 +132,3 @@ export function infoUpdate(params: undefined | { [key: string]: any }) {
     if (temp.componentInstance)
         temp.componentInstance.update(params);
 };
-

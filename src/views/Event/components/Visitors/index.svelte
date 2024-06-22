@@ -42,6 +42,8 @@
         suggestion: false,
     };
 
+    let connectLoading: number = 0;
+
 
     $: currentUser = $user as User;
 
@@ -102,6 +104,9 @@
         }
         if (p.eventId)
             data = Object.assign(data, p);
+        if (p.release)
+            if (connectLoading)
+                connectLoading = 0;
     }
 </script>
 
@@ -220,13 +225,21 @@
                             {#if !connectionsCache[user.id.toString()]}
                                 {#if data.state !== null}
                                     <div class="flex">
-                                        <button
-                                            class="btn btn-sm btn-front text-base-100 mt-1" 
-                                            on:click="{() => {
-                                                if (!connectionsCache[user.id.toString()])
-                                                    connect(user.id);
-                                            }}"
-                                        >Назначить встречу</button>
+                                        {#if connectLoading == user.id}
+                                            <div class="flex items-center justify-center h-8 mt-1">
+                                                <span class="loading loading-bars text-front"></span>
+                                            </div>
+                                        {:else}
+                                            <button
+                                                class="btn btn-sm btn-front text-base-100 mt-1" 
+                                                on:click="{() => {
+                                                    if (!connectionsCache[user.id.toString()]) {
+                                                        connectLoading = user.id;
+                                                        connect(user.id);
+                                                    }
+                                                }}"
+                                            >Назначить встречу</button>
+                                        {/if}
                                     </div>
                                 {/if}
                             {:else}

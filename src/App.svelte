@@ -262,7 +262,7 @@
 <main bind:this="{main}">
     <RouterView>
         <div slot="loading" class="w-full h-full flex justify-center items-center">
-            <span class="loading loading-bars text-front laoding-lg"></span>
+            <span class="loading loading-bars text-front"></span>
         </div>
     </RouterView>
 </main>
