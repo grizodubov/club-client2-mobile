@@ -208,7 +208,7 @@
                 </div>
                 {#if ($residentsListLoading && start) || residentFilterLoading}
                     <div class="w-full h-full flex justify-center items-center">
-                        <span class="loading loading-bars text-front laoding-lg"></span>
+                        <span class="loading loading-bars text-front"></span>
                     </div>
                 {:else}
                     <div class="h-full scrollable-y">

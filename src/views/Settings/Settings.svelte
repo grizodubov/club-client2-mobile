@@ -499,7 +499,7 @@
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y" bind:this="{area}">
             {#if !resident || ($userInfoLoading && start)}
                 <div class="w-full h-full flex justify-center items-center">
-                    <span class="loading loading-bars text-front laoding-lg"></span>
+                    <span class="loading loading-bars text-front"></span>
                 </div>
             {:else}
                 <div class="relative mt-[74px]">
@@ -704,7 +704,7 @@
                             }}"
                         >
                             {#if $userUpdateLoading}
-                                <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                <span class="loading loading-bars text-base-100 loading-sm"></span>
                             {:else}
                                 <span>Изменить</span>
                             {/if}
@@ -772,7 +772,7 @@
                                             }}"
                                         >
                                             {#if $userChangeEmailLoading}
-                                                <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                                <span class="loading loading-bars text-base-100 loading-sm"></span>
                                             {:else}
                                                 <span>Получить код</span>
                                             {/if}
@@ -792,7 +792,7 @@
                                             }}"
                                         >
                                             {#if $userChangeEmailValidateLoading}
-                                                <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                                <span class="loading loading-bars text-base-100 loading-sm"></span>
                                             {:else}
                                                 <span>Изменить</span>
                                             {/if}
@@ -851,7 +851,7 @@
                                             }}"
                                         >
                                             {#if $userChangePhoneLoading}
-                                                <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                                <span class="loading loading-bars text-base-100 loading-sm"></span>
                                             {:else}
                                                 <span>Получить код</span>
                                             {/if}
@@ -871,7 +871,7 @@
                                             }}"
                                         >
                                             {#if $userChangePhoneValidateLoading}
-                                                <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                                <span class="loading loading-bars text-base-100 loading-sm"></span>
                                             {:else}
                                                 <span>Изменить</span>
                                             {/if}
@@ -910,7 +910,7 @@
                                     }}"
                                 >
                                     {#if $userChangeCredentialsLoading}
-                                        <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                        <span class="loading loading-bars text-base-100 loading-sm"></span>
                                     {:else}
                                         <span>Изменить</span>
                                     {/if}

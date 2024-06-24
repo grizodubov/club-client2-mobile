@@ -266,7 +266,7 @@
                 >
                     {#if (start && $eventsFeedLoading) || eventsFilterLoading}
                         <div class="w-full h-full flex justify-center items-center">
-                            <span class="loading loading-bars text-front laoding-lg"></span>
+                            <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
                         {#each eventsFiltered as data (data.event.id + '-' + data.future)}

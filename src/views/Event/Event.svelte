@@ -57,8 +57,10 @@
 
     let state = null;
 
+    let loadingParticipate = false;
 
-    $: connectionsUsers = connections.map(c => [ ...speakers, ...participants ].find(p => p.id == (c.user_1_id == currentUser.id ? c.user_2_id : c.user_1_id)));
+
+    $: connectionsUsers = setConnectionsUsers(connections, speakers, participants);
     
 
     //$: state = findState(event);
@@ -71,6 +73,13 @@
     const bgImageUrlFallback = 'https://static.clubgermes.ru/events/event.png';
 
     $: bgImageUrl = event ? 'https://static.clubgermes.ru/events/' + event.id.toString() + '/icon.png' : bgImageUrlFallback;
+
+
+    /* setConnectionsUsers */
+    function setConnectionsUsers(cs, sp, pa) {
+        //console.log(cs, sp, pa);
+        return cs.map(c => [ ...sp, ...pa ].find(p => p.id == (c.user_1_id == currentUser.id ? c.user_2_id : c.user_1_id))).filter(cu => cu);
+    }
 
 
     /* handleBgImageError */
@@ -103,7 +112,7 @@
             event = data.event;
             const cUser = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
             let temp = event.participants.filter(
-                (p: any) => p.confirmation
+                (p: any) => p.confirmation || true
             ).map(
                 (p: any) => {
                     const r = data.residents.find((r: any) => r.id == p.id);
@@ -149,6 +158,11 @@
                 connections: connections,
                 suggestions: suggestions,
             });
+            infoUpdate({
+                release: true,
+            });
+            if (loadingParticipate)
+                loadingParticipate = false;
         },
 	});
 
@@ -270,7 +284,7 @@
 
             {#if !event || ($eventInfoLoading && start)}
                 <div class="w-full h-full flex justify-center items-center">
-                    <span class="loading loading-bars text-front laoding-lg"></span>
+                    <span class="loading loading-bars text-front"></span>
                 </div>
             {:else}
 
@@ -290,38 +304,46 @@
                                     <div class="text-xs leading-4 ml-1.5 text-left">{currentFormat?.name}</div>
                                 </div>
                             </div>
-                            {#if state == null}
-                                <button
-                                    class="btn btn-front text-base-100"
-                                    on:click="{() => {
-                                        collector.get([
-                                            [ 
-                                                userEventAddHandler,
-                                                {
-                                                    eventId: event.id
-                                                }
-                                            ],
-                                        ]);
-                                    }}"
-                                >Участвовать!</button>
-                            {:else if state}
-                                <button
-                                    class="btn btn-sm btn-error text-base-100"
-                                    on:click="{() => {
-                                        collector.get([
-                                            [ 
-                                                userEventDelHandler,
-                                                {
-                                                    eventId: event.id
-                                                }
-                                            ],
-                                        ]);
-                                    }}"
-                                >Отказаться</button>
+                            {#if loadingParticipate}
+                                <div class="h-8 flex justify-end items-center">
+                                    <span class="loading loading-bars text-front"></span>
+                                </div>
                             {:else}
-                                <button
-                                    class="btn btn-sm bg-base-300"
-                                >Подтверждается</button>
+                                {#if state == null}
+                                    <button
+                                        class="btn btn-front text-base-100"
+                                        on:click="{() => {
+                                            loadingParticipate = true;
+                                            collector.get([
+                                                [ 
+                                                    userEventAddHandler,
+                                                    {
+                                                        eventId: event.id
+                                                    }
+                                                ],
+                                            ]);
+                                        }}"
+                                    >Участвовать!</button>
+                                {:else if state}
+                                    <button
+                                        class="btn btn-sm btn-error text-base-100"
+                                        on:click="{() => {
+                                            loadingParticipate = true;
+                                            collector.get([
+                                                [ 
+                                                    userEventDelHandler,
+                                                    {
+                                                        eventId: event.id
+                                                    }
+                                                ],
+                                            ]);
+                                        }}"
+                                    >Отказаться</button>
+                                {:else}
+                                    <button
+                                        class="btn btn-sm bg-base-300"
+                                    >Подтверждается</button>
+                                {/if}
                             {/if}
                         </div>
                     </div>
@@ -364,8 +386,8 @@
                                     <div class="w-full flex">
                                         <div class="w-full shrink-1 grow-1 flex flex-col items-center">
                                             <div class="text-xs">У вас запланировано</div>
-                                            <div class="text-[28px] text-front font-semibold leading-[32px]">{connections.length}</div>
-                                            <div class="text-sm text-front font-semibold">{wordForms['встреча'][nwfi(connections.length)]}</div>
+                                            <div class="text-[28px] text-front font-semibold leading-[32px]">{connectionsUsers.length}</div>
+                                            <div class="text-sm text-front font-semibold">{wordForms['встреча'][nwfi(connectionsUsers.length)]}</div>
                                         </div>
                                         <div class="w-full shrink-1 grow-1 flex flex-col items-center">
                                             <div class="text-xs">Уже на мероприятии</div>

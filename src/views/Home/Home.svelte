@@ -224,7 +224,7 @@
                 <div class="h-[202px] overflow-y-hidden">
                     {#if start && $eventsFeedLoading}
                         <div class="w-full h-[202px] flex justify-center items-center">
-                            <span class="loading loading-bars text-front laoding-lg"></span>
+                            <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
                         <div class="carousel w-full h-[202px]">
@@ -247,7 +247,7 @@
                 <div class="mb-5">
                     {#if start && $getRatingPollsLoading}
                         <div class="w-full py-6 flex justify-center items-center">
-                            <span class="loading loading-bars text-front laoding-lg"></span>
+                            <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
                         {#each ratingPolls as poll (poll.id)}
@@ -271,7 +271,7 @@
                 <div class="h-[142px] overflow-y-hidden mb-5">
                     {#if start && $userContactsLoading}
                         <div class="w-full h-[142px] flex justify-center items-center">
-                            <span class="loading loading-bars text-front laoding-lg"></span>
+                            <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
                         <div class="carousel w-full h-full">
@@ -298,7 +298,7 @@
                 <div class="h-[186px] overflow-y-hidden mb-5">
                     {#if start && $userRecommendationsLoading}
                         <div class="w-full h-[186px] flex justify-center items-center">
-                            <span class="loading loading-bars text-front laoding-lg"></span>
+                            <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
                         <div class="carousel w-full h-full">

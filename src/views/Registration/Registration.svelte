@@ -245,7 +245,7 @@
                                 }}"
                             >
                                 {#if $userValidateLoading}
-                                    <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                    <span class="loading loading-bars text-base-100 loading-sm"></span>
                                 {:else}
                                     <span>Получить коды</span>
                                 {/if}
@@ -265,7 +265,7 @@
                                 }}"
                             >
                                 {#if $userRegisterLoading}
-                                    <span class="loading loading-bars text-base-100 laoding-sm"></span>
+                                    <span class="loading loading-bars text-base-100 loading-sm"></span>
                                 {:else}
                                     <span>Зарегистрироваться</span>
                                 {/if}

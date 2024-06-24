@@ -230,7 +230,7 @@
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
             {#if !resident || (start && $residentInfoLoading)}
                 <div class="w-full h-full flex justify-center items-center">
-                    <span class="loading loading-bars text-front laoding-lg"></span>
+                    <span class="loading loading-bars text-front"></span>
                 </div>
             {:else}
                 <div class="mt-[74px]">
