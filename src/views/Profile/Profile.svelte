@@ -21,6 +21,7 @@
     import {
 		userContactAdd,
         userContactDel,
+        userProfileView,
 	} from '@/queries/user';
 
 
@@ -45,6 +46,8 @@
     let contact: any;
 
     let start = true;
+
+    let flagView = false;
 
 
     /* DATA: residentInfoHandler */
@@ -72,6 +75,8 @@
             else {
                 contact = undefined;
             }
+            if (!flagView)
+                view();
         },
 	});
 
@@ -82,6 +87,14 @@
 	const userContactAddHandler = new Entity({
 		model: userContactAdd.model,
 		retriever: userContactAdd.retriever,
+	});
+
+
+    /* DATA: userProfileViewHandler */
+	const userProfileViewHandler = new Entity({
+		model: userProfileView.model,
+		retriever: userProfileView.retriever,
+        onSuccess: () => flagView = true,
 	});
     
     
@@ -121,6 +134,20 @@
                     userContactDelHandler,
                     {
                         contactId: resident.id,
+                    }
+                ],
+            ]);
+    }
+
+
+    /* view */
+    function view() {
+        if (resident)
+            collector.get([
+                [ 
+                    userProfileViewHandler,
+                    {
+                        userId: resident.id,
                     }
                 ],
             ]);
