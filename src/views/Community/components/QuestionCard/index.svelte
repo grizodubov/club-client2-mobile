@@ -5,6 +5,28 @@
 
     import Post from './Post.svelte';
 
+    import { Observer } from '@/helpers/observe';
+
+    import { Entity, collector } from '@/helpers/entity';
+    import {
+        viewItem,
+        viewItems,
+	} from '@/queries/item';
+
+
+    /* DATA: viewItemHandler */
+	const viewItemHandler = new Entity({
+		model: viewItem.model,
+		retriever: viewItem.retriever,
+	});
+
+
+    /* DATA: viewItemsHandler */
+	const viewItemsHandler = new Entity({
+		model: viewItems.model,
+		retriever: viewItems.retriever,
+	});
+
 
     export let post: { [key: string]: any };
 
@@ -19,8 +41,87 @@
     $: answersAmount = post.answers.length;
     $: answersAmountNew = post.answers.filter((answer: any) => !answer.time_view).length;
 
+    $: views = createViewsCache(post);
+
 
     let open: boolean = false;
+
+
+    const observer = new Observer({
+        /* onEnter */
+        onEnter: (el, id_s) => {
+            if (el && !views[id_s])
+                setPostView(parseInt(id_s));
+		},
+        /* once */
+	    once: true,
+        /* threshold */
+		threshold: 0.5,
+    });
+
+
+    let viewsIds: any[] = [];
+    let viewsTm: any = null;
+
+
+    /* setPostView */
+    function setPostView(postId) {
+        if (viewsTm !== null)
+            clearTimeout(viewsTm);
+            viewsTm = setTimeout(sendPostViews, 250);
+        viewsIds.push(postId);
+    }
+
+
+    /* createViewsCache */
+    function createViewsCache(p) {
+        const temp = {};
+        temp[p.question.id.toString()] = p.question.time_view;
+        p.answers.forEach((a: any) => {
+            temp[a.id.toString()] = a.time_view;
+        });
+        return temp;
+    }
+
+
+    /* sendPostViews */
+    function sendPostViews() {
+        const mv = [ ...viewsIds ];
+        const ln = viewsIds.length;
+        viewsIds.splice(0, ln);
+        viewsTm = null;
+        if (ln > 1) {
+            collector.get([
+                [ 
+                    viewItemsHandler,
+                    {
+                        itemsIds: mv,
+                    }
+                ],
+            ]);
+        }
+        else {
+            collector.get([
+                [ 
+                    viewItemHandler,
+                    {
+                        itemId: mv[0],
+                    }
+                ],
+            ]);
+        }
+    }
+
+
+    /* observePost */
+    function observePost(el: any, id: number) {
+        observer.observe(el, id.toString());
+        return {
+            destroy() {
+                observer.unobserve(el);
+            },
+    	};
+    }
 </script>
 
 
@@ -56,13 +157,17 @@
         >
         </div>
         <div class="relative w-full">
-            <Post
-                post="{post.question}"
-                isQuestion="{true}"
-                on:answer="{() => { dispatch('answer', post.question); }}"
-                on:open="{() => { dispatch('open', post.question); }}"
-                on:close="{() => { dispatch('close', post.question); }}"
-            />
+            <div
+                use:observePost="{ post.question.id }"
+            >
+                <Post
+                    post="{post.question}"
+                    isQuestion="{true}"
+                    on:answer="{() => { dispatch('answer', post.question); }}"
+                    on:open="{() => { dispatch('open', post.question); }}"
+                    on:close="{() => { dispatch('close', post.question); }}"
+                />
+            </div>
             <div class="flex w-full justify-between items-center mt-3">
                 <div
                     class="h-7"
@@ -105,11 +210,15 @@
                             >
                                 <div class="absolute w-full h-full top-0 left-0 opacity-15 bg-moderate"></div>
                                 <div class="relative w-full">
-                                    <Post
-                                        post="{answer}"
-                                        question="{post.question}"
-                                        on:select="{() => { dispatch('select', answer); }}"                
-                                    />
+                                    <div
+                                        use:observePost="{ answer.id }"
+                                    >
+                                        <Post
+                                            post="{answer}"
+                                            question="{post.question}"
+                                            on:select="{() => { dispatch('select', answer); }}"                
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         {/each}
