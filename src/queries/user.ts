@@ -284,3 +284,25 @@ export const userContactDel = {
 		return null;
 	}
 };
+
+
+/* userProfileView */
+export const userProfileView = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        userId = 0,
+    }) {
+		const response = await request({
+			path: '/user/profile/view',
+			data: {
+                user_id: userId,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
