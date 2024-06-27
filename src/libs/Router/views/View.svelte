@@ -10,6 +10,9 @@
 	import LoadingFallback from './Loading.svelte';
 	import ErrorFallback from './Error.svelte';
 
+	import {FirebaseAnalytics} from "@capacitor-community/firebase-analytics";
+	import {user} from "@/stores";
+
 
 	let className: string = '';
 	export { className as class };
@@ -24,6 +27,8 @@
     */
 
 	let view: View | undefined = undefined;
+
+	let userId = user.pull('id');
 
 	let componentResolve: (arg0: unknown) => void;
 	let component: Promise<ComponentType<SvelteComponentTyped>> = createPromise(undefined);
@@ -54,6 +59,45 @@
 		const viewNext: View | undefined = router.getComponent(depth);
 		if (view !== viewNext) {
 			view = viewNext;
+			// console.log('FirebaseAnalytics.setScreenName: ' + viewNext?.name);
+			/**
+			 * Platform: Android/iOS
+			 * Sets the current screen name, which specifies the current visual context in your app.
+			 * @param screenName - name of the current screen to track
+			 *        nameOverride - name of the screen class to override
+			 * @returns instanceId - individual instance id value
+			 * https://firebase.google.com/docs/analytics/screenviews
+			 */
+			let screenName	= viewNext?.name.toString();
+			if (screenName) {
+				FirebaseAnalytics.setScreenName({
+					screenName,
+					nameOverride: `${screenName}Screen`,
+				});
+			}
+			const id = user.pull('id');
+			if (userId != id) {
+				userId = id;
+				/**
+				 * Platform: Web/Android/iOS
+				 * Clears all analytics data for this app from the device and resets the app instance id.
+				 * @param none
+				 * @returns void
+				 */
+				FirebaseAnalytics.reset();
+				// console.log('FirebaseAnalytics.setUserId: ' + userId);
+				/**
+				 * Platform: Web/Android/iOS
+				 * Sets the user ID property.
+				 * @param userId - unique identifier of a user
+				 * @returns void
+				 * https://firebase.google.com/docs/analytics/userid
+				 */
+				let userId_string = userId.toString();
+				FirebaseAnalytics.setUserId({
+					userId: userId_string,
+				});
+			}
 			component = createPromise(viewNext);
 			componentResolve(undefined);
 		}

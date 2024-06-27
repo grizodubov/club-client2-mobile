@@ -11,6 +11,8 @@
         type Token
     } from '@capacitor/push-notifications';
 
+    import { FirebaseAnalytics } from "@capacitor-community/firebase-analytics";
+
     import { StatusBar, Style } from '@capacitor/status-bar';
 
     import { register } from 'swiper/element/bundle';
@@ -183,7 +185,7 @@
                                 }
                             ],
                         ]);
-                        console.log('Push registration success, token: ' + token.value);
+                        // console.log('Push registration success, token: ' + token.value);
                     }
                 );
 
@@ -252,6 +254,19 @@
 	onMount(() => {
         setSafeAreas();
         setupFCM();
+        // console.log('FirebaseAnalytics.setUserId: ' + userId);
+        /**
+         * Platform: Web/Android/iOS
+         * Sets the user ID property.
+         * @param userId - unique identifier of a user
+         * @returns void
+         * https://firebase.google.com/docs/analytics/userid
+         */
+        let userId_string = userId.toString();
+        FirebaseAnalytics.setUserId({
+            userId: userId_string,
+        });
+        const main = document.getElementById('main');
         if (main)
             main.addEventListener('click', blurInputs);
         return () => {
@@ -262,6 +277,8 @@
 
     StatusBar.setStyle({ style: Style.Dark });
     StatusBar.setBackgroundColor({ color: '#0a2d3c' });
+
+
 
 </script>
 
