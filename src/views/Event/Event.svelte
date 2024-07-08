@@ -457,7 +457,7 @@
 
                             -->
                             
-                            <div class="h-[142px] overflow-y-hidden">
+                            <div class="h-[172px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each speakers as participant (participant.id)}
                                         <div
@@ -521,7 +521,7 @@
 
                             -->
 
-                            <div class="h-[142px] overflow-y-hidden">
+                            <div class="h-[172px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each participants as participant (participant.id)}
                                         <div
@@ -571,14 +571,14 @@
 
                             -->
 
-                            <div class="h-[186px] overflow-y-hidden">
+                            <div class="h-[172px] overflow-y-hidden">
                                 <div class="carousel w-full h-full">
                                     {#each suggestions as participant (participant.id)}
                                         <div
                                             class="carousel-item last:pr-3"
                                             in:fade="{{ duration: 100 }}"
                                         >
-                                            <UserCard user="{participant}" event="{event}" showTags="{true}" online="{participant.audit && participant.audit == 2}" />
+                                            <UserCard user="{participant}" event="{event}" showTags="{false}" online="{participant.audit && participant.audit == 2}" />
                                         </div>
                                     {/each}
                                 </div>

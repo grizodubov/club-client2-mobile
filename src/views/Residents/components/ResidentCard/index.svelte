@@ -13,6 +13,8 @@
     $: position = resident.position ? resident.position.toUpperCase() : '';
 
     $: company = resident.company ? resident.company.toUpperCase() : '';
+
+    $: catalog = resident.catalog ? resident.catalog.split(/\s*,\s*/).filter(c => c).join(', ').toUpperCase() : '';
 </script>
 
 
@@ -55,7 +57,10 @@
             <div class="text-left text-[10px] opacity-80">{position}</div>
         {/if}
         {#if company}
-            <div class="text-left text-[10px] text-front mt-0.5">{company}</div>
+            <div class="text-left font-medium text-[10px] text-front mt-0.5">{company}</div>
+        {/if}
+        {#if catalog}
+            <div class="text-left font-medium text-[10px] leading-[14px] text-moderate mt-0.5">{catalog}</div>
         {/if}
     </div>
 </button>

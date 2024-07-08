@@ -6,12 +6,14 @@
 
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard, UserCard } from './components';
+    import { type Event, EventCard, UserCard, Partners } from './components';
     import { Avatar, PollCard } from '@/components';
 
     import { subscribe } from '@/helpers/notification';
 
     import { Entity, collector } from '@/helpers/entity';
+
+    import { infoCreate, infoDestroy, infoShow, infoUpdate } from '@/helpers/info';
 
     import {
 		eventsFeed,
@@ -57,6 +59,7 @@
 		retriever: userRecommendations.retriever,
         onSuccess: data => {
             const temp: any[] = [
+                /*
                 ...data.interests.map((u: any) => {
                     u.interestsLinked = u.tags.split(/,/).filter((t: string) => t.indexOf('~') > -1).map((t: string) => t.replace(/~/g, '').trim());
                     u.tagsLinked = [];
@@ -71,8 +74,18 @@
                     u.tags = '';
                     return u;
                 }),
+                */
+                ...data.interests,
+                ...data.tags,
             ];
             recommendations = temp;
+            recommendationsAll = [
+                ...data.interests_all,
+                ...data.tags_all.filter((r: any) => !data.interests_all.find((f: any) => r.id == f.id)),
+            ];
+            infoUpdate({
+                partners: recommendationsAll,
+            });
         },
 	});
 
@@ -111,6 +124,7 @@
     let eventsThumbsupCache = {};
 
     let recommendations: any[] = [];
+    let recommendationsAll: any[] = [];
 
     let contacts: any[] = [];
 
@@ -182,9 +196,13 @@
 
     /* onMount */
 	onMount(() => {
+        infoCreate(Partners, {
+            partners: [],
+        });
         refresh();
 		const sub = subscribe('events', refresh);
 		return () => {
+            infoDestroy();
             sub.close();
         };
 	});
@@ -220,7 +238,12 @@
 
             <!-- События-->
             {#if events.length}
-                <div class="font-semibold text-lg px-3 mt-6 mb-5">События</div>
+                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                    <div class="flex justify-start items-center">
+                        <div class="font-semibold text-lg leading-9">События</div>
+                        <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{events.length}</span></div>
+                    </div>
+                </div>
                 <div class="h-[202px] overflow-y-hidden">
                     {#if start && $eventsFeedLoading}
                         <div class="w-full h-[202px] flex justify-center items-center">
@@ -243,7 +266,12 @@
 
             <!-- Опросы -->
             {#if ratingPolls.length}
-                <div class="font-semibold text-lg px-3 mt-6 mb-5">Опросы</div>
+                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                    <div class="flex justify-start items-center">
+                        <div class="font-semibold text-lg leading-9">Опросы</div>
+                        <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{ratingPolls.length}</span></div>
+                    </div>
+                </div>
                 <div class="mb-5">
                     {#if start && $getRatingPollsLoading}
                         <div class="w-full py-6 flex justify-center items-center">
@@ -264,13 +292,15 @@
 
             <!-- Контакты -->
             {#if contacts.length}
-                <div class="flex w-full justify-between items-end px-3 mt-6 mb-5">
-                    <div class="font-semibold text-lg leading-5">Ваши контакты</div>
-                    <!-- <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button> -->
+                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                    <div class="flex justify-start items-center">
+                        <div class="font-semibold text-lg leading-9">Контакты</div>
+                        <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{contacts.length}</span></div>
+                    </div>
                 </div>
-                <div class="h-[142px] overflow-y-hidden mb-5">
+                <div class="h-[172px] overflow-y-hidden mb-5">
                     {#if start && $userContactsLoading}
-                        <div class="w-full h-[142px] flex justify-center items-center">
+                        <div class="w-full h-[172px] flex justify-center items-center">
                             <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
@@ -289,15 +319,23 @@
             {/if}
 
 
-            <!-- Партнеры -->
+            <!-- Партнёры -->
             {#if recommendations.length}
-                <div class="flex w-full justify-between items-end px-3 mt-6 mb-5">
-                    <div class="font-semibold text-lg leading-5">Потенциальные партнеры</div>
-                    <!-- <button class="opacity-60 text-sm leading-5 text-left">Все потенциальные партнеры</button> -->
+                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                    <div class="flex justify-start items-center">
+                        <div class="h-9 flex flex-col grow-0"><div class="font-semibold leading-[18px] text-left">Потенциальные</div><div class="font-semibold leading-[18px] text-left">партнёры</div></div>
+                        <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm shrink-0"><span>{recommendationsAll.length}</span></div>
+                    </div>
+                    <button
+                        class="btn btn-sm btn-front text-base-100" on:click="{() => {
+                            infoUpdate({});
+                            infoShow();
+                        }}"
+                    >Все партнёры</button>
                 </div>
-                <div class="h-[186px] overflow-y-hidden mb-5">
+                <div class="h-[172px] overflow-y-hidden mb-5">
                     {#if start && $userRecommendationsLoading}
-                        <div class="w-full h-[186px] flex justify-center items-center">
+                        <div class="w-full h-[172px] flex justify-center items-center">
                             <span class="loading loading-bars text-front"></span>
                         </div>
                     {:else}
@@ -307,7 +345,7 @@
                                     class="carousel-item last:pr-3"
                                     in:fade="{{ duration: 100 }}"
                                 >
-                                    <UserCard user="{userRecommended}" showTags="{true}" />
+                                    <UserCard user="{userRecommended}" showTags="{false}" />
                                 </div>
                             {/each}
                         </div>

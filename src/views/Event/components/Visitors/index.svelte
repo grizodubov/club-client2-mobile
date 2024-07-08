@@ -216,7 +216,7 @@
                                     <div class="text-left text-[10px] opacity-80">{user.position.toUpperCase()}</div>
                                 {/if}
                                 {#if user.company}
-                                    <div class="text-left text-[10px] text-front mt-0.5">{user.company.toUpperCase()}</div>
+                                    <div class="text-left font-medium text-[10px] text-front mt-0.5">{user.company.toUpperCase()}</div>
                                 {/if}
                                 {#if user.catalog}
                                     <div class="text-left font-medium text-[10px] text-moderate mt-0.5">{user.catalog.split(/\s*,\s*/).filter(c => c).join(', ').toUpperCase()}</div>
@@ -226,12 +226,12 @@
                                 {#if data.state !== null}
                                     <div class="flex">
                                         {#if connectLoading == user.id}
-                                            <div class="flex items-center justify-center h-8 mt-1">
+                                            <div class="flex items-center justify-center h-8 mt-1.5">
                                                 <span class="loading loading-bars text-front"></span>
                                             </div>
                                         {:else}
                                             <button
-                                                class="btn btn-sm btn-front text-base-100 mt-1" 
+                                                class="btn btn-sm btn-front text-base-100 mt-1.5" 
                                                 on:click="{() => {
                                                     if (!connectionsCache[user.id.toString()]) {
                                                         connectLoading = user.id;

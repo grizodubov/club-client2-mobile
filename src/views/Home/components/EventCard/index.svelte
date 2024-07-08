@@ -28,10 +28,10 @@
 
 
 <button
-    class="w-[264px] h-[202px] pl-3"
+    class="w-[284px] h-[202px] pl-3"
     on:click="{() => { router.go('/events/' + event.id.toString()); }}"
 >
-    <div class="relative rounded-2xl w-full h-[202px] overflow-hidden p-4">
+    <div class="relative rounded-2xl w-full h-[202px] overflow-hidden p-3.5">
         <div class="absolute w-full h-full top-0 left-0 bg-{currentFormat?.color} opacity-15">
         </div>
         <div class="relative flex justify-between items-start w-full">
