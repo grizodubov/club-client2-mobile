@@ -147,7 +147,8 @@
             );
             temp.sort((a: any, b: any) => a.name.toLowerCase() > b.name.toLowerCase());
             speakers = [ ...temp ];
-            suggestions = participants.filter((p: any) => p.tagsLinked.length || p.interestsLinked.length);
+            //suggestions = participants.filter((p: any) => p.tagsLinked.length || p.interestsLinked.length);
+            suggestions = participants.filter((p: any) => event.suggestions.find((s: any) => s.id == p.id));
             connections = data.connections.filter((c: any) => !c.deleted);
             state = findState(event);
             infoUpdate({
