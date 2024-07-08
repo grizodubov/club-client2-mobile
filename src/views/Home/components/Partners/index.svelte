@@ -27,6 +27,9 @@
     $: currentUser = $user as User;
 
 
+    $: partners = parsePartners(data.partners);
+
+
     /* update */
     export function update(p: any) {
         if (p.partners)
@@ -34,6 +37,20 @@
         if (p.release)
             if (connectLoading)
                 connectLoading = 0;
+    }
+
+
+    /* parsePartners */
+    function parsePartners(list) {
+        const temp = [ ...list ];
+        temp.sort((a: any, b: any) => {
+            if (a['name'].toLowerCase() < b['name'].toLowerCase())
+                return -1;
+            if (a['name'].toLowerCase() > b['name'].toLowerCase())
+                return 1;
+            return 0;
+        });
+        return temp;
     }
 </script>
 
@@ -53,7 +70,7 @@
         </button>
     </div>
     <div class="w-full h-full shrink-1 grow-1 pb-4 scrollable-y">
-        {#each data.partners as user (user.id)}
+        {#each partners as user (user.id)}
             {#if
                 user.id != currentUser.id
             }
