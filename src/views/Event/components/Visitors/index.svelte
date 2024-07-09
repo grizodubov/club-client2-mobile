@@ -114,6 +114,7 @@
 <div class="w-full h-full flex flex-col px-2">
     <div class="w-full flex justify-between shrink-0 grow-0 py-4 px-2 border-b border-base-200">
         <div class="flex">
+            <!--
             <button
                 class="w-9 h-9 text-front rounded-lg border-[2px] flex items-center justify-center transition-all"
                 class:border-transparent="{!filter.connection}"
@@ -134,6 +135,7 @@
             >
                 <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="currentColor"></path></svg>
             </button>
+            -->
             <button
                 class="ml-3 w-9 h-9 text-success rounded-lg border-[2px] flex items-center justify-center transition-all"
                 class:border-transparent="{!filter.online}"
@@ -216,7 +218,7 @@
                                     <div class="text-left text-[10px] opacity-80">{user.position.toUpperCase()}</div>
                                 {/if}
                                 {#if user.company}
-                                    <div class="text-left text-[10px] text-front mt-0.5">{user.company.toUpperCase()}</div>
+                                    <div class="text-left font-medium text-[10px] text-front mt-0.5">{user.company.toUpperCase()}</div>
                                 {/if}
                                 {#if user.catalog}
                                     <div class="text-left font-medium text-[10px] text-moderate mt-0.5">{user.catalog.split(/\s*,\s*/).filter(c => c).join(', ').toUpperCase()}</div>
@@ -226,12 +228,12 @@
                                 {#if data.state !== null}
                                     <div class="flex">
                                         {#if connectLoading == user.id}
-                                            <div class="flex items-center justify-center h-8 mt-1">
+                                            <div class="flex items-center justify-center h-8 mt-1.5">
                                                 <span class="loading loading-bars text-front"></span>
                                             </div>
                                         {:else}
                                             <button
-                                                class="btn btn-sm btn-front text-base-100 mt-1" 
+                                                class="btn btn-sm btn-front text-base-100 mt-1.5" 
                                                 on:click="{() => {
                                                     if (!connectionsCache[user.id.toString()]) {
                                                         connectLoading = user.id;
