@@ -84,7 +84,7 @@
 				 * @param none
 				 * @returns void
 				 */
-				FirebaseAnalytics.reset();
+				// FirebaseAnalytics.reset();
 				// console.log('FirebaseAnalytics.setUserId: ' + userId);
 				/**
 				 * Platform: Web/Android/iOS
