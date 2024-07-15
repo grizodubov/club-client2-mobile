@@ -215,8 +215,9 @@
                 PushNotifications.addListener('pushNotificationActionPerformed',
                     (action: ActionPerformed) => {
                         //alert('action\n' + JSON.stringify(action, null, ' '));
-                        if (action.notification && action.notification.data && action.notification.data.link)
+                        if (action.notification && action.notification.data && action.notification.data.link) {
                             setTimeout(() => { router.go(action.notification.data.link); }, 100);
+                        }
                     }
                 );
 

@@ -99,7 +99,7 @@ export function logShow() {
 
 export function logHide() {
     const temp = log.pull();
-    if (temp.instance) {
+    if (temp.instance && !temp.instance.isHidden()) {
         temp.instance.hide();
     }
 };
