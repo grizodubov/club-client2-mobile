@@ -4,9 +4,9 @@
 
     import { onMount } from 'svelte';
 
-    import { states } from '@/stores';
+    import { states, bindings } from '@/stores';
 
-    import { MenuButton, LogButton } from './components';
+    import { MenuButton } from './components';
 
     import { RouterView } from '@/libs/Router';
 
@@ -23,6 +23,8 @@
 
 
     $: currentStates = $states as any;
+
+    $: amount = ($bindings as any).notifications;
 
 
     /* getDeviceInfo */
@@ -76,7 +78,7 @@
     </div>
     {#if !showKeyboard}
         <div class="shrink-0 grow-0 flex justify-around px-4 py-6">
-            <MenuButton path="/home">
+            <MenuButton path="/home" binding="{amount}">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16.612 2.214a1.01 1.01 0 0 0-1.242 0L1 13.419l1.243 1.572L4 13.621V26a2.004 2.004 0 0 0 2 2h20a2.004 2.004 0 0 0 2-2V13.63L29.757 15L31 13.428zM18 26h-4v-8h4zm2 0v-8a2.002 2.002 0 0 0-2-2h-4a2.002 2.002 0 0 0-2 2v8H6V12.062l10-7.79l10 7.8V26z" fill="currentColor"></path></svg>
             </MenuButton>
             <MenuButton path="/events">
@@ -88,9 +90,6 @@
             <MenuButton path="/residents">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 30h-2v-5a5.006 5.006 0 0 0-5-5v-2a7.008 7.008 0 0 1 7 7z" fill="currentColor"></path><path d="M22 30h-2v-5a5.006 5.006 0 0 0-5-5H9a5.006 5.006 0 0 0-5 5v5H2v-5a7.008 7.008 0 0 1 7-7h6a7.008 7.008 0 0 1 7 7z" fill="currentColor"></path><path d="M20 2v2a5 5 0 0 1 0 10v2a7 7 0 0 0 0-14z" fill="currentColor"></path><path d="M12 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path></svg>
             </MenuButton>
-            <LogButton>
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28.707 19.293L26 16.586V13a10.014 10.014 0 0 0-9-9.95V1h-2v2.05A10.014 10.014 0 0 0 6 13v3.586l-2.707 2.707A1 1 0 0 0 3 20v3a1 1 0 0 0 1 1h7v.777a5.152 5.152 0 0 0 4.5 5.199A5.006 5.006 0 0 0 21 25v-1h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-.293-.707zM19 25a3 3 0 0 1-6 0v-1h6zm8-3H5v-1.586l2.707-2.707A1 1 0 0 0 8 17v-4a8 8 0 0 1 16 0v4a1 1 0 0 0 .293.707L27 20.414z" fill="currentColor"></path></svg>
-            </LogButton>
         </div>
         <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {currentStates.safeBottom + 2}px;">&nbsp;</div>
     {/if}

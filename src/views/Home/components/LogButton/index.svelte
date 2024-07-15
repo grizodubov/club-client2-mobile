@@ -9,7 +9,7 @@
 
     import { logCreate, logDestroy, logShow, logUpdate } from '@/helpers/log';
 
-    import Log from './../Log/index.svelte';
+    import Log from '../../../../layouts/Main/components/Log/index.svelte';
 
     import {
 		notificationList,
@@ -80,7 +80,7 @@
 
 
 <button
-    class="relative w-10 h-10 flex items-center justify-center transition-all text-scene ml-5 rounded-full bg-base-300"
+    class="relative w-10 h-10 flex items-center justify-center transition-all text-base-100 rounded-full mr-4"
     on:click="{() => {
         logUpdate({
             notifications: notifications,
@@ -91,6 +91,6 @@
 >
     <slot />
     {#if amount}
-        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-[-4px] right-[-4px]"><span>{amount}</span></div>
+        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-[0px] right-[4px]"><span>{amount}</span></div>
     {/if}
 </button>

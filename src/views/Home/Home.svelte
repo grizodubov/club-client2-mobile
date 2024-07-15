@@ -6,7 +6,7 @@
 
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard, UserCard, Partners } from './components';
+    import { type Event, EventCard, UserCard, Partners, LogButton } from './components';
     import { Avatar, PollCard } from '@/components';
 
     import { subscribe } from '@/helpers/notification';
@@ -220,15 +220,20 @@
                 <div class="text-sm text-base-100">Добро пожаловать,</div>
                 <div class="text-2xl text-base-100 font-medium leading-[30px]"> {$userFirstName}!</div>
             </div>
-            <button
-                class="w-[72px] h-[56px] flex items-end mr-3 text-base-100"
-                on:click="{() => { router.go('/me'); }}"
-            >
-                <div class="w-[56px] h-[56px] mt-6 rounded-full border-[2px] border-base-100 shrink-0 grow-0">
-                    <Avatar user="{currentUser}" />
-                </div>
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M10 17l5-5l-5-5v10z" fill="currentColor"></path></svg>
-            </button>
+            <div class="shrink-0 grow-0 flex items-center">
+                <LogButton>
+                    <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28.707 19.293L26 16.586V13a10.014 10.014 0 0 0-9-9.95V1h-2v2.05A10.014 10.014 0 0 0 6 13v3.586l-2.707 2.707A1 1 0 0 0 3 20v3a1 1 0 0 0 1 1h7v.777a5.152 5.152 0 0 0 4.5 5.199A5.006 5.006 0 0 0 21 25v-1h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-.293-.707zM19 25a3 3 0 0 1-6 0v-1h6zm8-3H5v-1.586l2.707-2.707A1 1 0 0 0 8 17v-4a8 8 0 0 1 16 0v4a1 1 0 0 0 .293.707L27 20.414z" fill="currentColor"></path></svg>
+                </LogButton>
+                <button
+                    class="w-[72px] h-[56px] flex items-end mr-3 text-base-100 shrink-0 grow-0"
+                    on:click="{() => { router.go('/me'); }}"
+                >
+                    <div class="w-[56px] h-[56px] mt-6 rounded-full border-[2px] border-base-100 shrink-0 grow-0">
+                        <Avatar user="{currentUser}" />
+                    </div>
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M10 17l5-5l-5-5v10z" fill="currentColor"></path></svg>
+                </button>
+            </div>
         </div>
         <div class="bg-base-100 rounded-t-2xl h-5"></div>
     </div>
