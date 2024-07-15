@@ -1,2 +1,2 @@
 /* EXPORT: BINDINGS */
-export const BINDINGS: string[] = [];
+export const BINDINGS: string[] = [ 'notifications' ];

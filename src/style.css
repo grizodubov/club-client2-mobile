@@ -87,3 +87,17 @@ main {
     cursor: default !important;
     overflow: hidden;
 }
+
+.log-fix {
+    z-index: 15;
+}
+
+.log-fix .pane {
+    width: calc(100% - 12px) !important;
+    border-radius: 16px !important;
+    box-shadow: none !important;
+    padding-top: 0px !important;
+    z-index: 15;
+    cursor: default !important;
+    overflow: hidden;
+}
