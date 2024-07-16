@@ -36,6 +36,8 @@
         tagList,
     } from '@/queries/tag';
 
+    import { LiveUpdates } from '@/utils/LiveUpdates'
+
     const year = (new Date()).getFullYear();
 
 
@@ -424,6 +426,9 @@
         });
         get();
         getTags();
+        LiveUpdates.getBundleVersion();
+        LiveUpdates.capgoGetDeviceId();
+        LiveUpdates.getChannel();
         const sub = subscribe('events', refresh);
         const subKeyboardShow = subscribe('keyboardShow', moveUp);
         const subKeyboardHide = subscribe('keyboardHide', moveDown);
@@ -946,6 +951,31 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Capgo  LiveUpdates: version & channel & deviceId  -->
+                    <div class="w-full px-3 mb-6">
+                        <div class="flex justify-center my-2">
+                            <button
+                                    class="grow items-center rounded-full bg-slate-100 text-slate-400 text-base-100 px-3 h-7"
+
+                                >
+                                {#if LiveUpdates.capgoBundleVersion}
+                                <span class="text-sm mb-[2px] pr-2">Версия приложения: {LiveUpdates.capgoBundleVersion} </span>
+                                {:else}
+                                    <span>Версия приложения: неизвестна</span>
+                                {/if}
+                            </button>
+                        </div>
+                        <div class="px-3 text-center text-[12px] opacity-80 mt-1">
+                            {#if LiveUpdates.capgoDeviceId}
+                                {LiveUpdates.capgoDeviceId}
+                            {:else}
+                                <span>DeviceId: unknown</span>
+                            {/if}
+                        </div>
+                    </div>
+
+
                 </div>
             {/if}
         </div>

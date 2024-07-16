@@ -6,7 +6,7 @@ import { init } from '@/helpers/auth';
 import { routes, layouts, views, guards } from '@/routes';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 
-CapacitorUpdater.notifyAppReady();
+CapacitorUpdater.notifyAppReady().catch(console.error);
 
 
 
