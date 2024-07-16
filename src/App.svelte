@@ -25,6 +25,8 @@
 
     import { type Info, info } from '@/helpers/info';
 
+    import { type Log, log } from '@/helpers/log';
+
     import { subscribe, push as notify } from '@/helpers/notification';
 
     import { alertsSetup, alertsPush, notificationsSetup, notificationsPush } from '@/components';
@@ -57,6 +59,8 @@
     $: modalData = $modal as Modal;
 
     $: infoData = $info as Info;
+
+    $: logData = $log as Log;
 
 
     /* userChange */
@@ -216,8 +220,9 @@
                 PushNotifications.addListener('pushNotificationActionPerformed',
                     (action: ActionPerformed) => {
                         //alert('action\n' + JSON.stringify(action, null, ' '));
-                        if (action.notification && action.notification.data && action.notification.data.link)
+                        if (action.notification && action.notification.data && action.notification.data.link) {
                             setTimeout(() => { router.go(action.notification.data.link); }, 100);
+                        }
                     }
                 );
 
@@ -300,5 +305,11 @@
 <div id="info">
     {#if infoData.component}
         <svelte:component this="{infoData.component}" params="{infoData.params}" bind:this="{infoData.componentInstance}" />
+    {/if}
+</div>
+
+<div id="log">
+    {#if logData.component}
+        <svelte:component this="{logData.component}" params="{logData.params}" bind:this="{logData.componentInstance}" />
     {/if}
 </div>
