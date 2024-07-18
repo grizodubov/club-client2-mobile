@@ -226,10 +226,10 @@
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" fill="currentColor"></path></svg>
                 </button>
             </div>
-            <div class="shrink-1 grow-1 w-full flex justify-start">
+            <div class="shrink-1 grow-1 w-full flex justify-center">
                 <div class="relative mt-7 w-[132px] h-[1px]">
                     <div
-                        class="absolute w-[132px] h-[132px] ml-[4px] rounded-full overflow-hidden border-4 border-base-100 bg-front z-[11]"
+                        class="absolute w-[132px] h-[132px] ml-[-16px] rounded-full overflow-hidden border-4 border-base-100 bg-front z-[11]"
                     >
                         {#if resident && (!start || !$residentInfoLoading)}
                             <Avatar
