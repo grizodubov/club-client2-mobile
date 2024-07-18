@@ -258,7 +258,7 @@
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" fill="currentColor"></path></svg>
                 </button>
             </div>
-            <div class="shrink-1 grow-1 flex jsutify-center">
+            <div class="shrink-1 grow-1 flex justify-center">
                 <div class="mt-6 w-[118px] h-[1px]">
                     <div
                         class="absolute w-[118px] h-[118px] rounded-full overflow-hidden paddin-2 border-8 border-front bg-front z-[11]"

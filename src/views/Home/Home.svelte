@@ -6,7 +6,7 @@
 
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard, UserCard, Partners, LogButton } from './components';
+    import { type Event, EventCard, UserCard, Users, LogButton } from './components';
     import { Avatar, PollCard } from '@/components';
 
     import { subscribe } from '@/helpers/notification';
@@ -83,9 +83,11 @@
                 ...data.interests_all,
                 ...data.tags_all.filter((r: any) => !data.interests_all.find((f: any) => r.id == f.id)),
             ];
-            infoUpdate({
-                partners: recommendationsAll,
-            });
+            if (infoTitle == 'Потенциальные партнёры')
+                infoUpdate({
+                    title: infoTitle,
+                    users: recommendationsAll,
+                });
         },
 	});
 
@@ -99,6 +101,11 @@
         onSuccess: data => {
             start = false;
             contacts = data.contacts.filter((c: any) => c.type == 'person' && c.id != 8000);
+            if (infoTitle == 'Избранные контакты')
+                infoUpdate({
+                    title: infoTitle,
+                    users: contacts,
+                });
         },
 	});
 
@@ -130,6 +137,8 @@
 
     let ratingPolls: any[] = [];
     let ratingVotes: any[] = [];
+
+    let infoTitle = '';
 
 
     $: currentUser = $user as User;
@@ -196,8 +205,9 @@
 
     /* onMount */
 	onMount(() => {
-        infoCreate(Partners, {
-            partners: [],
+        infoCreate(Users, {
+            title: '',
+            users: [],
         });
         refresh();
 		const sub = subscribe('events', refresh);
@@ -299,9 +309,19 @@
             {#if contacts.length}
                 <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
                     <div class="flex justify-start items-center">
-                        <div class="font-semibold text-lg leading-9">Контакты</div>
-                        <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{contacts.length}</span></div>
+                        <div class="h-9 flex flex-col grow-0"><div class="font-semibold leading-[18px] text-left">Избранные</div><div class="font-semibold leading-[18px] text-left">контакты</div></div>
+                        <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm shrink-0"><span>{contacts.length}</span></div>
                     </div>
+                    <button
+                        class="btn btn-sm btn-front text-base-100" on:click="{() => {
+                            infoTitle = 'Избранные контакты';
+                            infoUpdate({
+                                title: infoTitle,
+                                users: contacts,
+                            });
+                            infoShow();
+                        }}"
+                    >Все контакты</button>
                 </div>
                 <div class="h-[172px] overflow-y-hidden mb-5">
                     {#if start && $userContactsLoading}
@@ -333,7 +353,11 @@
                     </div>
                     <button
                         class="btn btn-sm btn-front text-base-100" on:click="{() => {
-                            infoUpdate({});
+                            infoTitle = 'Потенциальные партнёры';
+                            infoUpdate({
+                                title: infoTitle,
+                                users: recommendationsAll,
+                            });
                             infoShow();
                         }}"
                     >Все партнёры</button>
