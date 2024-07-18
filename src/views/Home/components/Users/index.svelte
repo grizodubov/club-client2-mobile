@@ -15,9 +15,11 @@
 
 
     let data: {
-        partners: { [key: string]: any }[],
+        title: string,
+        users: { [key: string]: any }[],
     } = {
-        partners: [],
+        title: '',
+        users: [],
     };
 
 
@@ -27,12 +29,12 @@
     $: currentUser = $user as User;
 
 
-    $: partners = parsePartners(data.partners);
+    $: users = parseUsers(data.users);
 
 
     /* update */
     export function update(p: any) {
-        if (p.partners)
+        if (p.users)
             data = Object.assign(data, p);
         if (p.release)
             if (connectLoading)
@@ -40,8 +42,8 @@
     }
 
 
-    /* parsePartners */
-    function parsePartners(list) {
+    /* parseUsers */
+    function parseUsers(list) {
         const temp = [ ...list ];
         temp.sort((a: any, b: any) => {
             if (a['name'].toLowerCase() < b['name'].toLowerCase())
@@ -58,7 +60,7 @@
 <div class="w-full h-full flex flex-col px-2">
     <div class="w-full flex justify-between items-center shrink-0 grow-0 py-4 px-2 border-b border-base-200">
         <div class="flex">
-            <div class="font-medium">Потенциальные партнёры</div>
+            <div class="font-medium">{data.title}</div>
         </div>
         <button
             class="w-7 h-7 text-base-300"
@@ -70,7 +72,7 @@
         </button>
     </div>
     <div class="w-full h-full shrink-1 grow-1 pb-4 scrollable-y">
-        {#each partners as user (user.id)}
+        {#each users as user (user.id)}
             {#if
                 user.id != currentUser.id
             }
