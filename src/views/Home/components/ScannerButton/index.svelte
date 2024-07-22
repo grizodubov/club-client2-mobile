@@ -17,10 +17,12 @@
         const deviceInfo = await getDeviceInfo();
         if (typeof deviceInfo === 'object') {
             if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
+                document.querySelector('body')?.classList.add('barcode-scanner-active');
                 const listener = await BarcodeScanner.addListener(
                     'barcodeScanned',
                     async (result: any) => {
                         await listener.remove();
+                        document.querySelector('body')?.classList.remove('barcode-scanner-active');
                         await BarcodeScanner.stopScan();
                         if (result.barcode) {
                             alert(result.barcode);
