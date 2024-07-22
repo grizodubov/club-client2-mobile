@@ -102,3 +102,14 @@ main {
     cursor: default !important;
     overflow: hidden;
 }
+
+
+body.barcode-scanning-active {
+    visibility: hidden;
+    --background: transparent;
+    --ion-background-color: transparent;
+}
+  
+.barcode-scanning-modal {
+    visibility: visible;
+}
