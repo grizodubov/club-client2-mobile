@@ -11,6 +11,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@capacitor-mlkit/barcode-scanning": "^6.1.0",
     "@capacitor/camera": "^6.0.1",
     "@capacitor/device": "^6.0.0",
     "@capacitor/keyboard": "^6.0.0",
