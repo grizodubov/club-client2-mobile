@@ -5,6 +5,21 @@
         BarcodeScanner,
     } from '@capacitor-mlkit/barcode-scanning';
 
+    import { router } from '@/libs/Router';
+
+    import { Entity, collector } from '@/helpers/entity';
+
+    import {
+		QREventRegistration,
+	} from '@/queries/qr';
+
+
+    /* DATA: QREventRegistrationHandler */
+	const QREventRegistrationHandler = new Entity({
+		model: QREventRegistration.model,
+		retriever: QREventRegistration.retriever,
+	});
+
 
     /* getDeviceInfo */
     const getDeviceInfo = async () => {
@@ -25,12 +40,56 @@
                         document.querySelector('html')?.classList.remove('barcode-scanner-active');
                         await BarcodeScanner.stopScan();
                         if (result.barcode) {
-                            alert(JSON.stringify(result.barcode));
+                            if (result.barcode.displayValue) {
+                                let data: any = null;
+                                try {
+                                    data = JSON.parse(result.barcode.displayValue);
+                                }
+                                catch (error: unknown) {
+                                    return;
+                                }
+                                process(data);
+                            }
                         }
                     },
                 );
                 await BarcodeScanner.startScan();
             }
+        }
+    }
+
+
+    /* process */
+    function process(data: any) {
+        if (data.type == 'user') {
+            processUser(data);
+        }
+        else if (data.type == 'event') {
+            processEvent(data);
+        }
+    }
+
+
+    /* processUser */
+    function processUser(data: any) {
+        if (data.method == 'profile') {
+            router.go('/residents/' + data.id.toString());
+        }
+    }
+
+
+    /* processEvent */
+    function processEvent(data: any) {
+        if (data.method == 'registration') {
+            collector.get([
+                [ 
+                    QREventRegistrationHandler,
+                    {
+                        eventId: data.id,
+                    }
+                ],
+            ]);
+            router.go('/events/' + data.id.toString());
         }
     }
 </script>
