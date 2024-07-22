@@ -25,7 +25,7 @@
                         document.querySelector('html')?.classList.remove('barcode-scanner-active');
                         await BarcodeScanner.stopScan();
                         if (result.barcode) {
-                            alert(result.barcode);
+                            alert(JSON.stringify(result.barcode));
                         }
                     },
                 );
