@@ -102,13 +102,10 @@ main {
     overflow: hidden;
 }
 
-
-body.barcode-scanning-active {
+body.barcode-scanner-active {
     visibility: hidden;
-    --background: transparent;
-    --ion-background-color: transparent;
 }
   
-.barcode-scanning-modal {
+.barcode-scanner-modal {
     visibility: visible;
 }
