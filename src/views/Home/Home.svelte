@@ -6,8 +6,10 @@
 
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard, UserCard, Users, LogButton } from './components';
+    import { type Event, EventCard, UserCard, Users, LogButton, ScannerButton } from './components';
     import { Avatar, PollCard } from '@/components';
+
+    import { Device } from '@capacitor/device';
 
     import { subscribe } from '@/helpers/notification';
 
@@ -224,31 +226,35 @@
 >
 
     <!-- Добро пожаловать -->
-    <div class="bg-front w-full h-[128px] flex flex-col justify-between shrink-0 grow-0">
-        <div class="flex justify-between items-center">
-            <div class="shrink-1 grow-1 ml-7 flex flex-col items-start justify-center h-[108px]">
-                <div class="text-sm text-base-100">Добро пожаловать,</div>
-                <div class="text-2xl text-base-100 font-medium leading-[30px]"> {$userFirstName}!</div>
+    <div class="bg-front w-full h-[120px] flex flex-col justify-between shrink-0 grow-0">
+        <div class="h-[100px]">
+            <div class="flex h-[100px] justify-between items-center">
+                <div class="ml-7 shrink-0 grow-0">
+                    <button
+                        class="w-[72px] h-[56px] flex items-end text-base-100"
+                        on:click="{() => { router.go('/me'); }}"
+                    >
+                        <div class="w-[56px] h-[56px] mt-6 rounded-full border-[2px] border-base-100 shrink-0 grow-0">
+                            <Avatar user="{currentUser}" />
+                        </div>
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M10 17l5-5l-5-5v10z" fill="currentColor"></path></svg>
+                    </button>
+                </div>
+                <div class="flex mr-7 shrink-0 grow-0">
+                    <ScannerButton>
+                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M24 28v-2h2v2z" fill="currentColor"></path><path d="M18 24v-2h2v2z" fill="currentColor"></path><path d="M18 30h4v-2h-2v-2h-2v4z" fill="currentColor"></path><path d="M26 26v-4h2v4z" fill="currentColor"></path><path d="M28 26h2v4h-4v-2h2v-2z" fill="currentColor"></path><path d="M26 20v-2h4v4h-2v-2h-2z" fill="currentColor"></path><path d="M24 20h-2v4h-2v2h4v-6z" fill="currentColor"></path><path d="M18 20v-2h4v2z" fill="currentColor"></path><path d="M6 22h4v4H6z" fill="currentColor"></path><path d="M14 30H2V18h12zM4 28h8v-8H4z" fill="currentColor"></path><path d="M22 6h4v4h-4z" fill="currentColor"></path><path d="M30 14H18V2h12zm-10-2h8V4h-8z" fill="currentColor"></path><path d="M6 6h4v4H6z" fill="currentColor"></path><path d="M14 14H2V2h12zM4 12h8V4H4z" fill="currentColor"></path></svg>
+                    </ScannerButton>
+                    <LogButton>
+                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28.707 19.293L26 16.586V13a10.014 10.014 0 0 0-9-9.95V1h-2v2.05A10.014 10.014 0 0 0 6 13v3.586l-2.707 2.707A1 1 0 0 0 3 20v3a1 1 0 0 0 1 1h7v.777a5.152 5.152 0 0 0 4.5 5.199A5.006 5.006 0 0 0 21 25v-1h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-.293-.707zM19 25a3 3 0 0 1-6 0v-1h6zm8-3H5v-1.586l2.707-2.707A1 1 0 0 0 8 17v-4a8 8 0 0 1 16 0v4a1 1 0 0 0 .293.707L27 20.414z" fill="currentColor"></path></svg>
+                    </LogButton>
+                </div>
             </div>
-            <div class="shrink-0 grow-0 flex items-center">
-                <LogButton>
-                    <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28.707 19.293L26 16.586V13a10.014 10.014 0 0 0-9-9.95V1h-2v2.05A10.014 10.014 0 0 0 6 13v3.586l-2.707 2.707A1 1 0 0 0 3 20v3a1 1 0 0 0 1 1h7v.777a5.152 5.152 0 0 0 4.5 5.199A5.006 5.006 0 0 0 21 25v-1h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-.293-.707zM19 25a3 3 0 0 1-6 0v-1h6zm8-3H5v-1.586l2.707-2.707A1 1 0 0 0 8 17v-4a8 8 0 0 1 16 0v4a1 1 0 0 0 .293.707L27 20.414z" fill="currentColor"></path></svg>
-                </LogButton>
-                <button
-                    class="w-[72px] h-[56px] flex items-end mr-3 text-base-100 shrink-0 grow-0"
-                    on:click="{() => { router.go('/me'); }}"
-                >
-                    <div class="w-[56px] h-[56px] mt-6 rounded-full border-[2px] border-base-100 shrink-0 grow-0">
-                        <Avatar user="{currentUser}" />
-                    </div>
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M10 17l5-5l-5-5v10z" fill="currentColor"></path></svg>
-                </button>
-            </div>
+            <!--<div class="text-base-100"><span class="text-sm">Добро пожаловать,</span><span class="text-xl font-medium">&nbsp;{$userFirstName}</span></div>-->
         </div>
         <div class="bg-base-100 rounded-t-2xl h-5"></div>
     </div>
 
-    <div class="shrink-0 grow-0 h-[calc(100%-128px)]">
+    <div class="shrink-0 grow-0 h-[calc(100%-120px)]">
         <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl scrollable-y">
 
             <!-- События-->
