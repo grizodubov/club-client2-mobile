@@ -79,6 +79,19 @@
             ],
         ]);
     }
+
+
+    /* toFeedDate */
+    export function toFeedDate(n: number) {
+        const monthes = {
+            'MS': [
+                'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+            ],
+        };
+        const d = new Date(n);
+        return d.getUTCDate().toString() + ' ' + monthes['MS'][d.getUTCMonth()] + ' ' + d.getUTCFullYear().toString() + ' г. ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
 </script>
 
 
@@ -107,6 +120,10 @@
                 class="w-full px-3 mt-3"
             >
                 <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
+                    <div
+                        class="text-xs w-full mb-1"
+                        class:opacity-50="{n.time_view}"
+                    >{toFeedDate(n.time_notify)}</div>
                     <div
                         class="text-sm w-full"
                         class:opacity-50="{n.time_view}"
