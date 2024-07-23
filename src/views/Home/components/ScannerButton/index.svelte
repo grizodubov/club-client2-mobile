@@ -55,6 +55,9 @@
                 );
                 await BarcodeScanner.startScan();
             }
+            else {
+                document.querySelector('html')?.classList.add('barcode-scanner-active');
+            }
         }
     }
 
