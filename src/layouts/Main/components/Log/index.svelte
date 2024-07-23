@@ -90,7 +90,7 @@
             ],
         };
         const d = new Date(n);
-        return d.getUTCDate().toString() + ' ' + monthes['MS'][d.getUTCMonth()] + ' ' + d.getUTCFullYear().toString() + ' г. ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+        return d.getDate().toString() + ' ' + monthes['MS'][d.getMonth()] + ' ' + d.getFullYear().toString() + ' г. ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
     }
 </script>
 
@@ -115,44 +115,81 @@
         </button>
     </div>
     <div class="w-full h-full shrink-1 grow-1 pb-3 scrollable-y">
-        {#each data.notifications as n (n.time_notify)}
+        {#each data.notifications as n (n.time_notify_key)}
             <div
                 class="w-full px-3 mt-3"
             >
-                <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
-                    <div
-                        class="text-xs w-full mb-1"
-                        class:opacity-50="{n.time_view}"
-                    >{toFeedDate(n.time_notify)}</div>
-                    <div
-                        class="text-sm w-full"
-                        class:opacity-50="{n.time_view}"
-                    ><span class="font-semibold text-moderate">{nameNormalization(n.data.initiator.name, 2)}</span> предложил Вам личную встречу на мероприятии <span class="font-semibold text-moderate">{toDateText(n.data.event.time_event).split(/\s+/)[0]} {toDateText(n.data.event.time_event).split(/\s+/)[1]}</span></div>
-                    <div class="flex justify-between mt-2">
-                        <button
-                            class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
-                            on:click="{() => {
-                                view(n.time_notify);
-                                router.go('/residents/' + n.data.initiator.id.toString());
-                                logHide();
-                            }}"
-                        >
-                            <span class:opacity-50="{n.time_view}">В профиль</span>
-                            <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path><path d="M26 30h-2v-5a5 5 0 0 0-5-5h-6a5 5 0 0 0-5 5v5H6v-5a7 7 0 0 1 7-7h6a7 7 0 0 1 7 7z" fill="currentColor"></path></svg>
-                        </button>
-                        <button
-                            class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
-                            on:click="{() => {
-                                view(n.time_notify);
-                                router.go('/events/' + n.data.event.id.toString());
-                                logHide();
-                            }}"
-                        >
-                            <span class:opacity-50="{n.time_view}">К событию</span>
-                            <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 22H6V12h20v14zm0-16H6V6h4v2h2V6h8v2h2V6h4v4z" fill="currentColor"></path></svg>
-                        </button>
+                {#if n.event == 'connection'}
+                    <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
+                        <div
+                            class="text-xs w-full mb-1"
+                            class:opacity-50="{n.time_view}"
+                        >{toFeedDate(n.time_notify)}</div>
+                        <div
+                            class="text-sm w-full"
+                            class:opacity-50="{n.time_view}"
+                        ><span class="font-semibold text-moderate">{nameNormalization(n.data.initiator.name, 2)}</span> предложил Вам личную встречу на мероприятии <span class="font-semibold text-moderate">{toDateText(n.data.event.time_event).split(/\s+/)[0]} {toDateText(n.data.event.time_event).split(/\s+/)[1]}</span></div>
+                        <div class="flex justify-between mt-2">
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">В профиль</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path><path d="M26 30h-2v-5a5 5 0 0 0-5-5h-6a5 5 0 0 0-5 5v5H6v-5a7 7 0 0 1 7-7h6a7 7 0 0 1 7 7z" fill="currentColor"></path></svg>
+                            </button>
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/events/' + n.data.event.id.toString());
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">К событию</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 22H6V12h20v14zm0-16H6V6h4v2h2V6h8v2h2V6h4v4z" fill="currentColor"></path></svg>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                {:else if n.event == 'arrive'}
+                    <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
+                        <div
+                            class="text-xs w-full mb-1"
+                            class:opacity-50="{n.time_view}"
+                        >{toFeedDate(n.time_notify)}</div>
+                        <div
+                            class="text-sm w-full"
+                            class:opacity-50="{n.time_view}"
+                        ><span class="font-semibold text-moderate">{nameNormalization(n.data.user.name, 2)}</span> прибыл на мероприятие <span class="font-semibold text-moderate">{toDateText(n.data.event.time_event).split(/\s+/)[0]} {toDateText(n.data.event.time_event).split(/\s+/)[1]}</span></div>
+                        <div class="flex justify-between mt-2">
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.user.id.toString());
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">В профиль</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path><path d="M26 30h-2v-5a5 5 0 0 0-5-5h-6a5 5 0 0 0-5 5v5H6v-5a7 7 0 0 1 7-7h6a7 7 0 0 1 7 7z" fill="currentColor"></path></svg>
+                            </button>
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/events/' + n.data.event.id.toString());
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">К событию</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 22H6V12h20v14zm0-16H6V6h4v2h2V6h8v2h2V6h4v4z" fill="currentColor"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                {/if}
             </div>
         {/each}
     </div>
