@@ -163,7 +163,7 @@
                         <div
                             class="text-sm w-full"
                             class:opacity-50="{n.time_view}"
-                        ><span class="font-semibold text-moderate">{nameNormalization(n.data.user.name, 2)}</span> прибыл на мероприятие <span class="font-semibold text-moderate">{toDateText(n.data.event.time_event).split(/\s+/)[0]} {toDateText(n.data.event.time_event).split(/\s+/)[1]}</span></div>
+                        ><span class="font-semibold text-moderate">{nameNormalization(n.data.user.name, 2)}</span> прибыл на мероприятие <span class="font-semibold text-moderate">{toDateText(n.data.event.time_event).split(/\s+/)[0]} {toDateText(n.data.event.time_event).split(/\s+/)[1]}</span> (назначена встреча)</div>
                         <div class="flex justify-between mt-2">
                             <button
                                 class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
