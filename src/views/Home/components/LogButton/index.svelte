@@ -55,7 +55,7 @@
             [ 
                 notificationListHandler,
                 {
-                    timeBreakpoint: notifications.length ? notifications[notifications.length - 1].time_notify : null,
+                    timeBreakpoint: notifications.length ? notifications[notifications.length - 1].time_notify_key : null,
                     limit: null,
                 }
             ],
