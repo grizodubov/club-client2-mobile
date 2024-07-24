@@ -80,7 +80,7 @@
 
 
 <button
-    class="relative w-10 h-10 flex items-center justify-center transition-all text-base-100 rounded-full ml-4"
+    class="relative transition-all text-base-100"
     on:click="{() => {
         logUpdate({
             notifications: notifications,
@@ -91,6 +91,6 @@
 >
     <slot />
     {#if amount}
-        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-[0px] right-[4px]"><span>{amount}</span></div>
+        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-[0px] right-[8px]"><span>{amount}</span></div>
     {/if}
 </button>

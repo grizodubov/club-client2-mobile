@@ -1,6 +1,27 @@
 import { request } from '@/helpers/request';
 
 
+
+/* QRShow */
+export const QRShow = {
+	/* model */
+	model: {
+        url: '',
+    },
+	/* retriever */
+	retriever: async function() {
+		const response = await request({
+			path: '/qr/show',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+
 /* QREventRegistration */
 export const QREventRegistration = {
 	/* model */

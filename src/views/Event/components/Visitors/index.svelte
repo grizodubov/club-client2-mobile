@@ -136,16 +136,21 @@
                 <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="currentColor"></path></svg>
             </button>
             -->
-            <button
-                class="ml-3 w-9 h-9 text-success rounded-lg border-[2px] flex items-center justify-center transition-all"
-                class:border-transparent="{!filter.online}"
-                class:border-success="{filter.online}"
-                on:click="{() => {
-                    filter.online = !filter.online
-                }}"
-            >
-                <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10s10-4.49 10-10S17.51 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm3-8c0 1.66-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3z" fill="currentColor"></path></svg>
-            </button>
+            <div class="flex items-center">
+                <button
+                    class="w-10 h-10 text-success rounded-lg border-[2px] flex items-center justify-center transition-all"
+                    class:border-transparent="{!filter.online}"
+                    class:border-success="{filter.online}"
+                    on:click="{() => {
+                        filter.online = !filter.online
+                    }}"
+                >
+                    <div class="flex flex-col items-center">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10s10-4.49 10-10S17.51 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm3-8c0 1.66-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3z" fill="currentColor"></path></svg>
+                    </div>
+                </button>
+                <span class="text-[10px] ml-2 text-success">УЖЕ ПРИШЛИ</span>
+            </div>
         </div>
         <button
             class="w-7 h-7 text-base-300"
