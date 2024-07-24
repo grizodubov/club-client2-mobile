@@ -6,10 +6,8 @@
 
     import { type User, user, userFirstName } from '@/stores';
 
-    import { type Event, EventCard, UserCard, Users, LogButton, ScannerButton } from './components';
+    import { type Event, EventCard, UserCard, Users, LogButton, ScannerButton, QRButton } from './components';
     import { Avatar, PollCard } from '@/components';
-
-    import { Device } from '@capacitor/device';
 
     import { subscribe } from '@/helpers/notification';
 
@@ -240,12 +238,24 @@
                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M10 17l5-5l-5-5v10z" fill="currentColor"></path></svg>
                     </button>
                 </div>
-                <div class="flex mr-7 shrink-0 grow-0">
+                <div class="flex mr-3 shrink-0 grow-0">
                     <ScannerButton>
-                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M24 28v-2h2v2z" fill="currentColor"></path><path d="M18 24v-2h2v2z" fill="currentColor"></path><path d="M18 30h4v-2h-2v-2h-2v4z" fill="currentColor"></path><path d="M26 26v-4h2v4z" fill="currentColor"></path><path d="M28 26h2v4h-4v-2h2v-2z" fill="currentColor"></path><path d="M26 20v-2h4v4h-2v-2h-2z" fill="currentColor"></path><path d="M24 20h-2v4h-2v2h4v-6z" fill="currentColor"></path><path d="M18 20v-2h4v2z" fill="currentColor"></path><path d="M6 22h4v4H6z" fill="currentColor"></path><path d="M14 30H2V18h12zM4 28h8v-8H4z" fill="currentColor"></path><path d="M22 6h4v4h-4z" fill="currentColor"></path><path d="M30 14H18V2h12zm-10-2h8V4h-8z" fill="currentColor"></path><path d="M6 6h4v4H6z" fill="currentColor"></path><path d="M14 14H2V2h12zM4 12h8V4H4z" fill="currentColor"></path></svg>
+                        <div class="flex flex-col items-center w-[64px]">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z" fill="currentColor"></path></svg>
+                            <span class="text-[9px] mt-0.5 whitespace-nowrap">СКАННЕР</span>
+                        </div>
                     </ScannerButton>
+                    <QRButton>
+                        <div class="flex flex-col items-center w-[64px]">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-12v8h8V3h-8zm6 6h-4V5h4v4zm0 10h2v2h-2zm-6-6h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm2 2h2v2h-2zm2-2h2v2h-2zm0-4h2v2h-2zm2 2h2v2h-2z" fill="currentColor"></path></svg>
+                            <span class="text-[9px] mt-0.5 whitespace-nowrap">МОЙ QR</span>
+                        </div>
+                    </QRButton>
                     <LogButton>
-                        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28.707 19.293L26 16.586V13a10.014 10.014 0 0 0-9-9.95V1h-2v2.05A10.014 10.014 0 0 0 6 13v3.586l-2.707 2.707A1 1 0 0 0 3 20v3a1 1 0 0 0 1 1h7v.777a5.152 5.152 0 0 0 4.5 5.199A5.006 5.006 0 0 0 21 25v-1h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-.293-.707zM19 25a3 3 0 0 1-6 0v-1h6zm8-3H5v-1.586l2.707-2.707A1 1 0 0 0 8 17v-4a8 8 0 0 1 16 0v4a1 1 0 0 0 .293.707L27 20.414z" fill="currentColor"></path></svg>
+                        <div class="flex flex-col items-center w-[64px]">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28.707 19.293L26 16.586V13a10.014 10.014 0 0 0-9-9.95V1h-2v2.05A10.014 10.014 0 0 0 6 13v3.586l-2.707 2.707A1 1 0 0 0 3 20v3a1 1 0 0 0 1 1h7v.777a5.152 5.152 0 0 0 4.5 5.199A5.006 5.006 0 0 0 21 25v-1h7a1 1 0 0 0 1-1v-3a1 1 0 0 0-.293-.707zM19 25a3 3 0 0 1-6 0v-1h6zm8-3H5v-1.586l2.707-2.707A1 1 0 0 0 8 17v-4a8 8 0 0 1 16 0v4a1 1 0 0 0 .293.707L27 20.414z" fill="currentColor"></path></svg>
+                            <span class="text-[9px] mt-0.5 whitespace-nowrap">УВЕДОМЛ.</span>
+                        </div>
                     </LogButton>
                 </div>
             </div>

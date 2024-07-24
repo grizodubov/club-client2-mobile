@@ -99,7 +99,7 @@
 
 
 <button
-    class="relative w-10 h-10 flex items-center justify-center transition-all text-base-100 rounded-full"
+    class="relative transition-all text-base-100"
     on:click="{() => {
         start();
     }}"
