@@ -337,6 +337,11 @@
 </div>
 
 <div id="barcode-scanner-ui">
+    <div
+        id="barcode-scanner-target"
+        class="absolute border-2 border-success"
+    >
+    </div>
     <button
             class="w-7 h-7 text-base-300 absolute right-[24px]"
             style="top: {(statesO.safeTop + 24).toString()}px"
