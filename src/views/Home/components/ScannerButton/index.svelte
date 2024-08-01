@@ -48,6 +48,7 @@
                         if (result.barcode) {
                             document.querySelector('html')?.classList.add('barcode-scanner-found');
                             const target = document.getElementById('barcode-scanner-target');
+                            alert(JSON.stringify(result.barcode.cornerPoints));
                             const pos = [
                                 result.barcode.cornerPoints[0][0] - 4 - 50,
                                 result.barcode.cornerPoints[0][1] - 4 - 50,
