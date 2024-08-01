@@ -75,9 +75,9 @@
                                 }, 600);
                                 await sleep(1600);
                             }
+                            document.querySelector('html')?.classList.remove('barcode-scanner-found');
                         }
                         document.querySelector('html')?.classList.remove('barcode-scanner-active');
-                        document.querySelector('html')?.classList.remove('barcode-scanner-found');
                         await BarcodeScanner.stopScan();
                         if (result.barcode) {
                             if (result.barcode.displayValue) {
