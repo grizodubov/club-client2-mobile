@@ -122,9 +122,20 @@ html.barcode-scanner-active body {
     left: 0px;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 html.barcode-scanner-active #barcode-scanner-ui {
     display: block;
     visibility: visible;
+}
+
+#barcode-scanner-target {
+    display: none;
+    transition-property: top, left, width, height;
+    transition-duration: 500ms;
+}
+
+html.barcode-scanner-found #barcode-scanner-target {
+    display: block;
 }
