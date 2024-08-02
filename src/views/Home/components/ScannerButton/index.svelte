@@ -108,12 +108,17 @@
                                     target.style.top = pixels.top.toString() + 'px';
                                     target.style.width = pixels.width.toString() + 'px';
                                     target.style.height = pixels.height.toString() + 'px';
-                                    setTimeout(() => {
-                                        target.style.borderStyle = 'solid';
-                                    }, 600);
-                                    await sleep(1600);
+                                    target.style.borderStyle = 'solid';
+                                    target.style.borderColor = '#00a96e';
+                                    await sleep(1000);
                                     document.querySelector('html')?.classList.remove('barcode-scanner-active');
                                     await BarcodeScanner.stopScan();
+                                    target.style.left = 'calc(50%-150px)';
+                                    target.style.top = 'calc(50%-150px)';
+                                    target.style.width = '300px';
+                                    target.style.height = '300px';
+                                    target.style.borderStyle = 'dashed';
+                                    target.style.borderColor = '#ffbf00';
                                     if (result.barcode.displayValue) {
                                         let data: any = null;
                                         try {
