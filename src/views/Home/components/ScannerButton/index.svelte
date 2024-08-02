@@ -41,56 +41,93 @@
         if (typeof deviceInfo === 'object') {
             if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
                 document.querySelector('html')?.classList.add('barcode-scanner-active');
+
+                const target = document.getElementById('barcode-scanner-target');
+
+                const targetBoundingClientRect = target?.getBoundingClientRect();
+                const scaledRect = targetBoundingClientRect ?
+                    {
+                        left: targetBoundingClientRect.left * window.devicePixelRatio,
+                        right: targetBoundingClientRect.right * window.devicePixelRatio,
+                        top: targetBoundingClientRect.top * window.devicePixelRatio,
+                        bottom: targetBoundingClientRect.bottom * window.devicePixelRatio,
+                        width: targetBoundingClientRect.width * window.devicePixelRatio,
+                        height: targetBoundingClientRect.height * window.devicePixelRatio,
+                    }
+                    : undefined;
+                const detectionCornerPoints = scaledRect ?
+                    [
+                        [ scaledRect.left, scaledRect.top ],
+                        [ scaledRect.left + scaledRect.width, scaledRect.top ],
+                        [ scaledRect.left + scaledRect.width, scaledRect.top + scaledRect.height ],
+                        [ scaledRect.left, scaledRect.top + scaledRect.height ],
+                    ]
+                    : undefined;
+
                 const listener = await BarcodeScanner.addListener(
                     'barcodeScanned',
                     async (result: any) => {
                         await listener.remove();
                         if (result.barcode) {
-                            document.querySelector('html')?.classList.add('barcode-scanner-found');
-                            const target = document.getElementById('barcode-scanner-target');
-                            alert(JSON.stringify(result.barcode.cornerPoints));
-                            const pos = [
-                                result.barcode.cornerPoints[0][0] - 4 - 50,
-                                result.barcode.cornerPoints[0][1] - 4 - 50,
-                            ];
-                            const size = [
-                                result.barcode.cornerPoints[2][0] - result.barcode.cornerPoints[0][0] + 8 + 100,
-                                result.barcode.cornerPoints[2][1] - result.barcode.cornerPoints[0][1] + 8 + 100
-                            ];
                             if (target) {
-                                target.style.left = pos[0].toString() + 'px';
-                                target.style.top = pos[1].toString() + 'px';
-                                target.style.width = size[0].toString() + 'px';
-                                target.style.height = size[1].toString() + 'px';
-                                await sleep(100);
-                                pos[0] += 50;
-                                pos[1] += 50;
-                                size[0] -= 100;
-                                size[1] -= 100;
-                                target.style.left = pos[0].toString() + 'px';
-                                target.style.top = pos[1].toString() + 'px';
-                                target.style.width = size[0].toString() + 'px';
-                                target.style.height = size[1].toString() + 'px';
-                                setTimeout(() => {
-                                    target.style.borderStyle = 'solid';
-                                }, 600);
-                                await sleep(1600);
+                                const cornerPoints = result.barcode.cornerPoints;
+                                if (detectionCornerPoints && cornerPoints) {
+                                    if (
+                                        detectionCornerPoints[0][0] > cornerPoints[0][0] ||
+                                        detectionCornerPoints[0][1] > cornerPoints[0][1] ||
+                                        detectionCornerPoints[1][0] < cornerPoints[1][0] ||
+                                        detectionCornerPoints[1][1] > cornerPoints[1][1] ||
+                                        detectionCornerPoints[2][0] < cornerPoints[2][0] ||
+                                        detectionCornerPoints[2][1] < cornerPoints[2][1] ||
+                                        detectionCornerPoints[3][0] > cornerPoints[3][0] ||
+                                        detectionCornerPoints[3][1] < cornerPoints[3][1]
+                                    )
+                                        return;
+                                    await BarcodeScanner.stopScan();
+                                    const pos = [
+                                        [
+                                            Math.max(detectionCornerPoints[0][0], detectionCornerPoints[3][0]),
+                                            Math.max(detectionCornerPoints[0][1], detectionCornerPoints[1][1]),
+                                        ],
+                                        [
+                                            Math.min(detectionCornerPoints[1][0], detectionCornerPoints[2][0]),
+                                            Math.min(detectionCornerPoints[2][1], detectionCornerPoints[3][1]),
+                                        ],
+                                    ];
+                                    const size = [
+                                        pos[1][0] - pos[0][0],
+                                        pos[1][1] - pos[0][1],
+                                    ];
+                                    const pixels = {
+                                        left: Math.round(pos[0][0] / window.devicePixelRatio) + 10,
+                                        top: Math.round(pos[0][1] / window.devicePixelRatio) + 10,
+                                        width: Math.round(size[0] / window.devicePixelRatio ) - 20,
+                                        height: Math.round(size[1] / window.devicePixelRatio ) - 20,
+                                    };
+                                    await sleep(100);
+                                    target.style.left = pixels.left.toString() + 'px';
+                                    target.style.top = pixels.top.toString() + 'px';
+                                    target.style.width = pixels.width.toString() + 'px';
+                                    target.style.height = pixels.height.toString() + 'px';
+                                    setTimeout(() => {
+                                        target.style.borderStyle = 'solid';
+                                    }, 600);
+                                    await sleep(1600);
+                                    if (result.barcode.displayValue) {
+                                        let data: any = null;
+                                        try {
+                                            data = JSON.parse(result.barcode.displayValue);
+                                        }
+                                        catch (error: unknown) {
+                                            return;
+                                        }
+                                        process(data);
+                                    }
+                                }
                             }
-                            document.querySelector('html')?.classList.remove('barcode-scanner-found');
                         }
-                        document.querySelector('html')?.classList.remove('barcode-scanner-active');
-                        await BarcodeScanner.stopScan();
-                        if (result.barcode) {
-                            if (result.barcode.displayValue) {
-                                let data: any = null;
-                                try {
-                                    data = JSON.parse(result.barcode.displayValue);
-                                }
-                                catch (error: unknown) {
-                                    return;
-                                }
-                                process(data);
-                            }
+                        else {
+                            return;
                         }
                     },
                 );

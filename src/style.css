@@ -131,11 +131,13 @@ html.barcode-scanner-active #barcode-scanner-ui {
 }
 
 #barcode-scanner-target {
-    display: none;
+    box-sizing: border-box;
+    top: calc(50% - 150px);
+    left: calc(50% - 150px);
+    border-radius: 20px;
+    width: 300px;
+    height: 300px;
     transition-property: top, left, width, height;
     transition-duration: 500ms;
-}
-
-html.barcode-scanner-found #barcode-scanner-target {
-    display: block;
+    border-style: dashed;
 }
