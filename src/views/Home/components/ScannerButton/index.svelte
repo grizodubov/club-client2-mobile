@@ -83,15 +83,14 @@
                                     )
                                         return;
                                     await listener.remove();
-                                    await BarcodeScanner.stopScan();
                                     const pos = [
                                         [
-                                            Math.max(detectionCornerPoints[0][0], detectionCornerPoints[3][0]),
-                                            Math.max(detectionCornerPoints[0][1], detectionCornerPoints[1][1]),
+                                            Math.min(detectionCornerPoints[0][0], detectionCornerPoints[3][0]),
+                                            Math.min(detectionCornerPoints[0][1], detectionCornerPoints[1][1]),
                                         ],
                                         [
-                                            Math.min(detectionCornerPoints[1][0], detectionCornerPoints[2][0]),
-                                            Math.min(detectionCornerPoints[2][1], detectionCornerPoints[3][1]),
+                                            Math.max(detectionCornerPoints[1][0], detectionCornerPoints[2][0]),
+                                            Math.max(detectionCornerPoints[2][1], detectionCornerPoints[3][1]),
                                         ],
                                     ];
                                     const size = [
@@ -99,10 +98,10 @@
                                         pos[1][1] - pos[0][1],
                                     ];
                                     const pixels = {
-                                        left: Math.round(pos[0][0] / window.devicePixelRatio) + 10,
-                                        top: Math.round(pos[0][1] / window.devicePixelRatio) + 10,
-                                        width: Math.round(size[0] / window.devicePixelRatio ) - 20,
-                                        height: Math.round(size[1] / window.devicePixelRatio ) - 20,
+                                        left: Math.round(pos[0][0] / window.devicePixelRatio) + 20,
+                                        top: Math.round(pos[0][1] / window.devicePixelRatio) + 20,
+                                        width: Math.round(size[0] / window.devicePixelRatio ) - 40,
+                                        height: Math.round(size[1] / window.devicePixelRatio ) - 40,
                                     };
                                     await sleep(100);
                                     target.style.left = pixels.left.toString() + 'px';
@@ -113,6 +112,8 @@
                                         target.style.borderStyle = 'solid';
                                     }, 600);
                                     await sleep(1600);
+                                    document.querySelector('html')?.classList.remove('barcode-scanner-active');
+                                    await BarcodeScanner.stopScan();
                                     if (result.barcode.displayValue) {
                                         let data: any = null;
                                         try {
