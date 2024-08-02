@@ -134,13 +134,13 @@ html.barcode-scanner-active #barcode-scanner-ui {
 #barcode-scanner-target {
     position: absolute;
     box-sizing: border-box;
-    top: calc(50%-150px);
-    left: calc(50%-150px);
+    top: calc(50% - 150px);
+    left: calc(50% - 150px);
     border-radius: 20px;
     width: 300px;
     height: 300px;
     transition-property: top, left, width, height, borderStyle, borderColor;
-    transition-duration: 500ms;
+    transition-duration: 1000ms;
     border-width: 4px;
     border-color: #ffbf00;
     border-style: dashed;
