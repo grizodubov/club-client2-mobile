@@ -98,14 +98,14 @@
                                         pos[1][1] - pos[0][1],
                                     ];
                                     const pixels = {
-                                        left: Math.round(pos[0][0] / window.devicePixelRatio) + 20,
-                                        top: Math.round(pos[0][1] / window.devicePixelRatio) + 20,
-                                        width: Math.round(size[0] / window.devicePixelRatio ) - 40,
-                                        height: Math.round(size[1] / window.devicePixelRatio ) - 40,
+                                        left: Math.round(pos[0][0] / window.devicePixelRatio) + 25,
+                                        top: Math.round(pos[0][1] / window.devicePixelRatio) + 25,
+                                        width: Math.round(size[0] / window.devicePixelRatio ) - 50,
+                                        height: Math.round(size[1] / window.devicePixelRatio ) - 50,
                                     };
                                     await sleep(100);
-                                    target.style.left = pixels.left.toString() + 'px';
-                                    target.style.top = pixels.top.toString() + 'px';
+                                    target.style.setProperty('left', pixels.left.toString() + 'px');
+                                    target.style.setProperty('top', pixels.top.toString() + 'px');
                                     target.style.width = pixels.width.toString() + 'px';
                                     target.style.height = pixels.height.toString() + 'px';
                                     target.style.borderStyle = 'solid';
@@ -113,8 +113,8 @@
                                     await sleep(1000);
                                     document.querySelector('html')?.classList.remove('barcode-scanner-active');
                                     await BarcodeScanner.stopScan();
-                                    target.style.left = 'calc(50%-150px)';
-                                    target.style.top = 'calc(50%-150px)';
+                                    target.style.setProperty('left', 'calc(50% - 150px)');
+                                    target.style.setProperty('top', 'calc(50% - 150px)');
                                     target.style.width = '300px';
                                     target.style.height = '300px';
                                     target.style.borderStyle = 'dashed';
