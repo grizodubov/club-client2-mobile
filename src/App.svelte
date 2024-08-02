@@ -339,7 +339,7 @@
 <div id="barcode-scanner-ui">
     <div
         id="barcode-scanner-target"
-        class="absolute border-2 border-success"
+        class="border-2 border-success"
     >
     </div>
     <button
