@@ -67,7 +67,6 @@
                 const listener = await BarcodeScanner.addListener(
                     'barcodeScanned',
                     async (result: any) => {
-                        await listener.remove();
                         if (result.barcode) {
                             if (target) {
                                 const cornerPoints = result.barcode.cornerPoints;
@@ -83,6 +82,7 @@
                                         detectionCornerPoints[3][1] < cornerPoints[3][1]
                                     )
                                         return;
+                                    await listener.remove();
                                     await BarcodeScanner.stopScan();
                                     const pos = [
                                         [
