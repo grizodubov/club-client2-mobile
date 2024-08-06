@@ -40,6 +40,8 @@
 		deviceRegister,
 	} from '@/queries/auth';
 
+    import { closeEventRegistrationPopup } from '@/helpers/popups';
+
 
     /* DATA: deviceRegisterHandler */
 	const deviceRegisterHandler = new Entity({
@@ -348,4 +350,21 @@
         >
         <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2zm4.3 14.3a.996.996 0 0 1-1.41 0L12 13.41L9.11 16.3a.996.996 0 1 1-1.41-1.41L10.59 12L7.7 9.11A.996.996 0 1 1 9.11 7.7L12 10.59l2.89-2.89a.996.996 0 1 1 1.41 1.41L13.41 12l2.89 2.89c.38.38.38 1.02 0 1.41z" fill="currentColor"></path></svg>
     </button>
+</div>
+
+<div id="event-registration-popup" class="fixed w-full h-full items-center justify-center z-50 left-[0px] top-[0px]">
+    <button
+        class="absolute opacity-30 bg-scene w-full h-full top-[0px] left-[0px]"
+        on:click="{closeEventRegistrationPopup}"
+    ></button>
+    <div class="relative w-[300px] h-[240px] mt-[-40px] shrink-0 grow-0 bg-success rounded-2xl shadow border-base-100 border-8">
+        <div class="absolute top-[-48px] left-[102px] bg-base-100 text-success rounded-full w-20 h-20 flex items-center justify-center shadow">
+            <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+        </div>
+        <div class="text-[30px] font-medium leading-[42px] mt-[56px] w-full text-center text-base-100">Регистрация успешна!</div>
+        <button
+            class="absolute btn btn-lg btn-primary w-[160px] left-[62px] bottom-[-40px]"
+            on:click="{closeEventRegistrationPopup}"
+        >OK</button>
+    </div>
 </div>

@@ -145,3 +145,14 @@ html.barcode-scanner-active #barcode-scanner-ui {
     border-color: #ffbf00;
     border-style: dashed;
 }
+
+#event-registration-popup {
+    display: none;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 200ms;
+}
+
+#event-registration-popup.show {
+    opacity: 1;
+}
