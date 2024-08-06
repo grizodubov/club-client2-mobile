@@ -11,6 +11,8 @@ import { websocket } from './websocket';
 
 import { push as notify } from '@/helpers/notification';
 
+import { openEventRegistrationPopup } from '@/helpers/popups';
+
 
 type Data = {
     [key: string]: any;
@@ -167,4 +169,7 @@ export function parseNotifications(data: Data, sourceData: any = null): void {
 		notify('alerts', data._alert, [ 'request', sourceData ]);
 	if (data.hasOwnProperty('_notification') && data._notification)
 		notify('notifications', data._notification, [ 'request', sourceData ]);
+    /* */
+    if (data.hasOwnProperty('_popup') && data._popup == 'registration')
+        openEventRegistrationPopup();
 }
