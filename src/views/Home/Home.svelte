@@ -28,6 +28,8 @@
 		getRatingPolls,
 	} from '@/queries/poll';
 
+    import { openEventRegistrationPopup } from '@/helpers/popups';
+
 
     // svelte-ignore unused-export-let
     export let params: { [key: string]: any } | undefined = undefined; params;
@@ -397,6 +399,8 @@
                     {/if}
                 </div>
             {/if}
+
+            <button on:click="{openEventRegistrationPopup}">test</button>
 
         </div>
     </div>

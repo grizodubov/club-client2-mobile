@@ -333,11 +333,12 @@
         class="absolute opacity-30 bg-scene w-full h-full top-[0px] left-[0px]"
         on:click="{closeEventRegistrationPopup}"
     ></button>
-    <div class="relative w-[300px] h-[240px] mt-[-40px] shrink-0 grow-0 bg-success rounded-2xl shadow border-base-100 border-8">
+    <div class="relative w-[300px] h-[260px] mt-[-40px] shrink-0 grow-0 bg-success rounded-2xl shadow border-base-100 border-8">
         <div class="absolute top-[-48px] left-[102px] bg-base-100 text-success rounded-full w-20 h-20 flex items-center justify-center shadow">
             <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
         </div>
-        <div class="text-[30px] font-medium leading-[42px] mt-[56px] w-full text-center text-base-100">Регистрация успешна!</div>
+        <div class="text-[26px] font-medium leading-[42px] mt-[56px] w-full text-center text-base-100">Добро пожаловать!</div>
+        <div class="text w-full text-center text-base-100 mt-[24px] px-6">Регистрация на мероприятие прошла успешно</div>
         <button
             class="absolute btn btn-lg btn-primary w-[160px] left-[62px] bottom-[-40px]"
             on:click="{closeEventRegistrationPopup}"
