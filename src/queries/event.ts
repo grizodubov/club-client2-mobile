@@ -79,3 +79,32 @@ export const eventConnection = {
 		return null;
 	}
 };
+
+
+
+/* eventConnectionResponse */
+export const eventConnectionResponse = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        timeNotify = null,
+        eventId = 0,
+        userId = 0,
+        resp = false,
+    }) {
+		const response = await request({
+			path: '/event/connection/response',
+			data: {
+                time_notify: timeNotify,
+                event_id: eventId,
+                user_id: userId,
+                response: resp,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

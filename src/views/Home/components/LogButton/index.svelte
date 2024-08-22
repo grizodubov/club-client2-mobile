@@ -17,6 +17,7 @@
 
 
     let notifications: any[] = [];
+    let connections: any = {};
 
 
     $: amount = ($bindings as any).notifications;
@@ -28,8 +29,10 @@
 		retriever: notificationList.retriever,
         onSuccess: data => {
             notifications = data.notifications;
+            connections = data.connections;
             logUpdate({
                 notifications: notifications,
+                connections: connections,
             });
         },
 	});
@@ -67,6 +70,7 @@
 	onMount(() => {
         logCreate(Log, {
             notifications: notifications,
+            connections: connections,
             onRefresh: refresh,
         });
         get();
@@ -84,6 +88,7 @@
     on:click="{() => {
         logUpdate({
             notifications: notifications,
+            connections: connections,
             onRefresh: refresh,
         });
         logShow();

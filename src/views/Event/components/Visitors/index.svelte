@@ -250,7 +250,24 @@
                                     </div>
                                 {/if}
                             {:else}
-                                <div class="mt-1 h-[32px] flex flex-col justify-end">
+                                <div class="mt-1 h-[40px] flex flex-col justify-end">
+                                    {#if connectionsCache[user.id.toString()].response !== null}
+                                        <div class="text-xs leading-[16px] whitespace-nowrap w-full overflow-hidden font-semibold">
+                                            {#if connectionsCache[user.id.toString()].creator_id == currentUser.id}
+                                                {#if connectionsCache[user.id.toString()].response}
+                                                    <span class="text-success">Согласился</span>
+                                                {:else}
+                                                    <span class="text-error">Отказался</span>
+                                                {/if}
+                                            {:else}
+                                                {#if connectionsCache[user.id.toString()].response}
+                                                    <span class="text-success">Вы согласились</span>
+                                                {:else}
+                                                    <span class="text-error">Вы отказались</span>
+                                                {/if}
+                                            {/if}
+                                        </div>
+                                    {/if}
                                     <div class="text-xs opacity-50 leading-[16px] whitespace-nowrap w-full overflow-hidden">Инициатор: {connectionsCache[user.id.toString()].creator}</div>
                                 </div>
                             {/if}
