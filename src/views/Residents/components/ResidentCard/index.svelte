@@ -22,7 +22,7 @@
     on:click="{() => { router.go('/residents/' + resident.id.toString()); }}"
     class="flex items-start justify-start px-3"
 >
-    <div class="w-[68px] h-[68px] shrink-0 grow-0">
+    <div class="w-[68px] h-[68px] shrink-0 grow-0 relative">
         <Avatar
             user="{{
                 id: resident.id,
@@ -33,6 +33,15 @@
             }}"
             scaleLetters="1.1"
         />
+        {#if resident.favorites_flag === true}
+            <div class="absolute top-[0px] left-[0px] w-[18px] h-[18px] text-base-100 flex items-center justify-center bg-success rounded-full">
+                <svg class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+            </div>
+        {:else if resident.favorites_flag === false}
+            <div class="absolute top-[0px] left-[0px] w-[18px] h-[18px] text-base-100 flex items-center justify-center bg-error rounded-full">
+                <svg class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
+            </div>
+        {/if}
     </div>
     <div class="ml-4 shrink-1 grow-1 w-full">
         <div class="flex items-center h-[28px]">

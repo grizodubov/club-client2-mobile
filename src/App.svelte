@@ -4,6 +4,12 @@
     import { SafeArea } from 'capacitor-plugin-safe-area';
     import { Device } from '@capacitor/device';
 
+    import { Avatar, TagTiny } from '@/components';
+
+    import { SwipeDeck } from 'svelte-swipe-cards';
+
+    import { nameNormalization } from '@/utils/names';
+
     import {
         type ActionPerformed,
         type PushNotificationSchema,
@@ -38,11 +44,49 @@
 
     import { closeEventRegistrationPopup } from '@/helpers/popups';
 
+    import {
+        userContactAdd,
+        userFavorites,
+        userFavoritesSet,
+	} from '@/queries/user';
+
+
+    /* DATA: userFavoritesHandler */
+	const userFavoritesHandler = new Entity({
+		model: userFavorites.model,
+		retriever: userFavorites.retriever,
+        onSuccess: data => {
+            cards = data.users;
+            cardsAmount = cards.length;
+            cardsStates = cards.reduce(
+                (states, card) => {
+                    return { ...states, [card.id.toString()]: null }
+                }, {}
+            );
+            if (!cardsAmount)
+                cardsHide = true;
+        },
+	});
+
+
+    /* DATA: userFavoritesSetHandler */
+	const userFavoritesSetHandler = new Entity({
+		model: userFavoritesSet.model,
+		retriever: userFavoritesSet.retriever,
+	});
+
 
     /* DATA: deviceRegisterHandler */
 	const deviceRegisterHandler = new Entity({
 		model: deviceRegister.model,
 		retriever: deviceRegister.retriever,
+	});
+
+
+    /* DATA: userContactAddHandler */
+	const userContactAddHandler = new Entity({
+		model: userContactAdd.model,
+		retriever: userContactAdd.retriever,
 	});
 
 
@@ -67,6 +111,14 @@
     $: statesO = $states as any;
 
 
+    let deck;
+    let cards: any[] = [];
+    let cardsAmount: number = 0;
+    let cardsStates = {};
+    let cardsHide = false;
+    let cardsContacts = {};
+
+
     /* userChange */
     function userChange() {
         const id = user.pull('id');
@@ -78,6 +130,8 @@
                 //console.log('url: ', currentUrl, userId);
                 if (currentUrl) {
                     if (userId) {
+                        cardsHide = false;
+                        getFavorites();
                         const url = router.record('onLogin', '/', true);
                         if (typeof url === 'string')
                             router.go(url);
@@ -274,18 +328,103 @@
     }
 
 
+    /* getFavorites */
+    function getFavorites() {
+        collector.get([
+            [ 
+                userFavoritesHandler,
+                {}
+            ],
+        ]);
+    }
+
+
+    /* setFavorites */
+    function setFavorites(targetId, flag) {
+        collector.get([
+            [ 
+                userFavoritesSetHandler,
+                {
+                    targetId: targetId,
+                    flag: flag,
+                }
+            ],
+        ]);
+    }
+
+
+    /* addContact */
+    function addContact(id) {
+        collector.get([
+            [ 
+                userContactAddHandler,
+                {
+                    contactId: id,
+                }
+            ],
+        ]);
+    }
+
+
     /* onMount */
 	onMount(() => {
         setSafeAreas();
         setupFCM();
         if (main)
             main.addEventListener('click', blurInputs);
+        const id = user.pull('id');
+        if (id) {
+            getFavorites();
+        }
+        else {
+            cardsHide = true;
+        }
         return () => {
             if (main)
                 main.removeEventListener('click', blurInputs);
         };
 	});
 </script>
+
+
+<style>
+    .with-dot {
+        padding-right: 10px;
+        margin-left: 5px;
+    }
+
+    .with-dot:first-child {
+        padding-left: 10px;
+        margin-left: 0px;
+    }
+
+    .with-dot:first-child:before {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-bottom: 1px;
+        border-radius: 100%;
+        margin-right: 5px;
+        margin-left: -10px;
+        background-color: #ffbf00;
+        color: #ffbf00;
+        content: '';
+    }
+
+    .with-dot:after {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-bottom: 1px;
+        border-radius: 100%;
+        margin-left: 5px;
+        margin-right: -10px;
+        background-color: #ffbf00;
+        color: #ffbf00;
+        content: '';
+
+    }
+</style>
 
 
 <main bind:this="{main}">
@@ -345,3 +484,170 @@
         >OK</button>
     </div>
 </div>
+
+
+{#if !cardsHide}
+    <div
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-20"
+        class:opacity-0="{cardsAmount == 0}"
+        class:opacity-100="{cardsAmount > 0}"
+    >
+        <div class="absolute bg-scene opacity-90 w-full h-full">
+        </div>
+        <div class="absolute w-full h-full flex flex-col jsutify-start items-center">
+            <div class="text text-base-100 mt-[32px]">Оцените потенциальных партнеров</div>
+            <button
+                class="btn btn-sm px-2 btn-front text-base-100 mt-3"
+                on:click="{() => {
+                    cardsAmount = 0;
+                    setTimeout(() => { cardsHide = true; }, 400);
+                }}"
+            >
+                <span class="leading-[18px] normal-case">В другой раз</span>
+            </button>
+        </div>
+        <div class="absolute left-[0px] right-[0px] top-[0px] bottom-[0px] m-[auto] w-[310px] h-[450px]">
+            <SwipeDeck
+                {cards}
+                let:card
+                bind:this={deck}
+                threshold="{10}"
+                transitionDuration="{300}"
+                allowedDirections="horizontal"
+                on:swipe="{(e) => {
+                    console.log('swipe', e.detail.index);
+                    cardsAmount = cardsAmount - 1;
+                    const id = cards[e.detail.index]['id'];
+                    setFavorites(id, cardsStates[id.toString()]);
+                    if (!cardsAmount)
+                        setTimeout(() => { cardsHide = true }, 400);
+                }}"
+                on:move_left="{(e) => {
+                    const id = cards[e.detail.index]['id'];
+                    cardsStates[id.toString()] = false;
+                }}"
+                on:move_right="{(e) => {
+                    const id = cards[e.detail.index]['id'];
+                    cardsStates[id.toString()] = true;
+                }}"
+            >
+                <div
+                    class="w-[310px] h-[450px] rounded-xl transition-colors p-4 flex flex-col items-center justify-between border-2 border-base-300"
+                    class:bg-front="{cardsStates[card.id.toString()] === null}"
+                    class:bg-success="{cardsStates[card.id.toString()] === true}"
+                    class:bg-error="{cardsStates[card.id.toString()] === false}"
+                >
+                    <div class="shrink-1 grow-1 flex flex-col items-center overflow-hidden">
+                        <div
+                            class="w-[120px] h-[120px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
+                        >
+                            <Avatar
+                                user="{{
+                                    id: card.id,
+                                    name: card.name,
+                                    avatar_hash: card.avatar_hash,
+                                    roles: [ 'client' ],
+                                    telegram: '',
+                                }}"
+                                scaleLetters="2.5"
+                            />
+                        </div>
+                        <div class="w-full h-[0px] relative">
+                            <button
+                                class="btn btn-sm h-[48px] px-2 btn-warning text-base-100 transition-opacity duration-300 absolute bottom-[0px] right-[0px] z-[30]"
+                                class:opacity-0="{cardsContacts[card.id.toString()]}"
+                                on:click="{() => {
+                                    if (!cardsContacts[card.id.toString()]) {
+                                        cardsContacts[card.id.toString()] = true;
+                                        addContact(card.id);
+                                    }
+                                }}"
+                            >
+                                <span class="leading-[18px] normal-case">Добавить<br />в избранные</span>
+                            </button>
+                        </div>
+                        <div class="font-medium text-[20px] leading-[28px] mt-2 text-base-100 text-center">{nameNormalization(card.name, 2)}</div>
+                        <div class="text-[12px] leading-[16px] mt-1.5 text-base-100 text-center">{card.position}</div>
+                        <div class="font-medium text-[15px] leading-[19px] mt-0.5 text-base-100 text-center">{card.company}</div>
+                        {#if card['catalog filtered']}
+                            <div class="w-full text-center text-base-100 leading-[14px] mt-2">
+                                {#each card['catalog filtered'] as tag}<span class="text-[10px] font-medium uppercase with-dot">{tag}</span>{/each}
+                            </div>
+                        {/if}
+                        <!--
+                        {#if card['catalog filtered']}
+                            <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
+                                {#each card['catalog filtered'] as tag}
+                                    <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="catalog" /></div>
+                                {/each}
+                            </div>
+                        {/if}
+                        -->
+                        <!--
+                        {#if card['hobby filtered']}
+                            <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
+                                {#each card['hobby filtered'] as tag}
+                                    <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="hobby" /></div>
+                                {/each}
+                            </div>
+                        {/if}
+                        -->
+                    </div>
+                    {#if card.tags['company needs intersections'] || card.tags['company scope intersections']}
+                        <div class="shrink-0 grow-0 flex flex-col items-center overflow-hidden">
+                            <div class="text-xs text-base-100">Совпадения:</div>
+                            {#if card.tags['company needs intersections filtered']}
+                                <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
+                                    {#each card.tags['company needs intersections filtered'] as tag}
+                                        <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="tag" /></div>
+                                    {/each}
+                                </div>
+                            {/if}
+                            {#if card.tags['company scope intersections filtered']}
+                                <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
+                                    {#each card.tags['company scope intersections filtered'] as tag}
+                                        <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="interest" /></div>
+                                    {/each}
+                                </div>
+                            {/if}
+                        </div>
+                    {/if}
+                </div>
+                <svelte:fragment slot="swipe-btn">
+                    <div class="absolute bottom-[-56px] w-full flex justify-between">
+                        <div class="w-12 h-12 flex items-center justify-center text-base-300">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M4.31 9.5l2.963 2.963a.75.75 0 0 1-.977 1.133l-.084-.073L1.97 9.281a.75.75 0 0 1-.073-.977l.073-.084l4.242-4.243a.75.75 0 0 1 1.134.977l-.073.084L4.31 8H10a7.75 7.75 0 0 1 7.746 7.504l.004.247a.75.75 0 0 1-1.5 0a6.25 6.25 0 0 0-6.02-6.246L10 9.5H4.31l2.963 2.963L4.31 9.5z" fill="currentColor"></path></g></svg>
+                        </div>
+                        <div class="w-12 h-12 flex items-center justify-center text-base-300">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M15.69 9.5l-2.963 2.963a.75.75 0 0 0 .977 1.133l.084-.073l4.242-4.242a.75.75 0 0 0 .073-.977l-.073-.084l-4.242-4.243a.75.75 0 0 0-1.134.977l.073.084L15.69 8H10a7.75 7.75 0 0 0-7.746 7.504l-.004.247a.75.75 0 0 0 1.5 0a6.25 6.25 0 0 1 6.02-6.246L10 9.5h5.69z" fill="currentColor"></path></g></svg>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="absolute bottom-[-56px] w-full flex justify-between">
+                        <button
+                            class="w-12 h-12 border-2 border-base-300 flex items-center justify-center rounded-xl bg-error"
+                            on:click="{() => {
+                                if (deck) {
+                                    deck.swipe('left');
+                                }
+                            }}"
+                        >
+                            <svg class="text-base-100 w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
+                        </button>
+                        <button
+                            class="w-12 h-12 border-2 border-base-300 flex items-center justify-center rounded-xl bg-success"
+                            on:click="{() => {
+                                if (deck) {
+                                    deck.swipe('right');
+                                }
+                            }}"
+                        >
+                            <svg class="text-base-100 w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                        </button>
+                    </div>
+                    -->
+                </svelte:fragment>
+            </SwipeDeck>
+        </div>
+    </div>
+{/if}

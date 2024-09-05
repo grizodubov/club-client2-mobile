@@ -1,5 +1,6 @@
 import Avatar from './Avatar/index.svelte';
 import Tag from './Tag/index.svelte';
+import TagTiny from './TagTiny/index.svelte';
 import CommunityIcon from './CommunityIcon/index.svelte';
 import PollCard from './PollCard/index.svelte';
 import { Warning as WarningObject } from '@/components/Warning/Warning';
@@ -13,6 +14,7 @@ import { push as notificationsPush, setup as notificationsSetup } from '@/compon
 export {
     Avatar,
     Tag,
+    TagTiny,
     CommunityIcon,
     PollCard,
     WarningObject,

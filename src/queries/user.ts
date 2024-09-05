@@ -306,3 +306,48 @@ export const userProfileView = {
 		return null;
 	}
 };
+
+
+
+/* userFavorites */
+export const userFavorites = {
+	/* model */
+	model: {
+        users: [],
+    },
+	/* retriever */
+	retriever: async function() {
+		const response = await request({
+			path: '/user/favorites/select',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+
+/* userFavoritesSet */
+export const userFavoritesSet = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        targetId = 0,
+        flag = false,
+    }) {
+		const response = await request({
+			path: '/user/favorites/set',
+			data: {
+                target_id: targetId,
+                flag: flag,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
