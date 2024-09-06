@@ -141,6 +141,9 @@
     let infoTitle = '';
 
 
+    let cards: { [key: string]: any }[] = [];
+
+
     $: currentUser = $user as User;
 
 
@@ -397,6 +400,7 @@
                     {/if}
                 </div>
             {/if}
+
 
         </div>
     </div>

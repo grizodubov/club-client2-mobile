@@ -22,6 +22,7 @@
 		userContactAdd,
         userContactDel,
         userProfileView,
+        userFavoritesSet,
 	} from '@/queries/user';
 
 
@@ -105,6 +106,13 @@
 	});
 
 
+    /* DATA: userFavoritesSetHandler */
+	const userFavoritesSetHandler = new Entity({
+		model: userFavoritesSet.model,
+		retriever: userFavoritesSet.retriever,
+	});
+
+
     /* sendTelegramMessage */
     function sendTelegramMessage(telegramId: string) {
         const id = telegramId.replace(/^@+/, '');
@@ -137,6 +145,20 @@
                     }
                 ],
             ]);
+    }
+
+
+    /* setFavorites */
+    function setFavorites(targetId, flag) {
+        collector.get([
+            [ 
+                userFavoritesSetHandler,
+                {
+                    targetId: targetId,
+                    flag: flag,
+                }
+            ],
+        ]);
     }
 
 
@@ -212,6 +234,39 @@
             -->
         </button>
     {/if}
+    {#if resident && (!start || !$residentInfoLoading)}
+        <!-- {#if resident.favorites_flag === null} -->
+            <div
+                class="fixed left-3 h-[40px] z-[13] flex"
+                style="top: {110 + currentStates.safeTop}px"
+            >
+                <button
+                    class="w-[40px] h-[40px] bg-error rounded-full text-base-100 flex items-center justify-center border-2 border-base-100"
+                    on:click="{() => {
+                        setFavorites(resident.id, false);
+                    }}"
+                >
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
+                </button>
+                <button
+                    class="w-[40px] h-[40px] bg-warning rounded-full text-base-100 flex items-center justify-center border-2 border-base-100 ml-1"
+                    on:click="{() => {
+                        setFavorites(resident.id, null);
+                    }}"
+                >
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 512"><path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148c25.049-31.381 43.63-49.449 82.757-49.449c30.764 0 68.816 19.799 68.816 49.631c0 22.552-18.617 34.134-48.993 51.164c-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271c0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271s-31.075-69.27-69.271-69.27z" fill="currentColor"></path></svg>
+                </button>
+                <button
+                    class="w-[40px] h-[40px] bg-success rounded-full text-base-100 flex items-center justify-center border-2 border-base-100 ml-1"
+                    on:click="{() => {
+                        setFavorites(resident.id, true);
+                    }}"
+                >
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                </button>
+            </div>
+        <!-- {/if} -->
+    {/if}
     <div class="bg-front w-full h-[112px] flex flex-col justify-between shrink-0 grow-0">
         <div class="flex justify-between items-start">
             <div class="w-[56px] h-[56px] ml-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
@@ -227,7 +282,7 @@
             <div class="shrink-1 grow-1 w-full flex justify-center">
                 <div class="relative mt-7 w-[132px] h-[1px]">
                     <div
-                        class="absolute w-[132px] h-[132px] rounded-full overflow-hidden border-4 border-base-100 bg-front z-[11]"
+                        class="absolute w-[132px] h-[132px] rounded-full border-4 border-base-100 bg-front z-[11]"
                     >
                         {#if resident && (!start || !$residentInfoLoading)}
                             <Avatar
@@ -240,14 +295,21 @@
                                 }}"
                                 scaleLetters="2.5"
                             />
+                            {#if resident.favorites_flag === true}
+                                <div class="absolute top-[0px] left-[0px] w-7 h-7 text-base-100 flex items-center justify-center bg-success rounded-full">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                </div>
+                            {:else if resident.favorites_flag === false}
+                                <div class="absolute top-[0px] left-[0px] w-7 h-7 text-base-100 flex items-center justify-center bg-error rounded-full">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
+                                </div>
+                            {:else}
+                                <div class="absolute top-[0px] left-[0px] w-7 h-7 text-base-100 flex items-center justify-center bg-warning rounded-full">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 512"><path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148c25.049-31.381 43.63-49.449 82.757-49.449c30.764 0 68.816 19.799 68.816 49.631c0 22.552-18.617 34.134-48.993 51.164c-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271c0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271s-31.075-69.27-69.271-69.27z" fill="currentColor"></path></svg>
+                                </div>
+                            {/if}
                         {/if}
                     </div>
-                    {#if resident && (!start || !$residentInfoLoading) && resident.rating}
-                        <div class="absolute top-[74px] left-[-36px] w-[48px] h-[48px] z-[12] rounded-box flex flex-col items-center justify-center bg-info text-base-100">
-                            <div class="leading-5 text-sm font-medium text-base-100">{resident.rating}</div>
-                            <svg class="w-5 h-5 shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="currentColor"></path></svg>
-                        </div>
-                    {/if}
                 </div>
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
@@ -265,8 +327,17 @@
                 </div>
             {:else}
                 <div class="mt-[74px]">
-                    <div class="flex justify-center">
+                    <div
+                        class="flex justify-center items-center"
+                        class:mr-[-44px]="{resident.rating}"
+                    >
                         <div class="text font-medium text-[23px] leading-[34px]">{nameNormalization(resident.name, 2)}</div>
+                        {#if resident.rating}
+                            <div class="w-[36px] h-[36px] rounded-xl flex flex-col items-center justify-center bg-info text-base-100 ml-2">
+                                <div class="leading-[14px] text-xs font-semibold text-base-100 mb-[2px]">{resident.rating}</div>
+                                <svg class="w-3.5 h-3.5 shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7c0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4c47.6-20.3 78.3-66.8 78.3-118.4c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c0-12.6-1.8-25-5.4-37c16.8-22.2 26.1-49.4 26.1-77.7c-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="currentColor"></path></svg>
+                            </div>
+                        {/if}
                     </div>
                     {#if resident.show && resident.link_telegram}
                         <div class="flex justify-center my-2">

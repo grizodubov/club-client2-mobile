@@ -46,7 +46,7 @@
         onSuccess: data => {
             start = false;
             const resident = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
-            residents = [
+            const temp = [
                 ...data.residents.filter((r: { [key: string]: any }) => r.id != currentUser.id).map((r: { [key: string]: any }) => {
                     if (resident) {
                         r.tagsLinked = findTags(resident.tags, r.interests);
@@ -59,6 +59,20 @@
                     return r;
                 })
             ];
+            temp.sort((a: any, b: any) => {
+                if (a.favorites_flag !== b.favorites_flag) {
+                    if (a.favorites_flag === true || b.favorites_flag === false)
+                        return -1;
+                    if (b.favorites_flag === true || a.favorites_flag === false)
+                        return 1;
+                }
+                if (a.name.toLowerCase() > b.name.toLowerCase())
+                    return 1;
+                if (a.name.toLowerCase() < b.name.toLowerCase())
+                    return 1;
+                return 0;
+            });
+            residents = temp;
             contacts = data.contacts;
         },
 	});
