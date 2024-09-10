@@ -44,6 +44,8 @@
 
     let resident: any;
 
+    let suggestions: any = {};
+
     let contact: any;
 
     let start = true;
@@ -70,6 +72,25 @@
                 }
             }
             resident = temp;
+            const temp2 = {};
+            if (data.suggestions['company scope']) {
+                temp2['company scope'] = data.suggestions['company scope'].reduce(
+                    (acc, tag) => {
+                        return Object.assign(acc, { [tag]: true } );
+                    },
+                    {}
+                );
+            }
+            if (data.suggestions['company needs']) {
+                temp2['company needs'] = data.suggestions['company needs'].reduce(
+                    (acc, tag) => {
+                        return Object.assign(acc, { [tag]: true } );
+                    },
+                    {}
+                );
+            }
+            suggestions = temp2;
+            console.log(suggestions);
             if (temp) {
                 contact = data.contacts[temp.id.toString()] ? data.contacts[temp.id.toString()] : undefined;
             }
@@ -451,6 +472,33 @@
 
                     {#if resident.show}
 
+                        {#if suggestions['company scope'] || suggestions['company needs']}
+                            <div class="px-4 mb-4 flex flex-col items-center">
+                                <div class="flex items-center text-warning opacity-90">
+                                    <div class="w-5 h-5 shrink-0 grow-0">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2L47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103l-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5l105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2L316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z" fill="currentColor"></path></svg>
+                                    </div>
+                                    <div class="text-xs leading-4 ml-[5px] text-left">Совпадения</div>
+                                </div>
+                                <div class="flex flex-wrap justify-center mt-1">
+                                    {#if suggestions['company scope']}
+                                        {#each resident.tags_1_company_scope.split(/\s*\+\s*/) as tag}
+                                            {#if suggestions['company scope'][tag]}
+                                                <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" hit="{true}" /></div>
+                                            {/if}
+                                        {/each}
+                                    {/if}
+                                    {#if suggestions['company needs']}
+                                        {#each resident.tags_1_company_needs.split(/\s*\+\s*/) as tag}
+                                            {#if suggestions['company needs'][tag]}
+                                                <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" hit="{true}" /></div>
+                                            {/if}
+                                        {/each}
+                                    {/if}
+                                </div>
+                            </div>
+                        {/if}
+                        
                         <div class="px-4 mb-4 flex flex-col items-center">
                             <div class="flex items-center opacity-50">
                                 <div class="w-5 h-5 shrink-0 grow-0">
@@ -460,8 +508,8 @@
                             </div>
                             {#if resident.tags_1_company_scope}
                                 <div class="flex flex-wrap justify-center mt-1">
-                                    {#each resident.tags_1_company_scope.split(/\s*\|\s*/) as tag}
-                                        <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                    {#each resident.tags_1_company_scope.split(/\s*\+\s*/) as tag}
+                                        <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" hit="{suggestions['company scope'] && suggestions['company scope'][tag]}" /></div>
                                     {/each}
                                 </div>
                             {:else}
@@ -477,8 +525,8 @@
                             </div>
                             {#if resident.tags_1_company_needs}
                                 <div class="flex flex-wrap justify-center mt-1">
-                                    {#each resident.tags_1_company_needs.split(/\s*\|\s*/) as tag}
-                                        <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                    {#each resident.tags_1_company_needs.split(/\s*\+\s*/) as tag}
+                                        <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" hit="{suggestions['company needs'] && suggestions['company needs'][tag]}" /></div>
                                     {/each}
                                 </div>
                             {:else}
@@ -494,8 +542,8 @@
                             </div>
                             {#if resident.tags_1_licenses}
                                 <div class="flex flex-wrap justify-center mt-1">
-                                    {#each resident.tags_1_licenses.split(/\s*\|\s*/) as tag}
-                                        <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                    {#each resident.tags_1_licenses.split(/\s*\+\s*/) as tag}
+                                        <div class="ml-2 mt-1"><Tag type="catalog" tag="{tag}" /></div>
                                     {/each}
                                 </div>
                             {:else}
@@ -511,7 +559,7 @@
                             </div>
                             {#if resident.tags_1_personal_expertise}
                                 <div class="flex flex-wrap justify-center mt-1">
-                                    {#each resident.tags_1_personal_expertise.split(/\s*\|\s*/) as tag}
+                                    {#each resident.tags_1_personal_expertise.split(/\s*\+\s*/) as tag}
                                         <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
                                     {/each}
                                 </div>
@@ -528,8 +576,8 @@
                             </div>
                             {#if resident.tags_1_personal_needs}
                                 <div class="flex flex-wrap justify-center mt-1">
-                                    {#each resident.tags_1_personal_needs.split(/\s*\|\s*/) as tag}
-                                        <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                    {#each resident.tags_1_personal_needs.split(/\s*\+\s*/) as tag}
+                                        <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" /></div>
                                     {/each}
                                 </div>
                             {:else}
@@ -545,8 +593,8 @@
                             </div>
                             {#if resident.tags_1_hobbies}
                                 <div class="flex flex-wrap justify-center mt-1">
-                                    {#each resident.tags_1_hobbies.split(/\s*\|\s*/) as tag}
-                                        <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                    {#each resident.tags_1_hobbies.split(/\s*\+\s*/) as tag}
+                                        <div class="ml-2 mt-1"><Tag type="catalog" tag="{tag}" /></div>
                                     {/each}
                                 </div>
                             {:else}
