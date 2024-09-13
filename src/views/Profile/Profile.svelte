@@ -498,7 +498,7 @@
                                 </div>
                             </div>
                         {/if}
-                        
+
                         <div class="px-4 mb-4 flex flex-col items-center">
                             <div class="flex items-center opacity-50">
                                 <div class="w-5 h-5 shrink-0 grow-0">
