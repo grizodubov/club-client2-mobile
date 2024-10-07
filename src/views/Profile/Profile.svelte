@@ -1,7 +1,10 @@
 <script lang="ts">
    import { onMount } from 'svelte';
+   import { fly } from 'svelte/transition';
 
    import { Avatar, Tag } from '@/components';
+
+   import { type Event, EventCard, ModalSelector } from './components';
 
    import { type User, user, states } from '@/stores';
 
@@ -23,6 +26,7 @@
         userContactDel,
         userProfileView,
         userFavoritesSet,
+        userEventsConnections,
 	} from '@/queries/user';
 
 
@@ -46,11 +50,16 @@
 
     let suggestions: any = {};
 
+    let eventsConnections: any[] = [];
+    let eventsConnectionsShow: boolean = false;
+
     let contact: any;
 
     let start = true;
 
     let flagView = false;
+
+    let showFavorites = false;
 
 
     /* DATA: residentInfoHandler */
@@ -90,7 +99,7 @@
                 );
             }
             suggestions = temp2;
-            console.log(suggestions);
+            //console.log(suggestions);
             if (temp) {
                 contact = data.contacts[temp.id.toString()] ? data.contacts[temp.id.toString()] : undefined;
             }
@@ -103,6 +112,18 @@
 	});
 
     let residentInfoLoading = residentInfoHandler.loading;
+
+
+    /* DATA: userEventsConnectionsHandler */
+	const userEventsConnectionsHandler = new Entity({
+		model: userEventsConnections.model,
+		retriever: userEventsConnections.retriever,
+        onSuccess: data => {
+            eventsConnections = data.events;
+        },
+	});
+
+    let userEventsConnectionsLoading = userEventsConnectionsHandler.loading;
 
 
     /* DATA: userContactAddHandler */
@@ -207,6 +228,14 @@
                 }
             ],
         ]);
+        collector.get([
+            [ 
+                userEventsConnectionsHandler,
+                {
+                    targetId: parseInt(params?.id),
+                }
+            ],
+        ]);
     }
 
     
@@ -232,8 +261,8 @@
 >
     {#if contact && contact.contact}
         <button
-            class="fixed right-4 btn btn-sm h-[48px] px-2 btn-error text-base-100 flex z-[12]"
-            style="top: {102 + currentStates.safeTop}px"
+            class="fixed left-3 btn btn-sm h-[48px] px-2 btn-error text-base-100 flex z-[12] w-[120px]"
+            style="top: {110 + currentStates.safeTop}px"
             on:click="{delContact}"
         >
             <!--<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45L7.77 18l1.12-4.81l-3.73-3.23l4.92-.42L12 5l1.92 4.53l4.92.42l-3.73 3.23L16.23 18z" fill="currentColor"></path></svg>-->
@@ -244,8 +273,8 @@
         </button>
     {:else}
         <button
-            class="fixed right-3 btn btn-sm h-[48px] px-2 btn-warning text-base-100 flex z-[12]"
-            style="top: {102 + currentStates.safeTop}px"
+            class="fixed left-3 btn btn-sm h-[48px] px-2 btn-warning text-base-100 flex z-[12] w-[120px]"
+            style="top: {110 + currentStates.safeTop}px"
             on:click="{addContact}"
         >
             <!--<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45L7.77 18l1.12-4.81l-3.73-3.23l4.92-.42L12 5l1.92 4.53l4.92.42l-3.73 3.23L16.23 18z" fill="currentColor"></path></svg>-->
@@ -255,39 +284,22 @@
             -->
         </button>
     {/if}
-    {#if resident && (!start || !$residentInfoLoading)}
-        <!-- {#if resident.favorites_flag === null} -->
-            <div
-                class="fixed left-3 h-[40px] z-[13] flex"
-                style="top: {110 + currentStates.safeTop}px"
-            >
-                <button
-                    class="w-[40px] h-[40px] bg-error rounded-full text-base-100 flex items-center justify-center border-2 border-base-100"
-                    on:click="{() => {
-                        setFavorites(resident.id, false);
-                    }}"
-                >
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
-                </button>
-                <button
-                    class="w-[40px] h-[40px] bg-warning rounded-full text-base-100 flex items-center justify-center border-2 border-base-100 ml-1"
-                    on:click="{() => {
-                        setFavorites(resident.id, null);
-                    }}"
-                >
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 512"><path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148c25.049-31.381 43.63-49.449 82.757-49.449c30.764 0 68.816 19.799 68.816 49.631c0 22.552-18.617 34.134-48.993 51.164c-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271c0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271s-31.075-69.27-69.271-69.27z" fill="currentColor"></path></svg>
-                </button>
-                <button
-                    class="w-[40px] h-[40px] bg-success rounded-full text-base-100 flex items-center justify-center border-2 border-base-100 ml-1"
-                    on:click="{() => {
-                        setFavorites(resident.id, true);
-                    }}"
-                >
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
-                </button>
+
+    <button
+        class="fixed right-3 btn btn-sm h-[48px] px-2 btn-front text-base-100 flex z-[12] w-[120px]"
+        style="top: {110 + currentStates.safeTop}px"
+        on:click="{() => { eventsConnectionsShow = !eventsConnectionsShow; }}"
+    >  
+        {#if $userEventsConnectionsLoading}
+            <div class="w-[18px] h-[18px] flex justify-center items-center">
+                <span class="loading loading-xs loading-bars text-base-100"></span>
             </div>
-        <!-- {/if} -->
-    {/if}
+        {:else}
+            <span class="leading-[18px] normal-case">Встречи<br />{#if eventsConnections.filter(event => event.user.connection).length}<span class="text-base-300 font-extralight">( <span class="text-base-100 font-semibold">{eventsConnections.filter(event => event.user.connection).length}</span> )</span>{/if}</span>
+        {/if}
+    </button>
+
+
     <div class="bg-front w-full h-[112px] flex flex-col justify-between shrink-0 grow-0">
         <div class="flex justify-between items-start">
             <div class="w-[56px] h-[56px] ml-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
@@ -316,17 +328,56 @@
                                 }}"
                                 scaleLetters="2.5"
                             />
-                            {#if resident.favorites_flag === true}
-                                <div class="absolute top-[0px] left-[0px] w-7 h-7 text-base-100 flex items-center justify-center bg-success rounded-full">
-                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
-                                </div>
-                            {:else if resident.favorites_flag === false}
-                                <div class="absolute top-[0px] left-[0px] w-7 h-7 text-base-100 flex items-center justify-center bg-error rounded-full">
-                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
-                                </div>
-                            {:else}
-                                <div class="absolute top-[0px] left-[0px] w-7 h-7 text-base-100 flex items-center justify-center bg-warning rounded-full">
-                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 512"><path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148c25.049-31.381 43.63-49.449 82.757-49.449c30.764 0 68.816 19.799 68.816 49.631c0 22.552-18.617 34.134-48.993 51.164c-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271c0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271s-31.075-69.27-69.271-69.27z" fill="currentColor"></path></svg>
+                            <button
+                                class="absolute top-[-8px] left-[-12px] w-[44px] h-[44px]"
+                                on:click="{() => { showFavorites = !showFavorites; }}"
+                            >
+                                {#if resident.favorites_flag === true}
+                                    <div class="w-[44px] h-[44px] text-base-100 flex items-center justify-center bg-success rounded-full">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                    </div>
+                                {:else if resident.favorites_flag === false}
+                                    <div class="w-[44px] h-[44px] text-base-100 flex items-center justify-center bg-error rounded-full">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
+                                    </div>
+                                {:else}
+                                    <div class="w-[44px] h-[44px] text-base-100 flex items-center justify-center bg-warning rounded-full">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 512"><path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148c25.049-31.381 43.63-49.449 82.757-49.449c30.764 0 68.816 19.799 68.816 49.631c0 22.552-18.617 34.134-48.993 51.164c-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271c0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271s-31.075-69.27-69.271-69.27z" fill="currentColor"></path></svg>
+                                    </div>
+                                {/if}
+                            </button>
+                            {#if showFavorites}
+                                <div
+                                    class="absolute top-[-8px] left-[44px] h-[44px] z-[13] flex bg-base-100 rounded-full"
+                                    transition:fly={{ duration: 300, y: -10, opacity: 0 }}
+                                >
+                                    <button
+                                        class="w-[44px] h-[44px] bg-error rounded-full text-base-100 flex items-center justify-center border-2 border-base-100"
+                                        on:click="{() => {
+                                            setFavorites(resident.id, false);
+                                            showFavorites = false;
+                                        }}"
+                                    >
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
+                                    </button>
+                                    <button
+                                        class="w-[44px] h-[44px] bg-warning rounded-full text-base-100 flex items-center justify-center border-2 border-base-100 ml-1"
+                                        on:click="{() => {
+                                            setFavorites(resident.id, null);
+                                            showFavorites = false;
+                                        }}"
+                                    >
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 512"><path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148c25.049-31.381 43.63-49.449 82.757-49.449c30.764 0 68.816 19.799 68.816 49.631c0 22.552-18.617 34.134-48.993 51.164c-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271c0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271s-31.075-69.27-69.271-69.27z" fill="currentColor"></path></svg>
+                                    </button>
+                                    <button
+                                        class="w-[44px] h-[44px] bg-success rounded-full text-base-100 flex items-center justify-center border-2 border-base-100 ml-1"
+                                        on:click="{() => {
+                                            setFavorites(resident.id, true);
+                                            showFavorites = false;
+                                        }}"
+                                    >
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                    </button>
                                 </div>
                             {/if}
                         {/if}
@@ -680,5 +731,15 @@
             {/if}
         </div>
     </div>
+
+    <ModalSelector
+        bind:open="{eventsConnectionsShow}"
+    >
+        <div class="w-full p-2">
+            {#each eventsConnections as event}
+                <EventCard event="{event}" targetId="{resident ? resident.id : 0}" />
+            {/each}
+        </div>
+    </ModalSelector>
 
 </div>

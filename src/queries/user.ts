@@ -351,3 +351,27 @@ export const userFavoritesSet = {
 		return null;
 	}
 };
+
+
+
+/* userEventsConnections */
+export const userEventsConnections = {
+	/* model */
+	model: {
+        events: [],
+    },
+	/* retriever */
+	retriever: async function({
+        targetId = 0,
+    }) {
+		const response = await request({
+			path: '/user/events/connections',
+			data: {
+                target_id: targetId,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

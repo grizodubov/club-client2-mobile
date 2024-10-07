@@ -515,7 +515,7 @@
                 transitionDuration="{300}"
                 allowedDirections="horizontal"
                 on:swipe="{(e) => {
-                    console.log('swipe', e.detail.index);
+                    //console.log('swipe', e.detail.index);
                     cardsAmount = cardsAmount - 1;
                     const id = cards[e.detail.index]['id'];
                     setFavorites(id, cardsStates[id.toString()]);
