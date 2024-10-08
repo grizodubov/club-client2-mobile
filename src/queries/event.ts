@@ -108,3 +108,28 @@ export const eventConnectionResponse = {
 		return null;
 	}
 };
+
+
+
+/* eventConnectionMark */
+export const eventConnectionMark = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        connectionId = 0,
+        mark = 0,
+    }) {
+		const response = await request({
+			path: '/user/events/connection/mark',
+			data: {
+                id: connectionId,
+                mark: mark,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

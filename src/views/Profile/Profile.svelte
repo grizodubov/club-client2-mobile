@@ -4,7 +4,7 @@
 
    import { Avatar, Tag } from '@/components';
 
-   import { type Event, EventCard, ModalSelector } from './components';
+   import { EventCard, ModalSelector } from './components';
 
    import { type User, user, states } from '@/stores';
 
