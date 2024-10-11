@@ -12,6 +12,7 @@ const views: { [key: string]: View } = {
     'Communities': () => import('@/views/Communities/Communities.svelte'),
     'Community': () => import('@/views/Community/Community.svelte'),
     'Residents': () => import('@/views/Residents/Residents.svelte'),
+    'Meetings': () => import('@/views/Meetings/Meetings.svelte'),
     'Profile': () => import('@/views/Profile/Profile.svelte'),
 	/* **** */
 };

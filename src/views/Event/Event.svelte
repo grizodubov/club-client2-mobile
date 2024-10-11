@@ -326,6 +326,7 @@
                                         }}"
                                     >Участвовать!</button>
                                 {:else if state}
+                                    <!-- 
                                     <button
                                         class="btn btn-sm btn-error text-base-100"
                                         on:click="{() => {
@@ -340,6 +341,10 @@
                                             ]);
                                         }}"
                                     >Отказаться</button>
+                                    -->
+                                    <button
+                                        class="btn btn-sm bg-base-300"
+                                    >Вы зарегистрированы!</button>
                                 {:else}
                                     <button
                                         class="btn btn-sm bg-base-300"

@@ -76,7 +76,16 @@ const routes: PathRoute[] = [
 			name: 'Резиденты',
 		},
 	},
-	/* **** */
+    /* **** */
+	{
+		path: '/meetings',
+		layout: 'Main',
+		component: 'Meetings',
+		meta: {
+			name: 'Встречи',
+		},
+	},
+    /* **** */
 	{
 		path: '/residents/:id',
         constraints: {
