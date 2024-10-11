@@ -24,7 +24,7 @@
 
 <div
     bind:this="{wrapper}"
-    class="fixed transition-all duration-0 top-0 left-0 overflow-hidden z-30"
+    class="fixed transition-all duration-0 top-0 left-0 w-full h-full overflow-hidden z-30"
     class:w-0="{!open}"
     class:h-0="{!open}"
     class:delay-300="{delay}"
@@ -41,9 +41,11 @@
         }}"
     ></button>
     <div
-        class="absolute ease-out transition-all duration-300 w-[calc(100%-40px)] max-h-[calc(100%-276px)] bottom-[106px] left-0 bg-base-100 border-4 border-base-100 rounded-l-2xl scrollable-y"
-        class:ml-[100%]="{!open}"
-        class:ml-[40px]="{open}"
+        class="absolute ease-out transition-all duration-300 w-[300px] h-[180px] left-[calc(50%-150px)] top-[calc(50%-100px)] bg-base-100 border-4 border-base-100 rounded-2xl"
+        class:opacity-0="{!open}"
+        class:opacity-100="{open}"
+        class:mt-[-20px]="{!open}"
+        class:mt-[0px]="{open}"
     >
         <slot />
     </div>

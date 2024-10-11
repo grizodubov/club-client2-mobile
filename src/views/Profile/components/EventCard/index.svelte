@@ -8,6 +8,8 @@
 
     import { Entity, collector } from '@/helpers/entity';
 
+    import { ModalConfirmation } from './..';
+
     import {
         eventConnection,
         eventConnectionResponse,
@@ -23,6 +25,9 @@
     $: currentFormat = EVENTS.find(f => f.format == event.format);
 
     $: currentDate = toDateText(event.time_event).split(/\s+/);
+
+
+    let confirmationShow = false;
 
 
     /* DATA: eventConnectionHandler */
@@ -191,7 +196,7 @@
                         <button
                             class="btn btn-sm btn-front text-base-100"
                             on:click="{() => {
-                                connect(event.id);
+                                confirmationShow = true;
                             }}"
                         >{#if event.user.confirmation}Назначить встречу{:else}Пригласить и назначить встречу{/if}</button>
                     {/if}
@@ -200,3 +205,18 @@
         </div>
     </div>
 </div>
+
+<ModalConfirmation
+    bind:open="{confirmationShow}"
+>
+    <div class="flex flex-col w-full h-full justify-around items-center">
+        <div class="text-center text-sm px-3 mt-2">{#if event.user.confirmation}Назначить встречу?{:else}Пригласить и назначить встречу?{/if}</div>
+        <button
+            class="btn btn-sm btn-front text-base-100 flex shrink-0 grow-0 mb-2"
+            on:click="{() => {
+                connect(event.id);
+                confirmationShow = false;
+            }}"
+        >Подтвердить</button>
+    </div>
+</ModalConfirmation>

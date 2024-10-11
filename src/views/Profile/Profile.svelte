@@ -4,7 +4,7 @@
 
    import { Avatar, Tag } from '@/components';
 
-   import { EventCard, ModalSelector } from './components';
+   import { EventCard, ModalSelector, ModalPhoto } from './components';
 
    import { type User, user, states } from '@/stores';
 
@@ -60,6 +60,9 @@
     let flagView = false;
 
     let showFavorites = false;
+
+
+    let photoShow = false;
 
 
     /* DATA: residentInfoHandler */
@@ -318,16 +321,23 @@
                         class="absolute w-[132px] h-[132px] rounded-full border-4 border-base-100 bg-front z-[11]"
                     >
                         {#if resident && (!start || !$residentInfoLoading)}
-                            <Avatar
-                                user="{{
-                                    id: resident.id,
-                                    name: resident.name,
-                                    avatar_hash: resident.avatar_hash,
-                                    roles: [ 'client' ],
-                                    telegram: '',
+                            <button
+                                on:click="{() => {
+                                    if (resident && resident.avatar_hash)
+                                        photoShow = true;
                                 }}"
-                                scaleLetters="2.5"
-                            />
+                            >
+                                <Avatar
+                                    user="{{
+                                        id: resident.id,
+                                        name: resident.name,
+                                        avatar_hash: resident.avatar_hash,
+                                        roles: [ 'client' ],
+                                        telegram: '',
+                                    }}"
+                                    scaleLetters="2.5"
+                                />
+                            </button>
                             <button
                                 class="absolute top-[-8px] left-[-12px] w-[44px] h-[44px]"
                                 on:click="{() => { showFavorites = !showFavorites; }}"
@@ -741,5 +751,15 @@
             {/each}
         </div>
     </ModalSelector>
+
+    <ModalPhoto
+        bind:open="{photoShow}"
+    >
+        {#if resident && resident.avatar_hash}
+            <div class="flex w-full h-full">
+                <img class="w-full h-full" src="https://media.clubgermes.ru/n/{resident.avatar_hash}.jpg" alt="" />
+            </div>
+        {/if}
+    </ModalPhoto>
 
 </div>

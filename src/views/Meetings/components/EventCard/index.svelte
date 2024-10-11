@@ -39,7 +39,7 @@
                     <div class="text-sm font-semibold mt-1 leading-[18px] w-full text-left">{event.name}</div>
                 </div>
             </div>
-            {#each event.users as resident (resident.user.id)}
+            {#each event.usersFiltered as resident (resident.user.id)}
                 <div
                     class="mt-3"
                     in:fade="{{ duration: 100 }}"

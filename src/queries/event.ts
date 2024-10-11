@@ -111,6 +111,31 @@ export const eventConnectionResponse = {
 
 
 
+/* offlineConnectionResponse */
+export const offlineConnectionResponse = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        connectionId = 0,
+        resp = false,
+    }) {
+		const response = await request({
+			path: '/offline/connection/response',
+			data: {
+                id: connectionId,
+                response: resp,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+
 /* eventConnectionMark */
 export const eventConnectionMark = {
 	/* model */
@@ -120,12 +145,41 @@ export const eventConnectionMark = {
 	retriever: async function({
         connectionId = 0,
         mark = 0,
+        comment = null,
     }) {
 		const response = await request({
 			path: '/user/events/connection/mark',
 			data: {
                 id: connectionId,
                 mark: mark,
+                comment: comment,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+
+/* offlineConnectionMark */
+export const offlineConnectionMark = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        connectionId = 0,
+        mark = 0,
+        comment = null,
+    }) {
+		const response = await request({
+			path: '/user/offline/connection/mark',
+			data: {
+                id: connectionId,
+                mark: mark,
+                comment: comment,
             },
 		});
 		if (response.status == 200)

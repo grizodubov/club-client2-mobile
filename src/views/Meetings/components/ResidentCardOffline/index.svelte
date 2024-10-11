@@ -10,8 +10,8 @@
     import { Entity, collector } from '@/helpers/entity';
 
     import {
-        eventConnectionResponse,
-        eventConnectionMark,
+        offlineConnectionResponse,
+        offlineConnectionMark,
     } from '@/queries/event';
 
     import { type User, user } from '@/stores';
@@ -22,9 +22,7 @@
 
     export let resident: { [key: string]: any };
     export let connection: { [key: string]: any };
-    export let confirmation: { [key: string]: any };
     export let archive: boolean;
-    export let eventId: number;
 
 
     $: position = resident.position ? resident.position.toUpperCase() : '';
@@ -35,39 +33,41 @@
 
     $: mark = connection.user_1_id == currentUser.id ? connection.user_rating_1 : connection.user_rating_2;
 
+    $: response = connection.user_1_id == currentUser.id ? connection.response_1 : connection.response_2;
+
+    $: responsePartner = connection.user_1_id == currentUser.id ? connection.response_2 : connection.response_1;
+
 
     let confirmationShow = false;
     let confirmationMark: number = 0;
     let confirmationText: string[] = [];
-
     
-    /* DATA: eventConnectionResponseHandler */
-	const eventConnectionResponseHandler = new Entity({
-		model: eventConnectionResponse.model,
-		retriever: eventConnectionResponse.retriever,
+
+    /* DATA: offlineConnectionResponseHandler */
+	const offlineConnectionResponseHandler = new Entity({
+		model: offlineConnectionResponse.model,
+		retriever: offlineConnectionResponse.retriever,
 	});
 
-    let eventConnectionResponseLoading = eventConnectionResponseHandler.loading;
+    let offlineConnectionResponseLoading = offlineConnectionResponseHandler.loading;
 
 
     /* DATA: eventConnectionMarkHandler */
-	const eventConnectionMarkHandler = new Entity({
-		model: eventConnectionMark.model,
-		retriever: eventConnectionMark.retriever,
+	const offlineConnectionMarkHandler = new Entity({
+		model: offlineConnectionMark.model,
+		retriever: offlineConnectionMark.retriever,
 	});
 
-    let eventConnectionMarkLoading = eventConnectionMarkHandler.loading;
+    let offlineConnectionMarkLoading = offlineConnectionMarkHandler.loading;
 
 
     /* sendResponse */
-    function sendResponse(eventId, userId, resp) {
+    function sendResponse(connectionId, resp) {
         collector.get([
             [ 
-                eventConnectionResponseHandler,
+                offlineConnectionResponseHandler,
                 {
-                    timeNotify: null,
-                    eventId: eventId,
-                    userId: userId,
+                    connectionId: connectionId,
                     resp: resp,
                 }
             ],
@@ -79,7 +79,7 @@
     function sendMark(connectionId, mark, comment) {
         collector.get([
             [ 
-                eventConnectionMarkHandler,
+                offlineConnectionMarkHandler,
                 {
                     connectionId: connectionId,
                     mark: mark,
@@ -158,65 +158,27 @@
             {#if catalog}
                 <div class="text-left font-medium text-[10px] leading-[14px] text-moderate mt-0.5">{catalog}</div>
             {/if}
-            {#if confirmation && !archive}
+            {#if responsePartner !== null}
                 <div class="flex mt-1.5">
-                    <div class="flex justify-start items-center h-5">
-                        {#if confirmation.audit == 2}
-                            <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-success"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">пришёл</div>
-                        {:else if confirmation.audit == 0}
-                            <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-error"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">не придёт</div>
-                        {:else}
-                            <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-warning"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">планирует прийти</div>
-                        {/if}
-                    </div>
-                </div>
-            {/if}
-            {#if connection && archive}
-                <div class="flex mt-1.5">
-                    <div class="flex justify-start items-center h-5">
-                        {#if connection.state}
-                            <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-success"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">состоялась</div>
-                        {:else}
-                            <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-error"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">не состоялась</div>
-                        {/if}
-                    </div>
-                </div>
-            {/if}
-            <div class="flex mt-1.5">
-                {#if connection.response === null}
-                    {#if connection.creator_id == currentUser.id}
-                        <div class="flex justify-start items-center h-5">
-                            <svg class="w-3.5 h-3.5 text-info" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы предложили встречу</span>
-                        </div>
-                    {:else}
-                        <div class="flex justify-start items-center h-5">
-                            <svg class="w-3.5 h-3.5 text-info" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Предложил встречу</span>
-                        </div>
-                    {/if}
-                {:else if connection.response}
-                    {#if connection.creator_id == currentUser.id}
+                    {#if responsePartner}
                         <div class="flex justify-start items-center h-5">
                             <svg class="w-3.5 h-3.5 text-success" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
                             <span class="ml-1.5 text-xs leading-5 font-medium">Согласился на встречу</span>
                         </div>
                     {:else}
                         <div class="flex justify-start items-center h-5">
-                            <svg class="w-3.5 h-3.5 text-success" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы согласились провести встречу</span>
-                        </div>
-                    {/if}
-                {:else}
-                    {#if connection.creator_id == currentUser.id}
-                        <div class="flex justify-start items-center h-5">
                             <svg class="w-3.5 h-3.5 text-error" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
                             <span class="ml-1.5 text-xs leading-5 font-medium">Отказался от встречи</span>
+                        </div>
+                    {/if}
+                </div>
+            {/if}
+            {#if response !== null}
+                <div class="flex mt-1.5">
+                    {#if response}
+                        <div class="flex justify-start items-center h-5">
+                            <svg class="w-3.5 h-3.5 text-success" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
+                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы согласились провести встречу</span>
                         </div>
                     {:else}
                         <div class="flex justify-start items-center h-5">
@@ -224,28 +186,29 @@
                             <span class="ml-1.5 text-xs leading-5 font-medium">Вы отказались от встречи</span>
                         </div>
                     {/if}
-                {/if}
-            </div>
+                </div>
+            {/if}
         </div>
     </div>
+    <!--
     {#if !archive && connection.creator_id != currentUser.id}
-        {#if $eventConnectionResponseLoading}
+        {#if $offlineConnectionResponseLoading}
             <div class="w-full h-[32px] flex justify-center items-center mt-3">
                 <span class="loading loading-xs loading-bars text-front"></span>
             </div>
         {:else}
-            {#if connection.response === null}
+            {#if response === null}
                 <div class="flex justify-between w-full mt-3">
                     <button
                         class="btn btn-sm btn-success flex shrink-0 grow-0"
                         on:click="{() => {
-                            sendResponse(eventId, resident.id, true);
+                            sendResponse(connection.id, true);
                         }}"
                     >Согласиться</button>
                     <button
                         class="btn btn-sm btn-error flex shrink-0 grow-0"
                         on:click="{() => {
-                            sendResponse(eventId, resident.id, false);
+                            sendResponse(connection.id, false);
                         }}"
                     >Отклонить</button>
                 </div>
@@ -254,16 +217,17 @@
                     <button
                         class="btn btn-sm btn-front text-base-100 flex shrink-0 grow-0"
                         on:click="{() => {
-                            sendResponse(eventId, resident.id, null);
+                            sendResponse(connection.id, null);
                         }}"
                     >Передумать</button>
                 </div>
             {/if}
         {/if}
     {/if}
+    -->
     {#if archive && connection.state && mark === null}
         <div class="text-center text-sm font-semibold mt-3 leading-[18px]">Оцените встречу:</div>
-        {#if $eventConnectionMarkLoading}
+        {#if $offlineConnectionMarkLoading}
             <div class="w-full h-[32px] flex justify-center items-center mt-3">
                 <span class="loading loading-xs loading-bars text-front"></span>
             </div>
@@ -322,28 +286,9 @@
             {/if}
         </div>
         <div class="w-full px-3">
-            <div class="text-center text-sm mb-4 opacity-60">Укажите недостатки встречи, если они были:</div>
+            <div class="text-center text-sm mb-4 opacity-60">Укажите недоработки встречи, если они были:</div>
             <button
-                class="flex items-start mt-3"
-                on:click="{() => {
-                    if (confirmationText.indexOf('всё прошло отлично') == -1) {
-                        confirmationText = [ ...confirmationText, 'всё прошло отлично' ];
-                    }
-                    else {
-                        confirmationText = confirmationText.filter(t => t != 'всё прошло отлично');
-                    }
-                }}"
-            >
-                <div
-                    class="rounded-full w-6 h-6 border-2 border-success transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-success="{confirmationText.indexOf('всё прошло отлично') > -1}"
-                >
-                    <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
-                </div>
-                <div class="ml-3 text-left text-sm mt-[1px] font-medium">всё прошло отлично</div>
-            </button>
-            <button
-                class="flex items-start mt-3"
+                class="flex items-start"
                 on:click="{() => {
                     if (confirmationText.indexOf('недостаточная организация и подготовка') == -1) {
                         confirmationText = [ ...confirmationText, 'недостаточная организация и подготовка' ];
@@ -354,8 +299,8 @@
                 }}"
             >
                 <div
-                    class="rounded-full w-6 h-6 border-2 border-error transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-error="{confirmationText.indexOf('недостаточная организация и подготовка') > -1}"
+                    class="rounded-full w-6 h-6 border-2 border-secondary transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-secondary="{confirmationText.indexOf('недостаточная организация и подготовка') > -1}"
                 >
                     <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                 </div>
@@ -373,8 +318,8 @@
                 }}"
             >
                 <div
-                    class="rounded-full w-6 h-6 border-2 border-error transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-error="{confirmationText.indexOf('нет пользы для бизнеса') > -1}"
+                    class="rounded-full w-6 h-6 border-2 border-secondary transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-secondary="{confirmationText.indexOf('нет пользы для бизнеса') > -1}"
                 >
                     <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                 </div>
@@ -392,15 +337,15 @@
                 }}"
             >
                 <div
-                    class="rounded-full w-6 h-6 border-2 border-error transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-error="{confirmationText.indexOf('некомфортный личный контакт') > -1}"
+                    class="rounded-full w-6 h-6 border-2 border-secondary transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-secondary="{confirmationText.indexOf('некомфортный личный контакт') > -1}"
                 >
                     <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                 </div>
                 <div class="ml-3 text-left text-sm mt-[1px] font-medium">некомфортный личный контакт</div>
             </button>
         </div>
-        <div class="flex my-2">
+        <div class="flex mb-2">
             <button
                 class="btn btn-sm btn-front text-base-100 flex shrink-0 grow-0"
                 on:click="{() => {
