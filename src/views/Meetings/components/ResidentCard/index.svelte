@@ -128,6 +128,7 @@
                     </div>
                 {/if}
             </button>
+            <!--
             {#if mark !== null}
                 <button
                     class="w-6 h-6 mt-2"
@@ -144,6 +145,7 @@
                     {/if}
                 </button>
             {/if}
+            -->
         </div>
         <div class="ml-3 shrink-1 grow-1 w-full">
             <div class="flex items-center h-[24px]">
