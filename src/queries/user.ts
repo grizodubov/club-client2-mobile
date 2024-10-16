@@ -1,6 +1,31 @@
 import { request } from '@/helpers/request';
 
 
+/* userCommunityManager */
+export const userCommunityManager = {
+	/* model */
+	model: {
+        community_manager: {
+            id: 0,
+            phone: '',
+            name: '',
+            avatar_hash: '',
+            link_telegram: '',
+        }
+    },
+	/* retriever */
+	retriever: async function() {
+		const response = await request({
+			path: '/user/community_manager',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
 /* residentsList */
 export const residentsList = {
 	/* model */

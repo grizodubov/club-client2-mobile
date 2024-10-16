@@ -52,7 +52,7 @@ const routes: PathRoute[] = [
 		layout: 'Main',
 		component: 'Communities',
 		meta: {
-			name: 'Сообщества',
+			name: 'Коммуникации',
 		},
 	},
     /* **** */
