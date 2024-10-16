@@ -2,11 +2,15 @@
     import { onMount } from 'svelte';
     import { fade } from 'svelte/transition';
 
-    import { Filters, InputText, CommunityCard } from './components';
+    import { Filters, InputText, CommunityCard, ModalPhoto } from './components';
 
     import { modalCreate, modalDestroy, /* modalShow */ } from '@/helpers/modal';
 
     import { type CommunitiesFilters, communitiesFilters, activeCommunitiesFiltersAmount } from '@/stores';
+
+    import { Avatar } from '@/components';
+
+    import { nameNormalization } from '@/utils/names';
 
     import { subscribe } from '@/helpers/notification';
     
@@ -14,6 +18,9 @@
     import {
         communitiesList,
     } from '@/queries/community';
+    import {
+        userCommunityManager,
+    } from '@/queries/user';
 
 
     // svelte-ignore unused-export-let
@@ -31,10 +38,16 @@
     let communitySelected: any = undefined;
 
 
+    let communityManager: any = null;
+
+
     let tmFilter: ReturnType<typeof setTimeout> | null = null;
 
     
     let start = true;
+
+
+    let photoShow = false;
 
 
     $: filters, communities, filterCommunities();
@@ -90,6 +103,24 @@
     let communitiesFilterLoading = false;
 
 
+
+    /* DATA: userCommunityManagerHandler */
+    const userCommunityManagerHandler = new Entity({
+		model: userCommunityManager.model,
+		retriever: userCommunityManager.retriever,
+        onSuccess: data => {
+            communityManager = data.community_manager;
+        },
+    });
+
+
+    /* sendTelegramMessage */
+    function sendTelegramMessage(telegramId: string) {
+        const id = telegramId.replace(/^@+/, '');
+        window.location.href = 'https://t.me/' + id;
+    }
+    
+    
     /* communitiesSorting */
     function communitiesSorting(a: any, b: any) {
         let weightA = 0;
@@ -166,6 +197,12 @@
     function get() {
         collector.get([
             [ 
+                userCommunityManagerHandler,
+                {}
+            ],
+        ]);
+        collector.get([
+            [ 
                 communitiesListHandler,
                 {}
             ],
@@ -210,7 +247,7 @@
                 </button>
             </div>
             <div class="mt-4 leading-[56px] h-[56px] shrink-1 grow-1 text-center text-base-100 text-xl font-medium">
-                Сообщества
+                Коммуникации
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
                 <!--
@@ -240,6 +277,52 @@
                         bind:value="{filters.name}"
                     />
                 </div>
+                {#if communityManager}
+                    <div class="absolute w-full px-3 h-[144px] mt-[104px] z-11">
+                        <div class="flex items-start p-4 justify-between rounded-2xl bg-base-200 w-full h-full">
+                            <div class="w-[80px] h-[80px] shrink-0 grow-0">
+                                <button
+                                    on:click="{() => {
+                                        if (communityManager && communityManager.avatar_hash)
+                                            photoShow = true;
+                                    }}"
+                                >
+                                    <Avatar
+                                        user="{{
+                                            id: communityManager.id,
+                                            name: communityManager.name,
+                                            avatar_hash: communityManager.avatar_hash,
+                                            roles: [ 'client' ],
+                                            telegram: '',
+                                        }}"
+                                        scaleLetters="2.5"
+                                    />
+                                </button>
+                            </div>
+                            <div class="w-full srink-1 grow-1 ml-4">
+                                <div class="text-xs font-medium text-front">Ваш коммьюнити-менеджер:</div>
+                                <div class="text font-medium text-[18px] whitespace-nowrap">{nameNormalization(communityManager.name, 2)}</div>
+                                <div class="flex items-center mt-2">
+                                    <svg class="w-4 h-4 text-info" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M20.33 21.48l2.24-2.24a2.19 2.19 0 0 1 2.34-.48l2.73 1.09a2.18 2.18 0 0 1 1.36 2v5A2.17 2.17 0 0 1 26.72 29C7.59 27.81 3.73 11.61 3 5.41A2.17 2.17 0 0 1 5.17 3H10a2.16 2.16 0 0 1 2 1.36l1.09 2.73a2.16 2.16 0 0 1-.47 2.34l-2.24 2.24s1.29 8.73 9.95 9.81z" fill="currentColor"></path></svg>
+                                    <span class="text-sm ml-1.5"><a href="tel:{communityManager.phone}">{communityManager.phone}</a></span>
+                                </div>
+                                {#if communityManager.link_telegram}
+                                    <div class="flex justify-start mt-3">
+                                        <button
+                                            class="flex items-center rounded-full bg-info text-base-100 px-3 h-7"
+                                            on:click="{() => {
+                                                sendTelegramMessage(communityManager.link_telegram);
+                                            }}"
+                                        >
+                                            <span class="text-sm mb-[2px] pr-2">Отправить сообщение</span>
+                                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 448 512"><path d="M446.7 98.6l-67.6 318.8c-5.1 22.5-18.4 28.1-37.3 17.5l-103-75.9l-49.7 47.8c-5.5 5.5-10.1 10.1-20.7 10.1l7.4-104.9l190.9-172.5c8.3-7.4-1.8-11.5-12.9-4.1L117.8 284L16.2 252.2c-22.1-6.9-22.5-22.1 4.6-32.7L418.2 66.4c18.4-6.9 34.5 4.1 28.5 32.2z" fill="currentColor"></path></svg>
+                                        </button>
+                                    </div>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                {/if}
                 {#if ($communitiesListLoading && start) || communitiesFilterLoading}
                     <div class="w-full h-full flex justify-center items-center">
                         <span class="loading loading-bars text-front"></span>
@@ -248,7 +331,7 @@
                     <div class="h-full scrollable-y">
                         {#each communitiesFiltered as community (community.id)}
                             <div
-                                class="mb-5 first:mt-[104px]"
+                                class="mb-5 first:mt-[268px]"
                                 in:fade="{{ duration: 100 }}"
                             >
                                 <CommunityCard
@@ -266,5 +349,15 @@
             </div>
         </div>
     </div>
+
+    <ModalPhoto
+        bind:open="{photoShow}"
+    >
+        {#if communityManager && communityManager.avatar_hash}
+            <div class="flex w-full h-full">
+                <img class="w-full h-full" src="https://media.clubgermes.ru/n/{communityManager.avatar_hash}.jpg" alt="" />
+            </div>
+        {/if}
+    </ModalPhoto>
 
 </div>
