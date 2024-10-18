@@ -54,11 +54,15 @@
         const ln = list.length;
         for (let i = 0; i < ln; i ++) {
             const users = list[i].users.filter(u => {
-                if (!archive)
-                    return true;
-                const mark = u.connection.user_1_id == currentUser.id ? u.connection.user_rating_1 : u.connection.user_rating_2;
-                return ((u.connection.state && f.state.t) || (!u.connection.state && f.state.f)) &&
-                    ((mark !== null && f.mark.t) || (mark === null && f.mark.f));
+                if (archive) {
+                    if (u.connection.state) {
+                        const mark = u.connection.user_1_id == currentUser.id ? u.connection.user_rating_1 : u.connection.user_rating_2;
+                        return (mark !== null && f.mark.t) || (mark === null && f.mark.f);
+                    }
+                }
+                else {
+                    return !u.connection.state;
+                }
             });
             if (users.length) {
                 result.push(Object.assign(list[i], { 'usersFiltered': users }));
@@ -73,9 +77,11 @@
         const result: any[] = [];
         const ln = list.length;
         for (let i = 0; i < ln; i ++) {
-            const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
-            if ((mark !== null && f.mark.t) || (mark === null && f.mark.f))
-                result.push(list[i]);
+            if (list[i].connection.state) {
+                const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
+                if ((mark !== null && f.mark.t) || (mark === null && f.mark.f))
+                    result.push(list[i]);
+            }
         }
         return result;
     }
@@ -187,6 +193,24 @@
                     </button>
                 </div>
                 {#if archive}
+                    <div class="w-full px-3 mb-4 shrink-0 grow-0">
+                        <button
+                            class="flex items-center justify-start ml-3"
+                            on:click="{() => {
+                                filter.mark.t = !filter.mark.t;
+                                filter.mark.f = true;
+                            }}"
+                        >
+                            <span
+                                class="rounded-full w-7 h-7 border-2 border-success transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                class:bg-success="{!filter.mark.t}"
+                            >
+                                <svg class="w-4 h-4 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                            </span>
+                            <span class="font-medium text-sm ml-2.5">Показать только требующие оценку</span>
+                        </button>
+                    </div>
+                    <!--
                     <div class="w-full flex justify-about px-3 items-center mb-4 srink-0 grow-0">
                         <div class="w-full">
                             <div class="text-left text-xs mb-2">Встреча состоялась:</div>
@@ -288,46 +312,8 @@
                                 </button>
                             </div>
                         </div>
-                    
-<!--
-                        <div class="flex w-full justify-between">
-                            <button
-                                class="border border-success rounded-[10px] h-8 px-2 leading-3 text-[10px] font-medium flex items-center w-full justify-center"
-                                class:text-base-100="{filter.state.t}"
-                                class:bg-success="{filter.state.t}"
-                                on:click="{() => {
-                                    filter.state.t = !filter.state.t;
-                                }}"
-                            >Состоялась</button>
-                            <button
-                                class="ml-1 border border-success rounded-[10px] h-8 px-2 leading-3 text-[10px] font-medium flex items-center w-full justify-center"
-                                class:text-base-100="{filter.state.f}"
-                                class:bg-success="{filter.state.f}"
-                                on:click="{() => {
-                                    filter.state.f = !filter.state.f;
-                                }}"
-                            >Не состоялась</button>
-                        </div>
-                        <div class="ml-2 flex w-full justify-between">
-                            <button
-                                class="border border-success rounded-[10px] h-8 px-2 leading-3 text-[10px] font-medium flex items-center w-full justify-center"
-                                class:text-base-100="{filter.mark.t}"
-                                class:bg-success="{filter.mark.t}"
-                                on:click="{() => {
-                                    filter.mark.t = !filter.mark.t;
-                                }}"
-                            >Есть оценка</button>
-                            <button
-                                class="ml-1 border border-success rounded-[10px] h-8 px-2 leading-3 text-[10px] font-medium flex items-center w-full justify-center"
-                                class:text-base-100="{filter.mark.f}"
-                                class:bg-success="{filter.mark.f}"
-                                on:click="{() => {
-                                    filter.mark.f = !filter.mark.f;
-                                }}"
-                            >Нет оценки</button>
-                        </div>
--->
                     </div>
+                    -->
                 {/if}
                 <div class="w-full h-full shrink-1 grow-1 scrollable-y">
                     {#if $userEventsConnectionsAllLoading && start}

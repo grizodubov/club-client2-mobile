@@ -101,7 +101,7 @@ function ajaxRequest({ method, url, body }: RequestAjaxOptions): Promise<HTTPRes
 			if ([ 'POST', 'PUT' ].indexOf(method) > -1)
 				xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             /* timeout */
-			xhr.timeout = 7000;
+			xhr.timeout = 10000;
             /* timeout exception */
 			xhr.ontimeout = () => {
 				reject({
