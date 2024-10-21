@@ -128,13 +128,17 @@
                     </div>
                 {/if}
             </button>
-            <!--
             {#if mark !== null}
+                <!--
                 <button
                     class="w-6 h-6 mt-2"
                     on:click="{() => {
                         sendMark(connection.id, null, null);
                     }}"
+                >
+                -->
+                <div
+                    class="w-6 h-6 mt-2"
                 >
                     {#if mark == 2}
                         <svg class="w-6 h-6 text-success" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778z" fill="currentColor"></path></g></svg>
@@ -143,9 +147,8 @@
                     {:else if mark == 0}
                         <svg class="w-6 h-6 text-error" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778zm1.21.937L9.74 8.614a1.35 1.35 0 0 1-1.016.739l-5.05.734l3.654 3.562c.318.31.463.757.388 1.195l-.862 5.029l4.516-2.375a1.35 1.35 0 0 1 1.257 0l4.516 2.375l-.862-5.03a1.35 1.35 0 0 1 .388-1.194l3.654-3.562l-5.05-.734a1.35 1.35 0 0 1-1.016-.739L11.998 4.04z" fill="currentColor"></path></g></svg>
                     {/if}
-                </button>
+                </div>
             {/if}
-            -->
         </div>
         <div class="ml-3 shrink-1 grow-1 w-full">
             <div class="flex items-center h-[24px]">
@@ -165,13 +168,13 @@
                     <div class="flex justify-start items-center h-5">
                         {#if confirmation.audit == 2}
                             <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-success"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">пришёл</div>
+                            <div class="ml-1.5 text-xs leading-5 font-medium">Пришёл</div>
                         {:else if confirmation.audit == 0}
                             <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-error"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">не придёт</div>
+                            <div class="ml-1.5 text-xs leading-5 font-medium">Не придёт</div>
                         {:else}
                             <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-warning"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">планирует прийти</div>
+                            <div class="ml-1.5 text-xs leading-5 font-medium">Планирует прийти</div>
                         {/if}
                     </div>
                 </div>
@@ -181,10 +184,10 @@
                     <div class="flex justify-start items-center h-5">
                         {#if connection.state}
                             <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-success"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">состоялась</div>
+                            <div class="ml-1.5 text-xs leading-5 font-medium">Состоялась</div>
                         {:else}
                             <div class="w-3.5 h-3.5 rounded-full overflow-hidden bg-error"></div>
-                            <div class="ml-1.5 text-xs leading-5 font-medium">не состоялась</div>
+                            <div class="ml-1.5 text-xs leading-5 font-medium">Не состоялась</div>
                         {/if}
                     </div>
                 </div>
@@ -206,24 +209,24 @@
                     {#if connection.creator_id == currentUser.id}
                         <div class="flex justify-start items-center h-5">
                             <svg class="w-3.5 h-3.5 text-success" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Согласился на встречу</span>
+                            <span class="ml-1.5 text-xs leading-5 font-medium">Согласился</span>
                         </div>
                     {:else}
                         <div class="flex justify-start items-center h-5">
                             <svg class="w-3.5 h-3.5 text-success" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы согласились провести встречу</span>
+                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы согласились</span>
                         </div>
                     {/if}
                 {:else}
                     {#if connection.creator_id == currentUser.id}
                         <div class="flex justify-start items-center h-5">
                             <svg class="w-3.5 h-3.5 text-error" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Отказался от встречи</span>
+                            <span class="ml-1.5 text-xs leading-5 font-medium">Отказался</span>
                         </div>
                     {:else}
                         <div class="flex justify-start items-center h-5">
                             <svg class="w-3.5 h-3.5 text-error" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78c16.52 18.85 42.36 58.23 52.21 91.45c.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78c9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176C352 78.61 272.91-.3 175.45 0C73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80c0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112c8.84 0 16 7.16 16 16s-7.16 16-16 16z" fill="currentColor"></path></svg>
-                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы отказались от встречи</span>
+                            <span class="ml-1.5 text-xs leading-5 font-medium">Вы отказались</span>
                         </div>
                     {/if}
                 {/if}

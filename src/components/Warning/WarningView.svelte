@@ -80,12 +80,14 @@
 
 
 <div
-	class="flex justify-between items-start box-border p-4 w-[300px] bg-error text-base-100 rounded-lg mt-3 text-sm transition-all opacity-0 border-2 border-base-100"
+	class="flex justify-between items-start box-border p-4 w-[300px] text-base-100 rounded-lg mt-3 text-sm transition-all opacity-0 border-2 border-base-100"
 	class:positioned="{pos}"
 	class:opened="{_state == 'open'}"
 	class:closed="{_state == 'close'}"
+    class:bg-error="{message != 'Незавершённый запрос' && message != 'Прерванный запрос' && message != 'Непредвиденная ошибка'}"
+    class:bg-success="{message == 'Незавершённый запрос' || message == 'Прерванный запрос' || message == 'Непредвиденная ошибка'}"
 	style="{pos}"
 	bind:this="{wrapper}"
 >
-	<div class="text-sm">{message}</div>
+	<div class="text-sm">{message == 'Незавершённый запрос' || message == 'Прерванный запрос' || message == 'Непредвиденная ошибка' ? 'Неустойчивое интернет-соединение. Подождите...' : message}</div>
 </div>
