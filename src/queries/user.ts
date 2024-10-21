@@ -389,10 +389,12 @@ export const userEventsConnections = {
 	retriever: async function({
         targetId = 0,
     }) {
+        const dt = new Date();
 		const response = await request({
 			path: '/user/events/connections',
 			data: {
                 target_id: targetId,
+                dt: dt.getFullYear().toString() + '-' + ('0' + (dt.getMonth() + 1).toString()).slice(-2) + '-' + ('0' + dt.getDate().toString()).slice(-2),
             },
 		});
 		if (response.status == 200)
@@ -413,10 +415,12 @@ export const userEventsConnectionsAll = {
 	retriever: async function({
         archive = false,
     }) {
+        const dt = new Date();
 		const response = await request({
 			path: '/user/events/connections/all',
 			data: {
                 archive: archive,
+                dt: dt.getFullYear().toString() + '-' + ('0' + (dt.getMonth() + 1).toString()).slice(-2) + '-' + ('0' + dt.getDate().toString()).slice(-2),
             },
 		});
 		if (response.status == 200)
