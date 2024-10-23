@@ -288,9 +288,28 @@
             {/if}
         </div>
         <div class="w-full px-3">
-            <div class="text-center text-sm mb-4 opacity-60">Укажите недоработки встречи, если они были:</div>
+            <div class="text-center text-sm mb-4 opacity-60">Укажите недостатки встречи, если они были:</div>
             <button
-                class="flex items-start"
+                class="flex items-start mt-3"
+                on:click="{() => {
+                    if (confirmationText.indexOf('всё прошло отлично') == -1) {
+                        confirmationText = [ ...confirmationText, 'всё прошло отлично' ];
+                    }
+                    else {
+                        confirmationText = confirmationText.filter(t => t != 'всё прошло отлично');
+                    }
+                }}"
+            >
+                <div
+                    class="rounded-full w-6 h-6 border-2 border-success transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-success="{confirmationText.indexOf('всё прошло отлично') > -1}"
+                >
+                    <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                </div>
+                <div class="ml-3 text-left text-sm mt-[1px] font-medium">всё прошло отлично</div>
+            </button>
+            <button
+                class="flex items-start mt-3"
                 on:click="{() => {
                     if (confirmationText.indexOf('недостаточная организация и подготовка') == -1) {
                         confirmationText = [ ...confirmationText, 'недостаточная организация и подготовка' ];
@@ -301,12 +320,12 @@
                 }}"
             >
                 <div
-                    class="rounded-full w-6 h-6 border-2 border-secondary transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-secondary="{confirmationText.indexOf('недостаточная организация и подготовка') > -1}"
+                    class="rounded-full w-6 h-6 border-2 border-error transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-error="{confirmationText.indexOf('недостаточная организация и подготовка') > -1}"
                 >
                     <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                 </div>
-                <div class="ml-3 text-left text-sm mt-[1px] font-medium">недостаточная организация и подготовка</div>
+                <div class="ml-3 text-left text-sm mt-[1px] font-medium">недостаточная организация встречи</div>
             </button>
             <button
                 class="flex items-start mt-3"
@@ -320,8 +339,8 @@
                 }}"
             >
                 <div
-                    class="rounded-full w-6 h-6 border-2 border-secondary transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-secondary="{confirmationText.indexOf('нет пользы для бизнеса') > -1}"
+                    class="rounded-full w-6 h-6 border-2 border-error transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-error="{confirmationText.indexOf('нет пользы для бизнеса') > -1}"
                 >
                     <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                 </div>
@@ -339,15 +358,15 @@
                 }}"
             >
                 <div
-                    class="rounded-full w-6 h-6 border-2 border-secondary transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
-                    class:bg-secondary="{confirmationText.indexOf('некомфортный личный контакт') > -1}"
+                    class="rounded-full w-6 h-6 border-2 border-error transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                    class:bg-error="{confirmationText.indexOf('некомфортный личный контакт') > -1}"
                 >
                     <svg class="w-3 h-3 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                 </div>
                 <div class="ml-3 text-left text-sm mt-[1px] font-medium">некомфортный личный контакт</div>
             </button>
         </div>
-        <div class="flex mb-2">
+        <div class="flex my-2">
             <button
                 class="btn btn-sm btn-front text-base-100 flex shrink-0 grow-0"
                 on:click="{() => {
