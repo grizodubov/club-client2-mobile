@@ -384,6 +384,7 @@ export const userEventsConnections = {
 	/* model */
 	model: {
         events: [],
+        offline: [],
     },
 	/* retriever */
 	retriever: async function({
