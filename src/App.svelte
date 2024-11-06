@@ -512,20 +512,20 @@
     >
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
+        <div class="absolute w-full h-full flex flex-col justify-end items-center">
+            <div class="text text-base-100 mb-[20px] text-xs text-center px-6">Отметьте пункты, характеризующие общение, и сдвиньте карточку налево или направо.</div>
+        </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-[32px]">Оцените общение с членами клуба</div>
+            <div class="text text-base-100 mt-[20px] text-sm">Дайте оценку личному контакту</div>
             <button
-                class="btn btn-sm px-2 btn-front text-base-100 mt-3"
+                class="btn btn-xs px-2 btn-front text-base-100 mt-2.5"
                 on:click="{() => {
                     cardsAmount = 0;
                     setTimeout(() => { cardsHide = true; }, 400);
                 }}"
             >
-                <span class="leading-[18px] normal-case">В другой раз</span>
+                <span class="normal-case">В другой раз</span>
             </button>
-        </div>
-        <div class="absolute w-full h-full flex flex-col justify-end items-center">
-            <div class="text text-base-100 mb-[32px] text-xs text-center px-6">Отметьте пункты, характеризующие общение, и сдвиньте карточку налево или направо.</div>
         </div>
         <div class="absolute left-[0px] right-[0px] top-[0px] bottom-[0px] m-[auto] w-[310px] h-[470px]">
             <SwipeDeck
@@ -561,7 +561,7 @@
                 >
                     <div class="shrink-1 grow-1 flex flex-col items-center overflow-hidden">
                         <div
-                            class="w-[120px] h-[120px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
+                            class="w-[112px] h-[112px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
                         >
                             <Avatar
                                 user="{{
@@ -590,18 +590,19 @@
                             </button>
                             -->
                         </div>
-                        <div class="font-medium text-[21px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
+                        <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
                         <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.user.position}</div>
                         <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.user.company}</div>
                         {#if card.event}
-                            <div class="font-semibold leading-[19px] mt-4 text-center text-xs">ВСТРЕЧА НА МЕРОПРИЯТИИ</div>
-                            <div class="text-center text-xs text-center leading-[14px] mt-[2px]">{card.event.name}</div>
+                            <div class="font-semibold leading-[19px] mt-3 text-center text-xs">ВСТРЕЧА НА МЕРОПРИЯТИИ</div>
+                            <div class="font-semibold text-center text-xs text-center leading-[14px] mt-[1px]">{card.event.name}</div>
                         {:else}
-                            <div class="font-semibold text-[15px] leading-[19px] mt-4 text-center text-xs">ОБМЕН КОНТАКТАМИ</div>
+                            <div class="font-semibold text-[15px] leading-[19px] mt-3 text-center text-xs">ОБМЕН КОНТАКТАМИ</div>
                         {/if}
                     </div>
 
                     <div class="mb-1">
+                        <div class="text-center text-xs text-center leading-[14px] mb-3">Укажите недостатки встречи, если они были:</div>
                         <button
                             class="flex items-start"
                             on:click="{() => {
@@ -684,13 +685,13 @@
                         </button>
                     </div>
 
-                    <div class="absolute rounded-[14px] h-[28px] bottom-[-60px] left-[24px] right-[24px] flex justify-between items-center">
+                    <div class="absolute rounded-[14px] h-[28px] bottom-[-52px] left-[24px] right-[24px] flex justify-between items-center">
                         <div class="h-[28px] w-[100px] text-center bg-error rounded-[14px] flex items-center justify-center px-1.5 text-xs font-medium text-base-100">негативно</div>
                         <div class="h-[28px] w-[100px] text-center bg-success rounded-[14px] flex items-center justify-center px-1.5 text-xs font-medium text-base-100">позитивно</div>
                     </div>
                 </div>
                 <svelte:fragment slot="swipe-btn">
-                    <div class="absolute bottom-[-56px] w-full flex justify-between">
+                    <div class="absolute bottom-[-52px] w-full flex justify-between">
                         <div class="w-12 h-12 flex items-center justify-center text-base-300">
                             <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M4.31 9.5l2.963 2.963a.75.75 0 0 1-.977 1.133l-.084-.073L1.97 9.281a.75.75 0 0 1-.073-.977l.073-.084l4.242-4.243a.75.75 0 0 1 1.134.977l-.073.084L4.31 8H10a7.75 7.75 0 0 1 7.746 7.504l.004.247a.75.75 0 0 1-1.5 0a6.25 6.25 0 0 0-6.02-6.246L10 9.5H4.31l2.963 2.963L4.31 9.5z" fill="currentColor"></path></g></svg>
                         </div>
