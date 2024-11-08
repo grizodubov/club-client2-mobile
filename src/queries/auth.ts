@@ -340,3 +340,21 @@ export const deviceRegister = {
 		return null;
 	}
 };
+
+
+/* EXPORT: legalSubmit */
+export const legalSubmit = {
+	/* model */
+	model: {},
+	/* retriever */
+	retriever: async function()
+    {
+		const response: HTTPResponse = await request({
+			path: '/legal/submit',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

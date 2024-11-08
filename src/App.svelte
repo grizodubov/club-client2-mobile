@@ -4,7 +4,7 @@
     import { SafeArea } from 'capacitor-plugin-safe-area';
     import { Device } from '@capacitor/device';
 
-    import { Avatar, TagTiny } from '@/components';
+    import { Avatar, UserAgreement } from '@/components';
 
     import { SwipeDeck } from 'svelte-swipe-cards';
 
@@ -29,7 +29,7 @@
 
     import { router, RouterView, currentRoute } from '@/libs/Router';
 
-    import { user, states } from '@/stores';
+    import { type User, user, states } from '@/stores';
 
     import { type Modal, modal } from '@/helpers/modal';
 
@@ -44,40 +44,67 @@
     import { Entity, collector } from '@/helpers/entity';
     import {
 		deviceRegister,
+        legalSubmit,
 	} from '@/queries/auth';
 
     import { closeEventRegistrationPopup } from '@/helpers/popups';
 
     import {
         userContactAdd,
-        userFavorites,
-        userFavoritesSet,
 	} from '@/queries/user';
 
+    import {
+        connectionsHot,
+	} from '@/queries/connection';
 
-    /* DATA: userFavoritesHandler */
-	const userFavoritesHandler = new Entity({
-		model: userFavorites.model,
-		retriever: userFavorites.retriever,
+    import {
+        offlineConnectionMark,
+        eventConnectionMark,
+    } from '@/queries/event';
+
+
+    /* DATA: connectionsHotHandler */
+	const connectionsHotHandler = new Entity({
+		model: connectionsHot.model,
+		retriever: connectionsHot.retriever,
         onSuccess: data => {
-            cards = data.users;
-            cardsAmount = cards.length;
+            cardsAmount = data.events.length + data.offline.length;
+            cards = [ ...data.events, ...data.offline ]
             cardsStates = cards.reduce(
                 (states, card) => {
-                    return { ...states, [card.id.toString()]: null }
+                    return { ...states, [card.connection.id.toString()]: null }
+                }, {}
+            );
+            cardsComments = cards.reduce(
+                (states, card) => {
+                    return { ...states, [card.connection.id.toString()]: [] }
                 }, {}
             );
             if (!cardsAmount)
-                cardsHide = true;
+                cardsShow = false;
         },
 	});
 
 
-    /* DATA: userFavoritesSetHandler */
-	const userFavoritesSetHandler = new Entity({
-		model: userFavoritesSet.model,
-		retriever: userFavoritesSet.retriever,
+    /* DATA: eventConnectionMarkHandler */
+	const offlineConnectionMarkHandler = new Entity({
+		model: offlineConnectionMark.model,
+		retriever: offlineConnectionMark.retriever,
 	});
+
+
+    /* DATA: eventConnectionMarkHandler */
+	const eventConnectionMarkHandler = new Entity({
+		model: eventConnectionMark.model,
+		retriever: eventConnectionMark.retriever,
+	});
+
+
+    /* DATA: userFavoritesSetHandler */
+	//const userFavoritesSetHandler = new Entity({
+	//	model: userFavoritesSet.model,
+	//	retriever: userFavoritesSet.retriever,
+	//});
 
 
     /* DATA: deviceRegisterHandler */
@@ -94,11 +121,20 @@
 	});
 
 
+    /* DATA: legalSubmitHandler */
+	const legalSubmitHandler = new Entity({
+		model: legalSubmit.model,
+		retriever: legalSubmit.retriever,
+	});
+
+
     /* web components */
     register();
 
 
     let userId = user.pull('id');
+
+    $: currentUser = $user as User;
 
     let main:any;
 
@@ -119,8 +155,11 @@
     let cards: any[] = [];
     let cardsAmount: number = 0;
     let cardsStates = {};
-    let cardsHide = false;
-    let cardsContacts = {};
+    let cardsComments = {};
+    let cardsShow = true;
+    //let cardsContacts = {};
+
+    let legalShow = true;
 
 
     /* userChange */
@@ -134,8 +173,8 @@
                 //console.log('url: ', currentUrl, userId);
                 if (currentUrl) {
                     if (userId) {
-                        cardsHide = false;
-                        getFavorites();
+                        cardsShow = true;
+                        getConnections();
                         const url = router.record('onLogin', '/', true);
                         if (typeof url === 'string')
                             router.go(url);
@@ -333,18 +372,48 @@
     }
 
 
-    /* getFavorites */
-    function getFavorites() {
+    /* getConnections */
+    function getConnections() {
         collector.get([
             [ 
-                userFavoritesHandler,
+                connectionsHotHandler,
                 {}
             ],
         ]);
     }
 
 
+    /* sendMark */
+    function sendMark(event, connectionId, mark, comment) {
+        if (event) {
+            collector.get([
+                [ 
+                    eventConnectionMarkHandler,
+                    {
+                        connectionId: connectionId,
+                        mark: mark,
+                        comment: comment === null ? null : comment.join(', '),
+                    }
+                ],
+            ]);
+        }
+        else {
+            collector.get([
+                [ 
+                    offlineConnectionMarkHandler,
+                    {
+                        connectionId: connectionId,
+                        mark: mark,
+                        comment: comment === null ? null : comment.join(', '),
+                    }
+                ],
+            ]);
+        }
+    }
+
+
     /* setFavorites */
+    /*
     function setFavorites(targetId, flag) {
         collector.get([
             [ 
@@ -356,6 +425,7 @@
             ],
         ]);
     }
+    */
 
 
     /* addContact */
@@ -366,6 +436,17 @@
                 {
                     contactId: id,
                 }
+            ],
+        ]);
+    }
+
+
+    /* submitLegal */
+    function submitLegal() {
+        collector.get([
+            [ 
+                legalSubmitHandler,
+                {}
             ],
         ]);
     }
@@ -392,10 +473,10 @@
             main.addEventListener('click', blurInputs);
         const id = user.pull('id');
         if (id) {
-            getFavorites();
+            getConnections();
         }
         else {
-            cardsHide = true;
+            cardsShow = false;
         }
         return () => {
             if (main)
@@ -409,46 +490,6 @@
 
 
 </script>
-
-
-<style>
-    .with-dot {
-        padding-right: 10px;
-        margin-left: 5px;
-    }
-
-    .with-dot:first-child {
-        padding-left: 10px;
-        margin-left: 0px;
-    }
-
-    .with-dot:first-child:before {
-        display: inline-block;
-        width: 5px;
-        height: 5px;
-        margin-bottom: 1px;
-        border-radius: 100%;
-        margin-right: 5px;
-        margin-left: -10px;
-        background-color: #ffbf00;
-        color: #ffbf00;
-        content: '';
-    }
-
-    .with-dot:after {
-        display: inline-block;
-        width: 5px;
-        height: 5px;
-        margin-bottom: 1px;
-        border-radius: 100%;
-        margin-left: 5px;
-        margin-right: -10px;
-        background-color: #ffbf00;
-        color: #ffbf00;
-        content: '';
-
-    }
-</style>
 
 
 <main bind:this="{main}">
@@ -510,66 +551,100 @@
 </div>
 
 
-{#if !cardsHide}
+{#if currentUser.id && !currentUser.legal}
     <div
-        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-20"
-        class:opacity-0="{cardsAmount == 0}"
-        class:opacity-100="{cardsAmount > 0}"
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-[21]"
+        class:opacity-0="{!legalShow}"
+        class:opacity-100="{legalShow}"
     >
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
-        <div class="absolute w-full h-full flex flex-col jsutify-start items-center">
-            <div class="text text-base-100 mt-[32px]">Оцените потенциальных партнеров</div>
+        <div class="absolute w-full h-full flex flex-col justify-start items-center">
+            <div class="text text-base-100 mt-5 text-sm shrink-0 grow-0 mb-3">Ознакомьтесь с соглашениями</div>
+            <div class="flex justify-center w-full shrink-0 grow-0 mb-5">
+                <div class="text-warning shrink-0 grow-0 text-xs w-[42%] text-center">Политика конфиденциальности</div>
+            </div>
+            <div class="w-[90%] h-full bg-base-200 shrink-1 grow-1 rounded-lg overflow-hidden">
+                <pre class="w-full h-full text-xs whitespace-pre-wrap p-4 overflow-y-auto"><UserAgreement /></pre>
+            </div>
             <button
-                class="btn btn-sm px-2 btn-front text-base-100 mt-3"
+                class="rounded-lg px-5 btn-front text-base-100 mt-2.5 mb-7 text-sm font-semibold h-[32px] leading-[32px] py-0 shrink-0 grow-0 mt-5"
                 on:click="{() => {
-                    cardsAmount = 0;
-                    setTimeout(() => { cardsHide = true; }, 400);
+                    legalShow = false;
+                    setTimeout(() => { submitLegal(); }, 400);
                 }}"
             >
-                <span class="leading-[18px] normal-case">В другой раз</span>
+                <span class="normal-case">Принять</span>
             </button>
         </div>
-        <div class="absolute left-[0px] right-[0px] top-[0px] bottom-[0px] m-[auto] w-[310px] h-[450px]">
+    </div>
+{/if}
+
+
+{#if currentUser.id && cardsShow}
+    <div
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-20"
+        class:opacity-0="{cardsAmount == 0}"
+        class:opacity-100="{cardsAmount > 0 && currentUser.legal}"
+    >
+        <div class="absolute bg-scene opacity-90 w-full h-full">
+        </div>
+        <div class="absolute w-full h-full flex flex-col justify-end items-center">
+            <div class="text text-base-100 mb-5 text-xs text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
+        </div>
+        <div class="absolute w-full h-full flex flex-col justify-start items-center">
+            <div class="text text-base-100 mt-5 text-sm">Дайте оценку личному контакту</div>
+            <button
+                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
+                on:click="{() => {
+                    cardsAmount = 0;
+                    setTimeout(() => { cardsShow = false; }, 400);
+                }}"
+            >
+                <span class="normal-case">В другой раз</span>
+            </button>
+        </div>
+        <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[470px]">
             <SwipeDeck
                 {cards}
                 let:card
                 bind:this={deck}
-                threshold="{10}"
+                threshold="{30}"
                 transitionDuration="{300}"
                 allowedDirections="horizontal"
                 on:swipe="{(e) => {
                     //console.log('swipe', e.detail.index);
                     cardsAmount = cardsAmount - 1;
-                    const id = cards[e.detail.index]['id'];
-                    setFavorites(id, cardsStates[id.toString()]);
+                    const id = cards[e.detail.index]['connection']['id'];
+                    //setFavorites(id, cardsStates[id.toString()]);
+                    sendMark(cards[e.detail.index]['event'] ? true : false, id, cardsStates[id.toString()] ? 2 : 0, cardsComments[id.toString()]);
                     if (!cardsAmount)
-                        setTimeout(() => { cardsHide = true }, 400);
+                        setTimeout(() => { cardsShow = false }, 400);
                 }}"
                 on:move_left="{(e) => {
-                    const id = cards[e.detail.index]['id'];
+                    const id = cards[e.detail.index]['connection']['id'];
                     cardsStates[id.toString()] = false;
                 }}"
                 on:move_right="{(e) => {
-                    const id = cards[e.detail.index]['id'];
+                    const id = cards[e.detail.index]['connection']['id'];
                     cardsStates[id.toString()] = true;
                 }}"
             >
                 <div
-                    class="w-[310px] h-[450px] rounded-xl transition-colors p-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
-                    class:bg-front="{cardsStates[card.id.toString()] === null}"
-                    class:bg-success="{cardsStates[card.id.toString()] === true}"
-                    class:bg-error="{cardsStates[card.id.toString()] === false}"
+                    class="w-[310px] h-[470px] rounded-xl transition-colors py-3 px-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
+                    class:bg-front="{cardsStates[card.connection.id.toString()] === null}"
+                    class:bg-success="{cardsStates[card.connection.id.toString()] === true}"
+                    class:bg-error="{cardsStates[card.connection.id.toString()] === false}"
                 >
                     <div class="shrink-1 grow-1 flex flex-col items-center overflow-hidden">
                         <div
-                            class="w-[120px] h-[120px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
+                            class="w-[112px] h-[112px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
                         >
                             <Avatar
                                 user="{{
-                                    id: card.id,
-                                    name: card.name,
-                                    avatar_hash: card.avatar_hash,
+                                    id: card.user.id,
+                                    name: card.user.name,
+                                    avatar_hash: card.user.avatar_hash,
                                     roles: [ 'client' ],
                                     telegram: '',
                                 }}"
@@ -577,6 +652,7 @@
                             />
                         </div>
                         <div class="w-full h-[0px] relative">
+                            <!--
                             <button
                                 class="btn btn-sm h-[48px] px-2 btn-warning text-base-100 transition-opacity duration-300 absolute bottom-[0px] right-[0px] z-[30]"
                                 class:opacity-0="{cardsContacts[card.id.toString()]}"
@@ -589,73 +665,110 @@
                             >
                                 <span class="leading-[18px] normal-case">Добавить<br />в избранные</span>
                             </button>
+                            -->
                         </div>
-                        <div class="font-medium text-[20px] leading-[28px] mt-2 text-base-100 text-center">{nameNormalization(card.name, 2)}</div>
-                        <div class="text-[12px] leading-[16px] mt-1.5 text-base-100 text-center">{card.position}</div>
-                        <div class="font-medium text-[15px] leading-[19px] mt-0.5 text-base-100 text-center">{card.company}</div>
-                        {#if card['catalog filtered']}
-                            <div class="w-full text-center text-base-100 leading-[14px] mt-2">
-                                {#each card['catalog filtered'] as tag}<span class="text-[10px] font-medium uppercase with-dot">{tag}</span>{/each}
-                            </div>
+                        <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
+                        <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.user.position}</div>
+                        <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.user.company}</div>
+                        {#if card.event}
+                            <div class="font-semibold leading-[19px] mt-3 text-center text-xs">ВСТРЕЧА НА МЕРОПРИЯТИИ</div>
+                            <div class="font-semibold text-center text-xs text-center leading-[14px] mt-[1px]">{card.event.name}</div>
+                        {:else}
+                            <div class="font-semibold text-[15px] leading-[19px] mt-3 text-center text-xs">ОБМЕН КОНТАКТАМИ</div>
                         {/if}
-                        <!--
-                        {#if card['catalog filtered']}
-                            <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
-                                {#each card['catalog filtered'] as tag}
-                                    <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="catalog" /></div>
-                                {/each}
-                            </div>
-                        {/if}
-                        -->
-                        <!--
-                        {#if card['hobby filtered']}
-                            <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
-                                {#each card['hobby filtered'] as tag}
-                                    <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="hobby" /></div>
-                                {/each}
-                            </div>
-                        {/if}
-                        -->
                     </div>
-                    {#if card.tags['company needs intersections'] || card.tags['company scope intersections']}
-                        <div class="shrink-0 grow-0 flex flex-col items-center overflow-hidden">
-                            <div class="text-xs text-base-100">Совпадения:</div>
-                            {#if card.tags['company needs intersections filtered']}
-                                <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
-                                    {#each card.tags['company needs intersections filtered'] as tag}
-                                        <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="tag" /></div>
-                                    {/each}
-                                </div>
-                            {/if}
-                            {#if card.tags['company scope intersections filtered']}
-                                <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
-                                    {#each card.tags['company scope intersections filtered'] as tag}
-                                        <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="interest" /></div>
-                                    {/each}
-                                </div>
-                            {/if}
-                        </div>
-                    {/if}
-                    <div class="absolute rounded-[14px] bg-scene h-[28px] bottom-[-48px] left-[48px] right-[48px] flex justify-between items-center">
-                        <div class="h-[28px] w-[28px] bg-error rounded-[14px] flex items-center justify-center px-1.5">
-                            <svg class="text-base-100 w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
-                        </div>
-                        <div
-                            class="h-[28px] bg-success rounded-[14px] flex items-center px-1.5"
-                            class:w-[28px]="{!card.favorites_stats}"
-                            class:justify-center="{!card.favorites_stats}"
-                            class:w-[64px]="{card.favorites_stats}"
-                            class:justify-around="{card.favorites_stats}"
+
+                    <div class="mb-1">
+                        <div class="text-center text-xs text-center leading-[14px] mb-3">Укажите недостатки встречи, если они были:</div>
+                        <button
+                            class="flex items-start"
+                            on:click="{() => {
+                                if (cardsComments[card.connection.id.toString()].indexOf('всё прошло отлично') == -1) {
+                                    cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'всё прошло отлично' ];
+                                }
+                                else {
+                                    cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'всё прошло отлично');
+                                }
+                            }}"
                         >
-                            <svg class="text-base-100 w-4 h-4 shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
-                            {#if card.favorites_stats}
-                                <span class="text-base-100 font-medium text-sm shrink-0 grow-0">{card.favorites_stats}</span>
-                            {/if}
-                        </div>
+                            <div
+                                class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('всё прошло отлично') == -1}"
+                                class:text-success="{cardsComments[card.connection.id.toString()].indexOf('всё прошло отлично') > -1}"
+                            >
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                            </div>
+                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">всё прошло отлично</div>
+                        </button>
+                        <button
+                            class="flex items-start mt-2"
+                            on:click="{() => {
+                                if (cardsComments[card.connection.id.toString()].indexOf('недостаточная организация и подготовка') == -1) {
+                                    cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'недостаточная организация и подготовка' ];
+                                }
+                                else {
+                                    cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'недостаточная организация и подготовка');
+                                }
+                            }}"
+                        >
+                            <div
+                                class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('недостаточная организация и подготовка') == -1}"
+                                class:text-error="{cardsComments[card.connection.id.toString()].indexOf('недостаточная организация и подготовка') > -1}"
+                            >
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                            </div>
+                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">недостаточная организация встречи</div>
+                        </button>
+                        <button
+                            class="flex items-start mt-2"
+                            on:click="{() => {
+                                if (cardsComments[card.connection.id.toString()].indexOf('нет пользы для бизнеса') == -1) {
+                                    cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'нет пользы для бизнеса' ];
+                                }
+                                else {
+                                    cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'нет пользы для бизнеса');
+                                }
+                            }}"
+                        >
+                            <div
+                                class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('нет пользы для бизнеса') == -1}"
+                                class:text-error="{cardsComments[card.connection.id.toString()].indexOf('нет пользы для бизнеса') > -1}"
+                            >
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                            </div>
+                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">нет пользы для бизнеса</div>
+                        </button>
+                        <button
+                            class="flex items-start mt-2"
+                            on:click="{() => {
+                                if (cardsComments[card.connection.id.toString()].indexOf('некомфортный личный контакт') == -1) {
+                                    cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'некомфортный личный контакт' ];
+                                }
+                                else {
+                                    cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'некомфортный личный контакт');
+                                }
+                            }}"
+                        >
+                            <div
+                                class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('некомфортный личный контакт') == -1}"
+                                class:text-error="{cardsComments[card.connection.id.toString()].indexOf('некомфортный личный контакт') > -1}"
+                            >
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                            </div>
+                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">некомфортный личный контакт</div>
+                        </button>
+                    </div>
+
+                    <div class="absolute rounded-[14px] h-[28px] bottom-[-52px] left-[24px] right-[24px] flex justify-between items-center">
+                        <div class="h-[28px] w-[100px] text-center bg-error rounded-[14px] flex items-center justify-center px-1.5 text-xs font-medium text-base-100">негативно</div>
+                        <div class="h-[28px] w-[100px] text-center bg-success rounded-[14px] flex items-center justify-center px-1.5 text-xs font-medium text-base-100">позитивно</div>
                     </div>
                 </div>
                 <svelte:fragment slot="swipe-btn">
-                    <div class="absolute bottom-[-56px] w-full flex justify-between">
+                    <div class="absolute bottom-[-52px] w-full flex justify-between">
                         <div class="w-12 h-12 flex items-center justify-center text-base-300">
                             <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M4.31 9.5l2.963 2.963a.75.75 0 0 1-.977 1.133l-.084-.073L1.97 9.281a.75.75 0 0 1-.073-.977l.073-.084l4.242-4.243a.75.75 0 0 1 1.134.977l-.073.084L4.31 8H10a7.75 7.75 0 0 1 7.746 7.504l.004.247a.75.75 0 0 1-1.5 0a6.25 6.25 0 0 0-6.02-6.246L10 9.5H4.31l2.963 2.963L4.31 9.5z" fill="currentColor"></path></g></svg>
                         </div>
@@ -663,30 +776,6 @@
                             <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M15.69 9.5l-2.963 2.963a.75.75 0 0 0 .977 1.133l.084-.073l4.242-4.242a.75.75 0 0 0 .073-.977l-.073-.084l-4.242-4.243a.75.75 0 0 0-1.134.977l.073.084L15.69 8H10a7.75 7.75 0 0 0-7.746 7.504l-.004.247a.75.75 0 0 0 1.5 0a6.25 6.25 0 0 1 6.02-6.246L10 9.5h5.69z" fill="currentColor"></path></g></svg>
                         </div>
                     </div>
-                    <!--
-                    <div class="absolute bottom-[-56px] w-full flex justify-between">
-                        <button
-                            class="w-12 h-12 border-2 border-base-300 flex items-center justify-center rounded-xl bg-error"
-                            on:click="{() => {
-                                if (deck) {
-                                    deck.swipe('left');
-                                }
-                            }}"
-                        >
-                            <svg class="text-base-100 w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
-                        </button>
-                        <button
-                            class="w-12 h-12 border-2 border-base-300 flex items-center justify-center rounded-xl bg-success"
-                            on:click="{() => {
-                                if (deck) {
-                                    deck.swipe('right');
-                                }
-                            }}"
-                        >
-                            <svg class="text-base-100 w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
-                        </button>
-                    </div>
-                    -->
                 </svelte:fragment>
             </SwipeDeck>
         </div>

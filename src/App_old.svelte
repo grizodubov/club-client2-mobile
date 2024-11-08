@@ -1,113 +1,54 @@
 <script lang="ts">
-    import { onMount, tick } from 'svelte';
-    import { fade } from 'svelte/transition';
+    import { onMount } from 'svelte';
 
-    import { Filters, ResidentCard, InputText } from './components';
-
-    import { nameNormalization } from '@/utils/names';
+    import { SafeArea } from 'capacitor-plugin-safe-area';
+    import { Device } from '@capacitor/device';
 
     import { Avatar, TagTiny } from '@/components';
 
-    import { modalCreate, modalDestroy, modalShow } from '@/helpers/modal';
-
-    import { findTags } from '@/utils/tags';
-
     import { SwipeDeck } from 'svelte-swipe-cards';
 
-    import { type User, user, type ResidentsFilters, residentsFilters, activeResidentsFiltersAmount } from '@/stores';
+    import { nameNormalization } from '@/utils/names';
 
-    import { subscribe } from '@/helpers/notification';
+    import {
+        type ActionPerformed,
+        type PushNotificationSchema,
+        PushNotifications,
+        type Token
+     } from '@capacitor/push-notifications';
+
+    import {
+        BarcodeScanner,
+    } from '@capacitor-mlkit/barcode-scanning';
+
+    import { register } from 'swiper/element/bundle';
+
+    import { router, RouterView, currentRoute } from '@/libs/Router';
+
+    import { user, states } from '@/stores';
+
+    import { type Modal, modal } from '@/helpers/modal';
+
+    import { type Info, info } from '@/helpers/info';
+
+    import { type Log, log } from '@/helpers/log';
+
+    import { subscribe, push as notify } from '@/helpers/notification';
+
+    import { alertsSetup, alertsPush, notificationsSetup, notificationsPush } from '@/components';
 
     import { Entity, collector } from '@/helpers/entity';
     import {
-        residentsList,
+		deviceRegister,
+	} from '@/queries/auth';
+
+    import { closeEventRegistrationPopup } from '@/helpers/popups';
+
+    import {
         userContactAdd,
         userFavorites,
         userFavoritesSet,
-    } from '@/queries/user';
-
-
-    import { type WordForms, nwfi } from '@/utils/numword';
-
-
-    const wordForms: WordForms = {
-        'новый потенциальный партнёр': [ 'новых потенциальных партнёров', 'новый потенциальный партнёр', 'новых потенциальных партнёра', 'новых потенциальных партнёров' ],
-    };
-
-
-    // svelte-ignore unused-export-let
-    export let params: { [key: string]: any } | undefined = undefined; params;
-    let className: string = '';
-	export { className as class }; className;
-
-
-    $: currentUser = $user as User;
-    $: filters = $residentsFilters as ResidentsFilters;
-
-
-    let residents: { [key: string]: any }[] = [];
-    let residentsFiltered: { [key: string]: any }[] = [];
-    let contacts: { [key: string]: any } = {};
-
-
-    let tmFilter: ReturnType<typeof setTimeout> | null = null;
-
-
-    $: filters, residents, filterResidents();
-
-
-    /* DATA: residentsListHandler */
-	const residentsListHandler = new Entity({
-		model: residentsList.model,
-		retriever: residentsList.retriever,
-        onSuccess: data => {
-            start = false;
-            const resident = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
-            const temp = [
-                ...data.residents.filter((r: { [key: string]: any }) => r.id != currentUser.id).map((r: { [key: string]: any }) => {
-                    if (resident) {
-                        r.tagsLinked = findTags(resident.tags, r.interests);
-                        r.interestsLinked = findTags(resident.interests, r.tags);
-                    }
-                    else {
-                        r.tagsLinked = [];
-                        r.interestsLinked = [];
-                    }
-                    return r;
-                })
-            ];
-            temp.sort((a: any, b: any) => {
-                if (a.favorites_flag !== b.favorites_flag) {
-                    if (a.favorites_flag === true || b.favorites_flag === false)
-                        return -1;
-                    if (b.favorites_flag === true || a.favorites_flag === false)
-                        return 1;
-                }
-                if (a.name.toLowerCase() > b.name.toLowerCase())
-                    return 1;
-                if (a.name.toLowerCase() < b.name.toLowerCase())
-                    return -1;
-                return 0;
-            });
-            residents = temp;
-            contacts = data.contacts;
-        },
-	});
-
-    let residentsListLoading = residentsListHandler.loading;
-
-    let residentFilterLoading = false;
-
-    let start = true;
-
-
-    let deck;
-    let cards: any[] = [];
-    let cardsAmount: number = 0;
-    let cardsStates = {};
-    let cardsShow = false;
-    let cardsOpacity = false;
-    let cardsContacts = {};
+	} from '@/queries/user';
 
 
     /* DATA: userFavoritesHandler */
@@ -122,6 +63,8 @@
                     return { ...states, [card.id.toString()]: null }
                 }, {}
             );
+            if (!cardsAmount)
+                cardsHide = true;
         },
 	});
 
@@ -133,6 +76,13 @@
 	});
 
 
+    /* DATA: deviceRegisterHandler */
+	const deviceRegisterHandler = new Entity({
+		model: deviceRegister.model,
+		retriever: deviceRegister.retriever,
+	});
+
+
     /* DATA: userContactAddHandler */
 	const userContactAddHandler = new Entity({
 		model: userContactAdd.model,
@@ -140,63 +90,241 @@
 	});
 
 
-    /* filterResidents */
-    function filterResidents() {
-        residentsFiltered = [];
-        residentFilterLoading = true;
-        if (tmFilter)
-            clearTimeout(tmFilter);
-        tmFilter = setTimeout(
-            () => {
-                residentsFilters.save();
-                if ($activeResidentsFiltersAmount || filters.name) {
-                    const fn = filters.name.toLowerCase();
-                    residentsFiltered = residents.filter(
-                        (r: { [key: string]: any }) => {
-                            let flagOff = 0;
-                            let flagOn = 0;
-                            if (!filters.helpful) {
-                                flagOff++;
-                            }
-                            else {
-                                if (r.rating > 0)
-                                    flagOn++;
-                            }
-                            if (!filters.tags) {
-                                flagOff++;
-                            }
-                            else {
-                                if (r.tagsLinked.length > 0)
-                                    flagOn++;
-                            }
-                            if (!filters.interests) {
-                                flagOff++;
-                            }
-                            else {
-                                if (r.interestsLinked.length > 0)
-                                    flagOn++;
-                            }
-                            if (!filters.contacts) {
-                                flagOff++;
-                            }
-                            else {
-                                if (contacts[r.id.toString()] && contacts[r.id.toString()].contact)
-                                flagOn++;
-                            }
-                            return (!fn || r.name.toLowerCase().indexOf(fn) > -1 || r.company.toLowerCase().indexOf(fn) > -1) &&
-                                (
-                                    (filters.strict && flagOn + flagOff == 4) ||
-                                    (!filters.strict && (flagOff == 4 || flagOn > 0))
-                                )
-                        }
-                    );
+    /* web components */
+    register();
+
+
+    let userId = user.pull('id');
+
+    let main:any;
+
+
+    $: $user, userChange();
+
+
+    $: modalData = $modal as Modal;
+
+    $: infoData = $info as Info;
+
+    $: logData = $log as Log;
+
+    $: statesO = $states as any;
+
+
+    let deck;
+    let cards: any[] = [];
+    let cardsAmount: number = 0;
+    let cardsStates = {};
+    let cardsHide = false;
+    let cardsContacts = {};
+
+
+    /* userChange */
+    function userChange() {
+        const id = user.pull('id');
+        //console.log('user_id: ', id);
+        if (userId != id) {
+            userId = id;
+            if (states.pull('api')) {
+                const currentUrl = currentRoute.extract('url');
+                //console.log('url: ', currentUrl, userId);
+                if (currentUrl) {
+                    if (userId) {
+                        cardsHide = false;
+                        getFavorites();
+                        const url = router.record('onLogin', '/', true);
+                        if (typeof url === 'string')
+                            router.go(url);
+                    }
+                    else {
+                        router.go('/');
+                    }
                 }
-                else {
-                    residentsFiltered = [ ...residents ];
-                }
-                residentFilterLoading = false;
-            }, 250
+            }
+        }
+    }
+
+
+    /* pushNotification */
+    function pushNotification(data: any) {
+        notificationsPush(data.message, data.onClick);
+    }
+
+
+    /* pushAlert */
+    function pushAlert(data: any) {
+        alertsPush(data.message);
+    }
+
+
+    /* blurInputs */
+    function blurInputs() {
+        notify('forceBlur', '');
+    }
+
+
+    /* getDeviceId */
+    const getDeviceId = async () => {
+        return await Device.getId();
+    };
+
+
+    /* getDeviceInfo */
+    const getDeviceInfo = async () => {
+        return await Device.getInfo();
+    };
+
+
+    /* setSafeAreas */
+    async function setSafeAreas() {
+        const deviceInfo = await getDeviceInfo();
+        let top = 0;
+        let bottom = 0;
+        if (typeof deviceInfo === 'object' && deviceInfo.platform && deviceInfo.platform == 'ios') {
+            const safeAreaData = await SafeArea.getSafeAreaInsets();
+            const { insets } = safeAreaData;
+            top = insets.top ? insets.top : 0;
+            bottom = insets.bottom ? insets.bottom : 0;
+        }
+        states.push({
+            safeTop: top,
+            safeBottom: bottom,
+            displayHeight: window.innerHeight,
+        });
+
+        /* Alerts */
+        alertsSetup({
+            max: 1,
+            duration: 6000,
+            top: top + 32,
+            right: 'calc(50% - 150px)',
+        });
+
+        /* Notifications */
+        notificationsSetup({
+            max: 1,
+            duration: 6000,
+            top: top + 24,
+            right: 12,
+        });
+
+        // subscriptions
+        subscribe('notifications', pushNotification);
+        subscribe('alerts', pushAlert);
+
+        /*
+        pushNotification(
+            {
+                message: 'Вот такое сообщение',
+                onClick: () => { router.go('/residents'); },
+            }
         );
+        */
+    }
+
+
+    /* setupFCM */
+    async function setupFCM() {
+        const deviceId = await getDeviceId();
+        const deviceInfo = await getDeviceInfo();
+        if (typeof deviceInfo === 'object') {
+            if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
+                PushNotifications.requestPermissions().then(result => {
+                    if (result.receive === 'granted') {
+                        PushNotifications.register();
+                    }
+                });
+
+                PushNotifications.addListener('registration',
+                    (token: Token) => {
+                        collector.get([
+                            [ 
+                                deviceRegisterHandler,
+                                {
+                                    deviceId: typeof deviceId === 'object' ? deviceId.identifier : null,
+                                    deviceInfo: JSON.stringify(deviceInfo),
+                                    deviceToken: token.value,
+                                }
+                            ],
+                        ]);
+                    }
+                );
+
+                /*
+                PushNotifications.addListener('registrationError',
+                    (error: any) => {
+                        alert('Error on registration: ' + JSON.stringify(error));
+                    }
+                );
+                */
+
+                PushNotifications.addListener('pushNotificationReceived',
+                    (notification: PushNotificationSchema) => {
+                        //alert('notification\n' + JSON.stringify(notification, null, ' '));
+                        if (notification.body) {
+                            pushNotification({ 
+                                message: notification.body,
+                                onClick: notification.data && notification.data.link ? () => { router.go(notification.data.link); } : null,
+                            });
+                        }
+                        else {
+                            if (notification.data && notification.data && notification.data.link)
+                                router.go(notification.data.link);
+                        }
+                    }
+                );
+
+                PushNotifications.addListener('pushNotificationActionPerformed',
+                    (action: ActionPerformed) => {
+                        //alert('action\n' + JSON.stringify(action, null, ' '));
+                        if (action.notification && action.notification.data && action.notification.data.link) {
+                            setTimeout(() => { router.go(action.notification.data.link); }, 100);
+                        }
+                    }
+                );
+
+            }
+            else {
+                collector.get([
+                    [ 
+                        deviceRegisterHandler,
+                        {
+                            deviceId: typeof deviceId === 'object' ? deviceId.identifier : null,
+                            deviceInfo: JSON.stringify(deviceInfo),
+                            deviceToken: null,
+                        }
+                    ],
+                ]);
+            }
+        }
+        else {
+            collector.get([
+                [ 
+                    deviceRegisterHandler,
+                    {
+                        deviceId: typeof deviceId === 'object' ? deviceId.identifier : null,
+                        deviceInfo: null,
+                        deviceToken: null,
+                    }
+                ],
+            ]);
+        }
+    }
+
+
+    /* stopSCan */
+    async function stopScan() {
+        const deviceInfo = await getDeviceInfo();
+        if (typeof deviceInfo === 'object') {
+            if (deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
+                document.querySelector('html')?.classList.remove('barcode-scanner-active');
+                await BarcodeScanner.removeAllListeners();
+                await BarcodeScanner.stopScan();
+            }
+            else {
+                document.querySelector('html')?.classList.remove('barcode-scanner-active');
+            }
+        }
     }
 
 
@@ -238,140 +366,147 @@
     }
 
 
-    /* get */
-    function get() {
-        collector.get([
-            [ 
-                residentsListHandler,
-                {}
-            ],
-        ]);
-    }
-
-    
-    /* refresh */
-    function refresh() {
-        get();
-    }
-
-
     /* onMount */
 	onMount(() => {
-        getFavorites();
-        residentsFilters.load();
-        modalCreate(Filters, undefined);
-        get();
-        const sub = subscribe('events', refresh);
+        setSafeAreas();
+        setupFCM();
+        if (main)
+            main.addEventListener('click', blurInputs);
+        const id = user.pull('id');
+        if (id) {
+            getFavorites();
+        }
+        else {
+            cardsHide = true;
+        }
         return () => {
-            modalDestroy();
-            sub.close();
+            if (main)
+                main.removeEventListener('click', blurInputs);
         };
 	});
 </script>
 
 
-<div 
-    class="w-full h-full flex flex-col"
->
+<style>
+    .with-dot {
+        padding-right: 10px;
+        margin-left: 5px;
+    }
 
-    <div class="bg-front w-full h-[112px] flex flex-col justify-between shrink-0 grow-0">
-        <div class="flex justify-between items-start">
-            <div class="w-[56px] h-[56px] ml-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
-                <button
-                    class="text-base-100 w-8 h-8 flex items-center justify-center"
-                    on:click="{() => {
-                        history.back();
-                    }}"
-                >
-                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M14 26l1.41-1.41L7.83 17H28v-2H7.83l7.58-7.59L14 6L4 16l10 10z" fill="currentColor"></path></svg>
-                </button>
-            </div>
-            <div class="mt-4 leading-[56px] h-[56px] shrink-1 grow-1 text-center text-base-100 text-xl font-medium">
-                Резиденты {#if (!$residentsListLoading || !start) && !residentFilterLoading}<span class="ml-1 text-base-300 text-lg font-extralight">(<span class="text-base-100">{residentsFiltered.length}</span> / <span>{residents.length}</span>)</span>{/if}
-            </div>
-            <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
-                <button
-                    class="relative text-base-100 w-8 h-8 flex items-center justify-center"
-                    on:click="{() => {
-                        modalShow();
-                    }}"
-                >
-                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M30 8h-4.1c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2h14.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30V8zm-9 4c-1.7 0-3-1.3-3-3s1.3-3 3-3s3 1.3 3 3s-1.3 3-3 3z" fill="currentColor"></path><path d="M2 24h4.1c.5 2.3 2.5 4 4.9 4s4.4-1.7 4.9-4H30v-2H15.9c-.5-2.3-2.5-4-4.9-4s-4.4 1.7-4.9 4H2v2zm9-4c1.7 0 3 1.3 3 3s-1.3 3-3 3s-3-1.3-3-3s1.3-3 3-3z" fill="currentColor"></path></svg>
-                    {#if $activeResidentsFiltersAmount}
-                        <div class="absolute w-[18px] h-[18px] bg-scene text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full top-5 left-5"><span>{$activeResidentsFiltersAmount}</span></div>
-                    {/if}
-                </button>
-            </div>
+    .with-dot:first-child {
+        padding-left: 10px;
+        margin-left: 0px;
+    }
+
+    .with-dot:first-child:before {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-bottom: 1px;
+        border-radius: 100%;
+        margin-right: 5px;
+        margin-left: -10px;
+        background-color: #ffbf00;
+        color: #ffbf00;
+        content: '';
+    }
+
+    .with-dot:after {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-bottom: 1px;
+        border-radius: 100%;
+        margin-left: 5px;
+        margin-right: -10px;
+        background-color: #ffbf00;
+        color: #ffbf00;
+        content: '';
+
+    }
+</style>
+
+
+<main bind:this="{main}">
+    <RouterView>
+        <div slot="loading" class="w-full h-full flex justify-center items-center">
+            <span class="loading loading-bars text-front"></span>
         </div>
-        <div class="bg-base-100 rounded-t-2xl h-5"></div>
-    </div>
+    </RouterView>
+</main>
 
-    <div class="shrink-0 grow-0 h-[calc(100%-112px)]">
-        <div class="mt-[-20px] h-[calc(100%+20px)] rounded-2xl">
-            <div class="relative h-full">
-                <div class="absolute w-full px-3 mt-5 h-16 z-10">
-                    <InputText
-                        placeholder="Имя / Компания"
-                        bind:value="{filters.name}"
-                    />
-                </div>
-                {#if ($residentsListLoading && start) || residentFilterLoading}
-                    <div class="w-full h-full flex justify-center items-center">
-                        <span class="loading loading-bars text-front"></span>
-                    </div>
-                {:else}
-                    <div class="h-full scrollable-y">
-                        {#if cardsAmount}
-                            <button
-                                class="mt-[104px] pl-2 pr-4 py-2 mb-5 bg-moderate text-base-100 rounded-full mx-3 flex items-center"
-                                on:click="{async () => {
-                                    cardsShow = true;
-                                    await tick();
-                                    cardsOpacity = true;
-                                }}"
-                            ><span class="text-xl font-semibold rounded-full bg-info w-8 h-8 flex items-center justify-center">{cardsAmount}</span><span class="text-sm ml-2.5">{wordForms['новый потенциальный партнёр'][nwfi(cardsAmount)]}</span></button>
-                        {/if}
-                        {#each residentsFiltered as resident (resident.id)}
-                            <div
-                                class="mb-5 first:mt-[104px]"
-                                in:fade="{{ duration: 100 }}"
-                            >
-                                <ResidentCard
-                                    resident="{resident}"
-                                    contact="{contacts[resident.id.toString()] && contacts[resident.id.toString()].contact}"
-                                />
-                            </div>
-                        {/each}
-                    </div>
-                {/if}
-            </div>
+<div id="modal">
+    {#if modalData.component}
+        <svelte:component this="{modalData.component}" params="{modalData.params}" />
+    {/if}
+</div>
+
+<div id="info">
+    {#if infoData.component}
+        <svelte:component this="{infoData.component}" params="{infoData.params}" bind:this="{infoData.componentInstance}" />
+    {/if}
+</div>
+
+<div id="log">
+    {#if logData.component}
+        <svelte:component this="{logData.component}" params="{logData.params}" bind:this="{logData.componentInstance}" />
+    {/if}
+</div>
+
+<div id="barcode-scanner-ui">
+    <div
+        id="barcode-scanner-target"
+    >
+    </div>
+    <button
+            class="w-7 h-7 text-base-300 absolute right-[24px]"
+            style="top: {(statesO.safeTop + 24).toString()}px"
+            on:click="{stopScan}"
+        >
+        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2zm4.3 14.3a.996.996 0 0 1-1.41 0L12 13.41L9.11 16.3a.996.996 0 1 1-1.41-1.41L10.59 12L7.7 9.11A.996.996 0 1 1 9.11 7.7L12 10.59l2.89-2.89a.996.996 0 1 1 1.41 1.41L13.41 12l2.89 2.89c.38.38.38 1.02 0 1.41z" fill="currentColor"></path></svg>
+    </button>
+</div>
+
+<div id="event-registration-popup" class="fixed w-full h-full items-center justify-center z-50 left-[0px] top-[0px]">
+    <button
+        class="absolute opacity-30 bg-scene w-full h-full top-[0px] left-[0px]"
+        on:click="{closeEventRegistrationPopup}"
+    ></button>
+    <div class="relative w-[300px] h-[260px] mt-[-40px] shrink-0 grow-0 bg-success rounded-2xl shadow border-base-100 border-8">
+        <div class="absolute top-[-48px] left-[102px] bg-base-100 text-success rounded-full w-20 h-20 flex items-center justify-center shadow">
+            <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
         </div>
+        <div class="text-[26px] font-medium leading-[42px] mt-[56px] w-full text-center text-base-100">Добро пожаловать!</div>
+        <div class="text w-full text-center text-base-100 mt-[24px] px-6">Регистрация на мероприятие прошла успешно</div>
+        <button
+            class="absolute btn btn-lg btn-primary w-[160px] left-[62px] bottom-[-40px]"
+            on:click="{closeEventRegistrationPopup}"
+        >OK</button>
     </div>
-
 </div>
 
 
-{#if cardsShow}
+{#if !cardsHide}
     <div
         class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-20"
-        class:opacity-0="{!cardsOpacity}"
-        class:opacity-100="{cardsOpacity}"
+        class:opacity-0="{cardsAmount == 0}"
+        class:opacity-100="{cardsAmount > 0}"
     >
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col jsutify-start items-center">
-            <div class="text-base-100 mt-5 text-sm">Оцените потенциальных партнеров</div>
+            <div class="text text-base-100 mt-[32px]">Оцените потенциальных партнеров</div>
             <button
-                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
+                class="btn btn-sm px-2 btn-front text-base-100 mt-3"
                 on:click="{() => {
-                    cardsOpacity = false;
-                    setTimeout(() => { cardsShow = false; }, 400);
+                    cardsAmount = 0;
+                    setTimeout(() => { cardsHide = true; }, 400);
                 }}"
             >
-                <span class="normal-case">В другой раз</span>
+                <span class="leading-[18px] normal-case">В другой раз</span>
             </button>
         </div>
-        <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[450px]">
+        <div class="absolute left-[0px] right-[0px] top-[0px] bottom-[0px] m-[auto] w-[310px] h-[450px]">
             <SwipeDeck
                 {cards}
                 let:card
@@ -384,10 +519,8 @@
                     cardsAmount = cardsAmount - 1;
                     const id = cards[e.detail.index]['id'];
                     setFavorites(id, cardsStates[id.toString()]);
-                    if (!cardsAmount) {
-                        cardsOpacity = false;
-                        setTimeout(() => { cardsShow = false; }, 400);
-                    }
+                    if (!cardsAmount)
+                        setTimeout(() => { cardsHide = true }, 400);
                 }}"
                 on:move_left="{(e) => {
                     const id = cards[e.detail.index]['id'];
@@ -400,7 +533,7 @@
             >
                 <div
                     class="w-[310px] h-[450px] rounded-xl transition-colors p-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
-                    class:bg-moderate="{cardsStates[card.id.toString()] === null}"
+                    class:bg-front="{cardsStates[card.id.toString()] === null}"
                     class:bg-success="{cardsStates[card.id.toString()] === true}"
                     class:bg-error="{cardsStates[card.id.toString()] === false}"
                 >
