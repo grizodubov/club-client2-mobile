@@ -360,9 +360,9 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col jsutify-start items-center">
-            <div class="text-base-100 mt-9 text-sm">Оцените потенциальных партнеров</div>
+            <div class="text-base-100 mt-10 text">Оцените потенциальных партнеров</div>
             <button
-                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
+                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[11px] font-semibold h-[26px] leading-[26px] py-0"
                 on:click="{() => {
                     cardsOpacity = false;
                     setTimeout(() => { cardsShow = false; }, 400);
@@ -406,7 +406,7 @@
                 >
                     <div class="shrink-1 grow-1 flex flex-col items-center overflow-hidden">
                         <div
-                            class="w-[120px] h-[120px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
+                            class="w-[112px] h-[112px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-300"
                         >
                             <Avatar
                                 user="{{
@@ -433,32 +433,14 @@
                                 <span class="leading-[18px] normal-case">Добавить<br />в избранные</span>
                             </button>
                         </div>
-                        <div class="font-medium text-[20px] leading-[28px] mt-2 text-base-100 text-center">{nameNormalization(card.name, 2)}</div>
-                        <div class="text-[12px] leading-[16px] mt-1.5 text-base-100 text-center">{card.position}</div>
-                        <div class="font-medium text-[15px] leading-[19px] mt-0.5 text-base-100 text-center">{card.company}</div>
+                        <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
+                        <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.user.position}</div>
+                        <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.user.company}</div>
                         {#if card['catalog filtered']}
                             <div class="w-full text-center text-base-100 leading-[14px] mt-2">
                                 {#each card['catalog filtered'] as tag}<span class="text-[10px] font-medium uppercase with-dot">{tag}</span>{/each}
                             </div>
                         {/if}
-                        <!--
-                        {#if card['catalog filtered']}
-                            <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
-                                {#each card['catalog filtered'] as tag}
-                                    <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="catalog" /></div>
-                                {/each}
-                            </div>
-                        {/if}
-                        -->
-                        <!--
-                        {#if card['hobby filtered']}
-                            <div class="flex flex-wrap justify-center mt-2 ml-[-8px]">
-                                {#each card['hobby filtered'] as tag}
-                                    <div class="ml-2 mt-0.5"><TagTiny tag="{tag}" type="hobby" /></div>
-                                {/each}
-                            </div>
-                        {/if}
-                        -->
                     </div>
                     {#if card.tags['company needs intersections'] || card.tags['company scope intersections']}
                         <div class="shrink-0 grow-0 flex flex-col items-center overflow-hidden">
