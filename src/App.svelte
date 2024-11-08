@@ -560,7 +560,7 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-5 text-sm shrink-0 grow-0 mb-3">Ознакомьтесь с соглашениями</div>
+            <div class="text text-base-100 mt-9 text-sm shrink-0 grow-0 mb-3">Ознакомьтесь с соглашениями</div>
             <div class="flex justify-center w-full shrink-0 grow-0 mb-5">
                 <div class="text-warning shrink-0 grow-0 text-xs w-[42%] text-center">Политика конфиденциальности</div>
             </div>
@@ -568,7 +568,7 @@
                 <pre class="w-full h-full text-xs whitespace-pre-wrap p-4 overflow-y-auto"><UserAgreement /></pre>
             </div>
             <button
-                class="rounded-lg px-5 btn-front text-base-100 mt-2.5 mb-7 text-sm font-semibold h-[32px] leading-[32px] py-0 shrink-0 grow-0 mt-5"
+                class="rounded-lg px-5 btn-front text-base-100 mt-2.5 mb-10 text-sm font-semibold h-[32px] leading-[32px] py-0 shrink-0 grow-0 mt-5"
                 on:click="{() => {
                     legalShow = false;
                     setTimeout(() => { submitLegal(); }, 400);
@@ -590,10 +590,10 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-end items-center">
-            <div class="text text-base-100 mb-5 text-xs text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
+            <div class="text text-base-100 mb-9 text-xs text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-5 text-sm">Дайте оценку личному контакту</div>
+            <div class="text text-base-100 mt-9 text-sm">Дайте оценку личному контакту</div>
             <button
                 class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
                 on:click="{() => {

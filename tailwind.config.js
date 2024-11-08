@@ -41,7 +41,7 @@ module.exports = {
                     },
                     '.btn-scene:hover': {
                         'background-color': 'oklch(var(--scene) / 90%)',
-                        'border-color': 'oklch(var(--scene) / 9%)',
+                        'border-color': 'oklch(var(--scene) / 90%)',
                     },
                 },
             },
