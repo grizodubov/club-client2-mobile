@@ -433,9 +433,9 @@
                                 <span class="leading-[18px] normal-case">Добавить<br />в избранные</span>
                             </button>
                         </div>
-                        <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
-                        <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.user.position}</div>
-                        <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.user.company}</div>
+                        <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.name, 2)}</div>
+                        <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.position}</div>
+                        <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.company}</div>
                         {#if card['catalog filtered']}
                             <div class="w-full text-center text-base-100 leading-[14px] mt-2">
                                 {#each card['catalog filtered'] as tag}<span class="text-[10px] font-medium uppercase with-dot">{tag}</span>{/each}
