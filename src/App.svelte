@@ -638,8 +638,8 @@
                         {/if}
                     </div>
 
-                    <div class="mb-1">
-                        <div class="text-center text-sm text-center leading-[14px] mb-4">Укажите недостатки встречи, если они были:</div>
+                    <div class="mb-1 flex flex-col items-start">
+                        <div class="text-center text-sm text-center leading-[14px] mb-4 w-full">Укажите недостатки встречи, если они были:</div>
                         <button
                             class="flex items-start"
                             on:click="{() => {
