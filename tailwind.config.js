@@ -36,12 +36,12 @@ module.exports = {
                         'border-color': 'hsl(var(--front) / 90%)',
                     },
                     '.btn-scene': {
-                        'background-color': 'oklch(var(--scene) / 100%)',
-                        'border-color': 'oklch(var(--scene) / 100%)',
+                        'background-color': 'hsl(var(--scene) / 100%)',
+                        'border-color': 'hsl(var(--scene) / 100%)',
                     },
                     '.btn-scene:hover': {
-                        'background-color': 'oklch(var(--scene) / 90%)',
-                        'border-color': 'oklch(var(--scene) / 90%)',
+                        'background-color': 'hsl(var(--scene) / 90%)',
+                        'border-color': 'hsl(var(--scene) / 90%)',
                     },
                 },
             },
