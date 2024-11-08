@@ -560,7 +560,7 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-9 text-sm shrink-0 grow-0 mb-3">Ознакомьтесь с соглашениями</div>
+            <div class="text text-base-100 mt-10 shrink-0 grow-0 mb-3">Ознакомьтесь с соглашениями</div>
             <div class="flex justify-center w-full shrink-0 grow-0 mb-5">
                 <div class="text-warning shrink-0 grow-0 text-xs w-[42%] text-center">Политика конфиденциальности</div>
             </div>
@@ -568,7 +568,7 @@
                 <pre class="w-full h-full text-xs whitespace-pre-wrap p-4 overflow-y-auto"><UserAgreement /></pre>
             </div>
             <button
-                class="rounded-lg px-5 btn-front text-base-100 mt-2.5 mb-10 text-sm font-semibold h-[32px] leading-[32px] py-0 shrink-0 grow-0 mt-5"
+                class="rounded-lg px-5 btn-front text-base-100 mt-2.5 mb-12 text-sm font-semibold h-[32px] leading-[32px] py-0 shrink-0 grow-0 mt-5"
                 on:click="{() => {
                     legalShow = false;
                     setTimeout(() => { submitLegal(); }, 400);
@@ -590,12 +590,12 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-end items-center">
-            <div class="text text-base-100 mb-9 text-xs text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
+            <div class="text text-base-100 mb-10 text-sm text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-9 text-sm">Дайте оценку личному контакту</div>
+            <div class="text text-base-100 mt-10">Дайте оценку личному контакту</div>
             <button
-                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
+                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[11px] font-semibold h-[26px] leading-[26px] py-0"
                 on:click="{() => {
                     cardsAmount = 0;
                     setTimeout(() => { cardsShow = false; }, 400);
@@ -651,22 +651,6 @@
                                 scaleLetters="2.5"
                             />
                         </div>
-                        <div class="w-full h-[0px] relative">
-                            <!--
-                            <button
-                                class="btn btn-sm h-[48px] px-2 btn-warning text-base-100 transition-opacity duration-300 absolute bottom-[0px] right-[0px] z-[30]"
-                                class:opacity-0="{cardsContacts[card.id.toString()]}"
-                                on:click="{() => {
-                                    if (!cardsContacts[card.id.toString()]) {
-                                        cardsContacts[card.id.toString()] = true;
-                                        addContact(card.id);
-                                    }
-                                }}"
-                            >
-                                <span class="leading-[18px] normal-case">Добавить<br />в избранные</span>
-                            </button>
-                            -->
-                        </div>
                         <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
                         <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.user.position}</div>
                         <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.user.company}</div>
@@ -678,8 +662,8 @@
                         {/if}
                     </div>
 
-                    <div class="mb-1">
-                        <div class="text-center text-xs text-center leading-[14px] mb-3">Укажите недостатки встречи, если они были:</div>
+                    <div class="mb-1 flex flex-col items-start">
+                        <div class="text-center text-sm text-center leading-[14px] mb-4 w-full">Укажите недостатки встречи, если они были:</div>
                         <button
                             class="flex items-start"
                             on:click="{() => {
@@ -698,7 +682,7 @@
                             >
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                             </div>
-                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">всё прошло отлично</div>
+                            <div class="ml-3 text-left mt-[2px] leading-5 font-medium text-base-100">всё прошло отлично</div>
                         </button>
                         <button
                             class="flex items-start mt-2"
@@ -718,7 +702,7 @@
                             >
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                             </div>
-                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">недостаточная организация встречи</div>
+                            <div class="ml-3 text-left mt-[2px] leading-5 font-medium text-base-100">недостаточная организация встречи</div>
                         </button>
                         <button
                             class="flex items-start mt-2"
@@ -738,7 +722,7 @@
                             >
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                             </div>
-                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">нет пользы для бизнеса</div>
+                            <div class="ml-3 text-left mt-[2px] leading-5 font-medium text-base-100">нет пользы для бизнеса</div>
                         </button>
                         <button
                             class="flex items-start mt-2"
@@ -758,7 +742,7 @@
                             >
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
                             </div>
-                            <div class="ml-3 text-left text-sm mt-[2px] leading-5 font-medium text-base-100">некомфортный личный контакт</div>
+                            <div class="ml-3 text-left mt-[2px] leading-5 font-medium text-base-100">некомфортный личный контакт</div>
                         </button>
                     </div>
 
