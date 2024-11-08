@@ -360,7 +360,7 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col jsutify-start items-center">
-            <div class="text-base-100 mt-5 text-sm">Оцените потенциальных партнеров</div>
+            <div class="text-base-100 mt-9 text-sm">Оцените потенциальных партнеров</div>
             <button
                 class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
                 on:click="{() => {
