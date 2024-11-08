@@ -9,6 +9,7 @@ export type User = {
     avatar_hash: string | null;
     roles: string[];
     telegram: string | null;
+    legal: boolean;
 };
 
 
@@ -18,6 +19,7 @@ const _default: User = {
     avatar_hash: null,
     roles: [],
     telegram: null,
+    legal: false,
 };
 
 

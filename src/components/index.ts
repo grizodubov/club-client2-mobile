@@ -10,6 +10,8 @@ import { Toast as ToastObject } from '@/components/Toast/Toast';
 import Toast from '@/components/Toast/ToastView.svelte';
 import { push as notificationsPush, setup as notificationsSetup } from '@/components/Notifications/index.svelte';
 
+import UserAgreement from '@/components/UserAgreement/UserAgreement.svelte';
+
 
 export {
     Avatar,
@@ -25,4 +27,5 @@ export {
     Toast,
     notificationsPush,
     notificationsSetup,
+    UserAgreement,
 };

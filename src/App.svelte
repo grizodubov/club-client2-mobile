@@ -4,7 +4,7 @@
     import { SafeArea } from 'capacitor-plugin-safe-area';
     import { Device } from '@capacitor/device';
 
-    import { Avatar, TagTiny } from '@/components';
+    import { Avatar, UserAgreement } from '@/components';
 
     import { SwipeDeck } from 'svelte-swipe-cards';
 
@@ -25,7 +25,7 @@
 
     import { router, RouterView, currentRoute } from '@/libs/Router';
 
-    import { user, states } from '@/stores';
+    import { type User, user, states } from '@/stores';
 
     import { type Modal, modal } from '@/helpers/modal';
 
@@ -40,6 +40,7 @@
     import { Entity, collector } from '@/helpers/entity';
     import {
 		deviceRegister,
+        legalSubmit,
 	} from '@/queries/auth';
 
     import { closeEventRegistrationPopup } from '@/helpers/popups';
@@ -76,7 +77,7 @@
                 }, {}
             );
             if (!cardsAmount)
-                cardsHide = true;
+                cardsShow = false;
         },
 	});
 
@@ -116,11 +117,20 @@
 	});
 
 
+    /* DATA: legalSubmitHandler */
+	const legalSubmitHandler = new Entity({
+		model: legalSubmit.model,
+		retriever: legalSubmit.retriever,
+	});
+
+
     /* web components */
     register();
 
 
     let userId = user.pull('id');
+
+    $: currentUser = $user as User;
 
     let main:any;
 
@@ -142,8 +152,10 @@
     let cardsAmount: number = 0;
     let cardsStates = {};
     let cardsComments = {};
-    let cardsHide = false;
-    let cardsContacts = {};
+    let cardsShow = true;
+    //let cardsContacts = {};
+
+    let legalShow = true;
 
 
     /* userChange */
@@ -157,7 +169,7 @@
                 //console.log('url: ', currentUrl, userId);
                 if (currentUrl) {
                     if (userId) {
-                        cardsHide = false;
+                        cardsShow = true;
                         getConnections();
                         const url = router.record('onLogin', '/', true);
                         if (typeof url === 'string')
@@ -424,6 +436,17 @@
     }
 
 
+    /* submitLegal */
+    function submitLegal() {
+        collector.get([
+            [ 
+                legalSubmitHandler,
+                {}
+            ],
+        ]);
+    }
+
+
     /* onMount */
 	onMount(() => {
         setSafeAreas();
@@ -435,7 +458,7 @@
             getConnections();
         }
         else {
-            cardsHide = true;
+            cardsShow = false;
         }
         return () => {
             if (main)
@@ -504,30 +527,60 @@
 </div>
 
 
-{#if !cardsHide}
+{#if currentUser.id && !currentUser.legal}
+    <div
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-[21]"
+        class:opacity-0="{!legalShow}"
+        class:opacity-100="{legalShow}"
+    >
+        <div class="absolute bg-scene opacity-90 w-full h-full">
+        </div>
+        <div class="absolute w-full h-full flex flex-col justify-start items-center">
+            <div class="text text-base-100 mt-5 text-sm shrink-0 grow-0 mb-3">Ознакомьтесь с соглашениями</div>
+            <div class="flex justify-center w-full shrink-0 grow-0 mb-5">
+                <div class="text-warning shrink-0 grow-0 text-xs w-[42%] text-center">Политика конфиденциальности</div>
+            </div>
+            <div class="w-[90%] h-full bg-base-200 shrink-1 grow-1 rounded-lg overflow-hidden">
+                <pre class="w-full h-full text-xs whitespace-pre-wrap p-4 overflow-y-auto"><UserAgreement /></pre>
+            </div>
+            <button
+                class="rounded-lg px-5 btn-front text-base-100 mt-2.5 mb-7 text-sm font-semibold h-[32px] leading-[32px] py-0 shrink-0 grow-0 mt-5"
+                on:click="{() => {
+                    legalShow = false;
+                    setTimeout(() => { submitLegal(); }, 400);
+                }}"
+            >
+                <span class="normal-case">Принять</span>
+            </button>
+        </div>
+    </div>
+{/if}
+
+
+{#if currentUser.id && cardsShow}
     <div
         class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-20"
         class:opacity-0="{cardsAmount == 0}"
-        class:opacity-100="{cardsAmount > 0}"
+        class:opacity-100="{cardsAmount > 0 && currentUser.legal}"
     >
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-end items-center">
-            <div class="text text-base-100 mb-[20px] text-xs text-center px-6">Отметьте пункты, характеризующие общение, и сдвиньте карточку налево или направо.</div>
+            <div class="text text-base-100 mb-5 text-xs text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-[20px] text-sm">Дайте оценку личному контакту</div>
+            <div class="text text-base-100 mt-5 text-sm">Дайте оценку личному контакту</div>
             <button
-                class="btn btn-xs px-2 btn-front text-base-100 mt-2.5"
+                class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[10px] font-semibold h-[24px] leading-[24px] py-0"
                 on:click="{() => {
                     cardsAmount = 0;
-                    setTimeout(() => { cardsHide = true; }, 400);
+                    setTimeout(() => { cardsShow = false; }, 400);
                 }}"
             >
                 <span class="normal-case">В другой раз</span>
             </button>
         </div>
-        <div class="absolute left-[0px] right-[0px] top-[0px] bottom-[0px] m-[auto] w-[310px] h-[470px]">
+        <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[470px]">
             <SwipeDeck
                 {cards}
                 let:card
@@ -542,7 +595,7 @@
                     //setFavorites(id, cardsStates[id.toString()]);
                     sendMark(cards[e.detail.index]['event'] ? true : false, id, cardsStates[id.toString()] ? 2 : 0, cardsComments[id.toString()]);
                     if (!cardsAmount)
-                        setTimeout(() => { cardsHide = true }, 400);
+                        setTimeout(() => { cardsShow = false }, 400);
                 }}"
                 on:move_left="{(e) => {
                     const id = cards[e.detail.index]['connection']['id'];
