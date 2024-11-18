@@ -111,7 +111,19 @@
             start = false;
             event = data.event;
             const cUser = data.residents.find((r: { [key: string]: any }) => r.id == currentUser.id);
-            let temp = event.participants.filter(
+            let temp = event.speakers.map(
+                (p: any) => {
+                    const r = data.residents.find((r: any) => r.id == p.id);
+                    r.speaker = p.speaker;
+                    r.audit = p.audit;
+                    return r;
+                }
+            ).filter(
+                (p: any) => p
+            );
+            temp.sort((a: any, b: any) => a.name.toLowerCase() > b.name.toLowerCase());
+            speakers = [ ...temp ];
+            temp = event.participants.filter(
                 (p: any) => p.confirmation || true
             ).map(
                 (p: any) => {
@@ -131,22 +143,10 @@
                     return r;
                 }
             ).filter(
-                (p: any) => p
+                (p: any) => p && speakers.findIndex(s => s.id == p.id) == -1
             );
             temp.sort((a: any, b: any) => a.name.toLowerCase() > b.name.toLowerCase());
             participants = [ ...temp ];
-            temp = event.speakers.map(
-                (p: any) => {
-                    const r = data.residents.find((r: any) => r.id == p.id);
-                    r.speaker = p.speaker;
-                    r.audit = p.audit;
-                    return r;
-                }
-            ).filter(
-                (p: any) => p
-            );
-            temp.sort((a: any, b: any) => a.name.toLowerCase() > b.name.toLowerCase());
-            speakers = [ ...temp ];
             //suggestions = participants.filter((p: any) => p.tagsLinked.length || p.interestsLinked.length);
             suggestions = participants.filter((p: any) => event.suggestions.find((s: any) => s.id == p.id));
             connections = data.connections.filter((c: any) => !c.deleted);
