@@ -559,7 +559,7 @@
 
 {#if currentUser.id && cardsShow}
     <div
-        class="absolute top-0 left-0 w-full h-full transition-opacity duration-1200 z-20 overflow-hidden"
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-[1200ms] z-20 overflow-hidden"
         class:opacity-0="{cardsAmount == 0}"
         class:opacity-100="{cardsAmount > 0 && currentUser.legal}"
     >
@@ -583,14 +583,14 @@
         <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[560px]">
             {#each cards as card (card.connection.id)}
                 <div 
-                    class="absolute left-[0px] top-[0px] w-[310px] h-[560px] transition-all duration-1000"
+                    class="absolute left-[0px] top-[0px] w-[310px] h-[560px] transition-all duration-[1000ms]"
                     class:opacity-0="{cardsStates[card.connection.id.toString()] !== null}"
                     class:ml-[-320px]="{cardsStates[card.connection.id.toString()] === 0}"
                     class:ml-[320px]="{cardsStates[card.connection.id.toString()] === 2}"
                     class:mt-[-120px]="{cardsStates[card.connection.id.toString()] === 1}"
                 >
                     <div
-                        class="w-full h-full rounded-xl transition-colors duration-500 py-3 px-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
+                        class="w-full h-full rounded-xl transition-colors duration-[500ms] py-3 px-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
                         class:bg-front="{cardsStates[card.connection.id.toString()] === null || cardsStates[card.connection.id.toString()] === 1}"
                         class:bg-success="{cardsStates[card.connection.id.toString()] === 2}"
                         class:bg-error="{cardsStates[card.connection.id.toString()] === 0}"
