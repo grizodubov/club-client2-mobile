@@ -6,7 +6,7 @@
 
     import { Avatar, UserAgreement } from '@/components';
 
-    import { SwipeDeck } from 'svelte-swipe-cards';
+    //import { SwipeDeck } from 'svelte-swipe-cards';
 
     import { nameNormalization } from '@/utils/names';
 
@@ -553,7 +553,7 @@
 
 {#if currentUser.id && !currentUser.legal}
     <div
-        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-[21]"
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-500 z-[21]"
         class:opacity-0="{!legalShow}"
         class:opacity-100="{legalShow}"
     >
@@ -583,14 +583,14 @@
 
 {#if currentUser.id && cardsShow}
     <div
-        class="absolute top-0 left-0 w-full h-full transition-opacity duration-300 z-20"
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-1200 z-20 overflow-hidden"
         class:opacity-0="{cardsAmount == 0}"
         class:opacity-100="{cardsAmount > 0 && currentUser.legal}"
     >
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-end items-center">
-            <div class="text text-base-100 mb-10 text-sm text-center px-6">Выберите пункты опроса и сдвиньте карточку направо или налево.</div>
+            <div class="text text-base-100 mb-10 text-sm text-center px-6">Выберите пункты опроса и оцените встречу</div>
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
             <div class="text text-base-100 mt-10">Дайте оценку личному контакту</div>
@@ -604,7 +604,172 @@
                 <span class="normal-case">В другой раз</span>
             </button>
         </div>
-        <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[470px]">
+        <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[560px]">
+            {#each cards as card (card.connection.id)}
+                <div 
+                    class="absolute left-[0px] top-[0px] w-[310px] h-[560px] transition-all duration-1000"
+                    class:opacity-0="{cardsStates[card.connection.id.toString()] !== null}"
+                    class:ml-[-320px]="{cardsStates[card.connection.id.toString()] === 0}"
+                    class:ml-[320px]="{cardsStates[card.connection.id.toString()] === 2}"
+                    class:mt-[-120px]="{cardsStates[card.connection.id.toString()] === 1}"
+                >
+                    <div
+                        class="w-full h-full rounded-xl transition-colors duration-500 py-3 px-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
+                        class:bg-front="{cardsStates[card.connection.id.toString()] === null || cardsStates[card.connection.id.toString()] === 1}"
+                        class:bg-success="{cardsStates[card.connection.id.toString()] === 2}"
+                        class:bg-error="{cardsStates[card.connection.id.toString()] === 0}"
+                    >
+                        <div class="shrink-1 grow-1 flex flex-col items-center overflow-hidden">
+                            <div
+                                class="w-[112px] h-[112px] left-[0px] right-[0px] mx-[auto] rounded-full overflow-hidden border-4 border-base-200"
+                            >
+                                <Avatar
+                                    user="{{
+                                        id: card.user.id,
+                                        name: card.user.name,
+                                        avatar_hash: card.user.avatar_hash,
+                                        roles: [ 'client' ],
+                                        telegram: '',
+                                    }}"
+                                    scaleLetters="2.5"
+                                />
+                            </div>
+                            <div class="font-medium text-[20px] leading-[28px] mt-1 text-base-100 text-center">{nameNormalization(card.user.name, 2)}</div>
+                            <div class="text-[12px] leading-[16px] text-base-100 mt-[1px] text-center opacity-85">{card.user.position}</div>
+                            <div class="font-medium text-[15px] leading-[19px] mt-[2px] text-base-100 text-center opacity-85">{card.user.company}</div>
+                            {#if card.event}
+                                <div class="font-bold leading-[19px] mt-3 text-center text-xs">ВСТРЕЧА НА МЕРОПРИЯТИИ</div>
+                                <div class="font-semibold text-center text-xs text-center leading-[14px] mt-[1px]">{card.event.name}</div>
+                            {:else}
+                                <div class="font-bold text-[15px] leading-[19px] mt-3 text-center text-xs">ОБМЕН КОНТАКТАМИ</div>
+                            {/if}
+                        </div>
+
+                        <div class="mb-1 flex flex-col items-start">
+                            <div class="text-center text-sm leading-[14px] mb-4 w-full">Укажите недостатки встречи, если они были:</div>
+                            <button
+                                class="flex items-start"
+                                on:click="{() => {
+                                    if (cardsComments[card.connection.id.toString()].indexOf('всё прошло отлично') == -1) {
+                                        cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'всё прошло отлично' ];
+                                    }
+                                    else {
+                                        cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'всё прошло отлично');
+                                    }
+                                }}"
+                            >
+                                <div
+                                    class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                    class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('всё прошло отлично') == -1}"
+                                    class:text-success="{cardsComments[card.connection.id.toString()].indexOf('всё прошло отлично') > -1}"
+                                >
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                </div>
+                                <div class="ml-3 text-left mt-[1px] text-sm leading-5 font-medium text-base-100">всё прошло отлично</div>
+                            </button>
+                            <button
+                                class="flex items-start mt-2"
+                                on:click="{() => {
+                                    if (cardsComments[card.connection.id.toString()].indexOf('недостаточная организация и подготовка') == -1) {
+                                        cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'недостаточная организация и подготовка' ];
+                                    }
+                                    else {
+                                        cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'недостаточная организация и подготовка');
+                                    }
+                                }}"
+                            >
+                                <div
+                                    class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                    class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('недостаточная организация и подготовка') == -1}"
+                                    class:text-error="{cardsComments[card.connection.id.toString()].indexOf('недостаточная организация и подготовка') > -1}"
+                                >
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                </div>
+                                <div class="ml-3 text-left mt-[1px] text-sm leading-5 font-medium text-base-100">недостаточная организация встречи</div>
+                            </button>
+                            <button
+                                class="flex items-start mt-2"
+                                on:click="{() => {
+                                    if (cardsComments[card.connection.id.toString()].indexOf('нет пользы для бизнеса') == -1) {
+                                        cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'нет пользы для бизнеса' ];
+                                    }
+                                    else {
+                                        cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'нет пользы для бизнеса');
+                                    }
+                                }}"
+                            >
+                                <div
+                                    class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                    class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('нет пользы для бизнеса') == -1}"
+                                    class:text-error="{cardsComments[card.connection.id.toString()].indexOf('нет пользы для бизнеса') > -1}"
+                                >
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                </div>
+                                <div class="ml-3 text-left mt-[1px] text-sm leading-5 font-medium text-base-100">нет пользы для бизнеса</div>
+                            </button>
+                            <button
+                                class="flex items-start mt-2"
+                                on:click="{() => {
+                                    if (cardsComments[card.connection.id.toString()].indexOf('некомфортный личный контакт') == -1) {
+                                        cardsComments[card.connection.id.toString()] = [ ...cardsComments[card.connection.id.toString()], 'некомфортный личный контакт' ];
+                                    }
+                                    else {
+                                        cardsComments[card.connection.id.toString()] = cardsComments[card.connection.id.toString()].filter(t => t != 'некомфортный личный контакт');
+                                    }
+                                }}"
+                            >
+                                <div
+                                    class="rounded-full w-6 h-6 border-2 border-base-300 bg-base-100 transition-all duration-200 flex items-center justify-center shrink-0 grow-0"
+                                    class:text-base-100="{cardsComments[card.connection.id.toString()].indexOf('некомфортный личный контакт') == -1}"
+                                    class:text-error="{cardsComments[card.connection.id.toString()].indexOf('некомфортный личный контакт') > -1}"
+                                >
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>
+                                </div>
+                                <div class="ml-3 text-left mt-[1px] text-sm leading-5 font-medium text-base-100">некомфортный личный контакт</div>
+                            </button>
+                        </div>
+
+                        <div class="flex justify-around w-full mt-3 shrink-0 grow-0 mb-3">
+                            <button
+                                class="btn btn-sm btn-error shrink-0 grow-0 border border-base-200"
+                                on:click="{() => {
+                                    const id = card.connection.id;
+                                    cardsStates[id.toString()] = 0;
+                                    sendMark(card.event ? true : false, id, 0, cardsComments[id.toString()]);
+                                    cardsAmount = cardsAmount - 1;
+                                }}"
+                            >
+                                <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778zm1.21.937L9.74 8.614a1.35 1.35 0 0 1-1.016.739l-5.05.734l3.654 3.562c.318.31.463.757.388 1.195l-.862 5.029l4.516-2.375a1.35 1.35 0 0 1 1.257 0l4.516 2.375l-.862-5.03a1.35 1.35 0 0 1 .388-1.194l3.654-3.562l-5.05-.734a1.35 1.35 0 0 1-1.016-.739L11.998 4.04z" fill="currentColor"></path></g></svg>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-warning shrink-0 grow-0 border border-base-200"
+                                on:click="{() => {
+                                    const id = card.connection.id;
+                                    cardsStates[id.toString()] = 1;
+                                    sendMark(card.event ? true : false, id, 1, cardsComments[id.toString()]);
+                                    cardsAmount = cardsAmount - 1;
+                                }}"
+                            >
+                                <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M12 2.35c-.482 0-.964.25-1.212.752L8.43 7.88l-5.273.766c-1.107.16-1.55 1.522-.748 2.303l3.815 3.719l-.9 5.25c-.15.874.544 1.583 1.331 1.582c.208 0 .422-.05.63-.158l4.714-2.479l4.715 2.479c.99.52 2.148-.32 1.96-1.423l-.902-5.251l3.816-3.72c.8-.78.359-2.141-.748-2.302l-5.273-.766l-2.358-4.778a1.335 1.335 0 0 0-1.21-.752zm0 14.993V4.042l2.257 4.572a1.35 1.35 0 0 0 1.016.739l5.05.734l-3.654 3.562a1.35 1.35 0 0 0-.388 1.195l.862 5.029l-4.516-2.375a1.35 1.35 0 0 0-.627-.155z" fill="currentColor"></path></g></svg>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-success shrink-0 grow-0 border border-base-200"
+                                on:click="{() => {
+                                    const id = card.connection.id;
+                                    cardsStates[id.toString()] = 2;
+                                    sendMark(card.event ? true : false, id, 2, cardsComments[id.toString()]);
+                                    cardsAmount = cardsAmount - 1;
+                                }}"
+                            >
+                                <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778z" fill="currentColor"></path></g></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {/each}
+        </div>
+
+            <!--
             <SwipeDeck
                 {cards}
                 let:card
@@ -762,6 +927,6 @@
                     </div>
                 </svelte:fragment>
             </SwipeDeck>
-        </div>
+            -->
     </div>
 {/if}
