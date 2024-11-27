@@ -157,6 +157,7 @@
     let cardsStates = {};
     let cardsComments = {};
     let cardsShow = true;
+    let cardsClosing = false;
     //let cardsContacts = {};
 
     let legalShow = true;
@@ -583,7 +584,9 @@
 
 {#if currentUser.id && cardsShow}
     <div
-        class="absolute top-0 left-0 w-full h-full transition-opacity duration-[1200ms] z-20 overflow-hidden"
+        class="absolute top-0 left-0 w-full h-full transition-opacity duration-[300ms] z-20 overflow-hidden"
+        class:duration-[300ms]="{!cardsClosing}"
+        class:duration-[1000ms]="{cardsClosing}"
         class:opacity-0="{cardsAmount == 0}"
         class:opacity-100="{cardsAmount > 0 && currentUser.legal}"
     >
@@ -597,6 +600,7 @@
             <button
                 class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[11px] font-semibold h-[26px] leading-[26px] py-0"
                 on:click="{() => {
+                    cardsClosing = false;
                     cardsAmount = 0;
                     setTimeout(() => { cardsShow = false; }, 400);
                 }}"
@@ -607,14 +611,14 @@
         <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[560px]">
             {#each cards as card (card.connection.id)}
                 <div 
-                    class="absolute left-[0px] top-[0px] w-[310px] h-[560px] transition-all duration-[1000ms]"
+                    class="absolute left-[0px] top-[0px] w-[310px] h-[560px] transition-all duration-[800ms]"
                     class:opacity-0="{cardsStates[card.connection.id.toString()] !== null}"
                     class:ml-[-320px]="{cardsStates[card.connection.id.toString()] === 0}"
                     class:ml-[320px]="{cardsStates[card.connection.id.toString()] === 2}"
                     class:mt-[-120px]="{cardsStates[card.connection.id.toString()] === 1}"
                 >
                     <div
-                        class="w-full h-full rounded-xl transition-colors duration-[500ms] py-3 px-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
+                        class="w-full h-full rounded-xl transition-colors duration-[400ms] py-3 px-4 flex flex-col items-center justify-between border-2 border-base-300 relative"
                         class:bg-front="{cardsStates[card.connection.id.toString()] === null || cardsStates[card.connection.id.toString()] === 1}"
                         class:bg-success="{cardsStates[card.connection.id.toString()] === 2}"
                         class:bg-error="{cardsStates[card.connection.id.toString()] === 0}"
@@ -733,10 +737,13 @@
                             <button
                                 class="btn btn-sm btn-error shrink-0 grow-0 border border-base-200"
                                 on:click="{() => {
+                                    cardsClosing = true;
                                     const id = card.connection.id;
                                     cardsStates[id.toString()] = 0;
                                     sendMark(card.event ? true : false, id, 0, cardsComments[id.toString()]);
                                     cardsAmount = cardsAmount - 1;
+                                    if (cardsAmount == 0)
+                                        setTimeout(() => { cardsShow = false; }, 1100);
                                 }}"
                             >
                                 <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778zm1.21.937L9.74 8.614a1.35 1.35 0 0 1-1.016.739l-5.05.734l3.654 3.562c.318.31.463.757.388 1.195l-.862 5.029l4.516-2.375a1.35 1.35 0 0 1 1.257 0l4.516 2.375l-.862-5.03a1.35 1.35 0 0 1 .388-1.194l3.654-3.562l-5.05-.734a1.35 1.35 0 0 1-1.016-.739L11.998 4.04z" fill="currentColor"></path></g></svg>
@@ -744,10 +751,13 @@
                             <button
                                 class="btn btn-sm btn-warning shrink-0 grow-0 border border-base-200"
                                 on:click="{() => {
+                                    cardsClosing = true;
                                     const id = card.connection.id;
                                     cardsStates[id.toString()] = 1;
                                     sendMark(card.event ? true : false, id, 1, cardsComments[id.toString()]);
                                     cardsAmount = cardsAmount - 1;
+                                    if (cardsAmount == 0)
+                                        setTimeout(() => { cardsShow = false; }, 1100);
                                 }}"
                             >
                                 <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M12 2.35c-.482 0-.964.25-1.212.752L8.43 7.88l-5.273.766c-1.107.16-1.55 1.522-.748 2.303l3.815 3.719l-.9 5.25c-.15.874.544 1.583 1.331 1.582c.208 0 .422-.05.63-.158l4.714-2.479l4.715 2.479c.99.52 2.148-.32 1.96-1.423l-.902-5.251l3.816-3.72c.8-.78.359-2.141-.748-2.302l-5.273-.766l-2.358-4.778a1.335 1.335 0 0 0-1.21-.752zm0 14.993V4.042l2.257 4.572a1.35 1.35 0 0 0 1.016.739l5.05.734l-3.654 3.562a1.35 1.35 0 0 0-.388 1.195l.862 5.029l-4.516-2.375a1.35 1.35 0 0 0-.627-.155z" fill="currentColor"></path></g></svg>
@@ -755,10 +765,13 @@
                             <button
                                 class="btn btn-sm btn-success shrink-0 grow-0 border border-base-200"
                                 on:click="{() => {
+                                    cardsClosing = true;
                                     const id = card.connection.id;
                                     cardsStates[id.toString()] = 2;
                                     sendMark(card.event ? true : false, id, 2, cardsComments[id.toString()]);
                                     cardsAmount = cardsAmount - 1;
+                                    if (cardsAmount == 0)
+                                        setTimeout(() => { cardsShow = false; }, 1100);
                                 }}"
                             >
                                 <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778z" fill="currentColor"></path></g></svg>
