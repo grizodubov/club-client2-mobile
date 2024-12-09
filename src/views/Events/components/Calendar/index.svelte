@@ -29,10 +29,9 @@
     /* createCalendarRange */
     function createCalendarRange() {
         const d = new Date();
-        const m = d.getMonth();
         for(let i = -3; i <= 3; i++) {
-            rangeMonthes[i + 3] = m + i >= 0 ? m + i : 12 + m + i;
-            const dStart = new Date(d.getFullYear(), rangeMonthes[i + 3], 1, 0, 0, 0, 0);
+            const dStart = new Date(d.getFullYear(), d.getMonth() + i, 1, 0, 0, 0, 0);
+            rangeMonthes[i + 3] = dStart.getMonth();
             const dd = dStart.getDay() ? dStart.getDay() - 1 : 6;
             if (dd)
                 dStart.setDate(dStart.getDate() - dd);
