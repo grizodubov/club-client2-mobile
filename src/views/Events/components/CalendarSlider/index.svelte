@@ -21,7 +21,7 @@
     /* EXPORT: createCalendarRange */
     export function createCalendarRange(dateStart: Date, dateFinish: Date) {
         if (dateStart && dateFinish) {
-            const temp = [];
+            const temp: any[] = [];
             const cursor = new Date(dateStart.getFullYear(), dateStart.getMonth(), dateStart.getDate(), 0, 0, 0, 0);
             do {
                 temp.push(new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(), 0, 0, 0, 0));
