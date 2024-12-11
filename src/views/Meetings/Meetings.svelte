@@ -3,7 +3,7 @@
 
     import { type User, user } from '@/stores';
 
-    import { EventCard, OfflineCard } from './components';
+    import { EventCard, OfflineCard, OnlineCard } from './components';
 
     import { subscribe } from '@/helpers/notification';
 
@@ -27,10 +27,13 @@
 
     let meetings: { [key: string]: any }[] = [];
     let meetingsOffline: { [key: string]: any }[] = [];
+    let meetingsOnline: { [key: string]: any }[] = [];
 
     $: meetingsFiltered = parseData(meetings, filter);
 
     $: meetingsOfflineFiltered = parseOfflineData(meetingsOffline, filter);
+
+    $: meetingsOnlineFiltered = parseOnlineData(meetingsOnline, filter);
 
     let amountTotal = 0;
     let amountFiltered = 0;
@@ -99,6 +102,24 @@
     }
 
 
+    /* parseOnlineData */
+    function parseOnlineData(list: any[], f: any) {
+        const result: any[] = [];
+        const ln = list.length;
+        for (let i = 0; i < ln; i ++) {
+            if (list[i].connection.state) {
+                const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
+                amountTotal += 1;
+                if ((mark !== null && f.mark.t) || (mark === null && f.mark.f)) {
+                    result.push(list[i]);
+                    amountFiltered += 1;
+                }
+            }
+        }
+        return result;
+    }
+
+
     /* DATA: userEventsConnectionsAllHandler */
 	const userEventsConnectionsAllHandler = new Entity({
 		model: userEventsConnectionsAll.model,
@@ -109,6 +130,7 @@
             amountFiltered = 0;
             meetings = data.events;
             meetingsOffline = data.offline;
+            meetingsOnline = data.online;
         },
 	});
 
@@ -342,6 +364,9 @@
                         {/each}
                         {#if meetingsOfflineFiltered.length}
                             <OfflineCard connections="{meetingsOfflineFiltered}" archive="{archive}" />
+                        {/if}
+                        {#if meetingsOnlineFiltered.length}
+                            <OnlineCard connections="{meetingsOnlineFiltered}" archive="{archive}" />
                         {/if}
                     {/if}
                 </div>
