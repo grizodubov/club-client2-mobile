@@ -187,3 +187,30 @@ export const offlineConnectionMark = {
 		return null;
 	}
 };
+
+
+
+/* onlineConnectionMark */
+export const onlineConnectionMark = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        connectionId = 0,
+        mark = 0,
+        comment = null,
+    }) {
+		const response = await request({
+			path: '/user/online/connection/mark',
+			data: {
+                id: connectionId,
+                mark: mark,
+                comment: comment,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
