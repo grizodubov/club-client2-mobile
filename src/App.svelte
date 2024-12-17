@@ -572,7 +572,8 @@
             <div class="text text-base-100 mb-10 text-sm text-center px-6">Выберите пункты опроса и оцените встречу</div>
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-10">Дайте оценку личному контакту</div>
+            <div class="text text-base-100 mt-10">Для продолжения работы оцените прошедшие встречи</div>
+            <!--
             <button
                 class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[11px] font-semibold h-[26px] leading-[26px] py-0"
                 on:click="{() => {
@@ -583,6 +584,7 @@
             >
                 <span class="normal-case">В другой раз</span>
             </button>
+            -->
         </div>
         <div class="absolute left-[0px] right-[0px] top-[-10px] bottom-[0px] m-[auto] w-[310px] h-[560px]">
             {#each cards as card (card.connection.id)}
