@@ -593,10 +593,10 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col justify-end items-center">
-            <div class="text text-base-100 mb-10 text-sm text-center px-6">Выберите пункты опроса и оцените встречу</div>
+            <div class="text text-base-100 mb-14 text-sm text-center px-6">Выберите пункты опроса и оцените встречу</div>
         </div>
         <div class="absolute w-full h-full flex flex-col justify-start items-center">
-            <div class="text text-base-100 mt-10">Для продолжения работы оцените прошедшие встречи</div>
+            <div class="text text-base-100 mt-14 text-center px-10">Для продолжения работы оцените прошедшие встречи</div>
             <!--
             <button
                 class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[11px] font-semibold h-[26px] leading-[26px] py-0"
@@ -737,7 +737,7 @@
 
                         <div class="flex justify-around w-full mt-3 shrink-0 grow-0 mb-3">
                             <button
-                                class="btn btn-sm btn-error shrink-0 grow-0 border border-base-200"
+                                class="w-10 h-10 border-2 border-base-100 shrink-0 grow-0 rounded-full overflow-hidden flex items-center justify-center"
                                 on:click="{() => {
                                     cardsClosing = true;
                                     const id = card.connection.id;
@@ -748,10 +748,10 @@
                                         setTimeout(() => { cardsShow = false; }, 1100);
                                 }}"
                             >
-                                <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778zm1.21.937L9.74 8.614a1.35 1.35 0 0 1-1.016.739l-5.05.734l3.654 3.562c.318.31.463.757.388 1.195l-.862 5.029l4.516-2.375a1.35 1.35 0 0 1 1.257 0l4.516 2.375l-.862-5.03a1.35 1.35 0 0 1 .388-1.194l3.654-3.562l-5.05-.734a1.35 1.35 0 0 1-1.016-.739L11.998 4.04z" fill="currentColor"></path></g></svg>
+                                <svg class="w-[calc(100%+14px)] h-[calc(100%+14px)] text-neutral bg-error shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M12 1.998c5.524 0 10.002 4.478 10.002 10.002C22.002 17.523 17.523 22 12 22C6.476 22.001 1.998 17.523 1.998 12C1.998 6.476 6.476 1.998 12 1.998zm0 1.5a8.502 8.502 0 1 0 0 17.003a8.502 8.502 0 0 0 0-17.003zm0 10c1.631 0 3.16.654 4.281 1.795a.75.75 0 1 1-1.07 1.05A4.485 4.485 0 0 0 12 14.998a4.485 4.485 0 0 0-3.217 1.352a.75.75 0 1 1-1.071-1.05A5.985 5.985 0 0 1 12 13.498zM9 8.75a1.25 1.25 0 1 1 0 2.499A1.25 1.25 0 0 1 9 8.75zm6 0a1.25 1.25 0 1 1 0 2.499a1.25 1.25 0 0 1 0-2.499z" fill="currentColor"></path></g></svg>
                             </button>
                             <button
-                                class="btn btn-sm btn-warning shrink-0 grow-0 border border-base-200"
+                                class="w-10 h-10 border-2 border-base-100 shrink-0 grow-0 rounded-full overflow-hidden flex items-center justify-center"
                                 on:click="{() => {
                                     cardsClosing = true;
                                     const id = card.connection.id;
@@ -762,10 +762,10 @@
                                         setTimeout(() => { cardsShow = false; }, 1100);
                                 }}"
                             >
-                                <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M12 2.35c-.482 0-.964.25-1.212.752L8.43 7.88l-5.273.766c-1.107.16-1.55 1.522-.748 2.303l3.815 3.719l-.9 5.25c-.15.874.544 1.583 1.331 1.582c.208 0 .422-.05.63-.158l4.714-2.479l4.715 2.479c.99.52 2.148-.32 1.96-1.423l-.902-5.251l3.816-3.72c.8-.78.359-2.141-.748-2.302l-5.273-.766l-2.358-4.778a1.335 1.335 0 0 0-1.21-.752zm0 14.993V4.042l2.257 4.572a1.35 1.35 0 0 0 1.016.739l5.05.734l-3.654 3.562a1.35 1.35 0 0 0-.388 1.195l.862 5.029l-4.516-2.375a1.35 1.35 0 0 0-.627-.155z" fill="currentColor"></path></g></svg>
+                                <svg class="w-[calc(100%+14px)] h-[calc(100%+14px)] text-neutral bg-warning shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M9 8.751a1.25 1.25 0 1 1 0 2.499A1.25 1.25 0 0 1 9 8.75zm6 0a1.25 1.25 0 1 1 0 2.499a1.25 1.25 0 0 1 0-2.499zM8.25 15a.75.75 0 0 0 0 1.5h7.5a.75.75 0 0 0 0-1.5h-7.5zM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12zm10-8.5a8.5 8.5 0 1 0 0 17a8.5 8.5 0 0 0 0-17z" fill="currentColor"></path></g></svg>
                             </button>
                             <button
-                                class="btn btn-sm btn-success shrink-0 grow-0 border border-base-200"
+                                class="w-10 h-10 border-2 border-base-100 shrink-0 grow-0 rounded-full overflow-hidden flex items-center justify-center"
                                 on:click="{() => {
                                     cardsClosing = true;
                                     const id = card.connection.id;
@@ -776,7 +776,7 @@
                                         setTimeout(() => { cardsShow = false; }, 1100);
                                 }}"
                             >
-                                <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M10.788 3.102c.495-1.003 1.926-1.003 2.421 0l2.358 4.778l5.273.766c1.107.16 1.549 1.522.748 2.303l-3.816 3.719l.901 5.25c.19 1.104-.968 1.945-1.959 1.424l-4.716-2.48l-4.715 2.48c-.99.52-2.148-.32-1.96-1.423l.901-5.251l-3.815-3.72c-.801-.78-.359-2.141.748-2.302L8.43 7.88l2.358-4.778z" fill="currentColor"></path></g></svg>
+                                <svg class="w-[calc(100%+14px)] h-[calc(100%+14px)] text-neutral bg-success shrink-0 grow-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M12 1.998c5.524 0 10.002 4.478 10.002 10.002C22.002 17.523 17.524 22 12 22C6.476 22.001 1.998 17.523 1.998 12C1.998 6.476 6.476 1.998 12 1.998zm0 1.5a8.502 8.502 0 1 0 0 17.003a8.502 8.502 0 0 0 0-17.003zM8.462 14.783A4.492 4.492 0 0 0 12 16.5a4.491 4.491 0 0 0 3.535-1.714a.75.75 0 1 1 1.177.93A5.991 5.991 0 0 1 12 18a5.991 5.991 0 0 1-4.716-2.29a.75.75 0 1 1 1.178-.928zM9 8.75a1.25 1.25 0 1 1 0 2.499A1.25 1.25 0 0 1 9 8.75zm6 0a1.25 1.25 0 1 1 0 2.499a1.25 1.25 0 0 1 0-2.499z" fill="currentColor"></path></g></svg>
                             </button>
                         </div>
                     </div>
