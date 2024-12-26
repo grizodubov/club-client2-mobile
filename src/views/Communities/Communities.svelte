@@ -331,7 +331,7 @@
                     <div class="h-full scrollable-y">
                         {#each communitiesFiltered as community (community.id)}
                             <div
-                                class="mb-5 first:mt-[104px]"
+                                class="mb-5 first:mt-[268px]"
                                 in:fade="{{ duration: 100 }}"
                             >
                                 <CommunityCard
