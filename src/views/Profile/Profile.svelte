@@ -264,7 +264,7 @@
 >
     {#if contact && contact.contact}
         <button
-            class="fixed left-3 btn btn-sm h-[48px] px-2 btn-error text-base-100 flex z-[12] w-[120px]"
+            class="fixed left-2 btn btn-sm h-[48px] text-xs px-2 btn-error text-base-100 flex z-[12] w-[110px]"
             style="top: {110 + currentStates.safeTop}px"
             on:click="{delContact}"
         >
@@ -276,7 +276,7 @@
         </button>
     {:else}
         <button
-            class="fixed left-3 btn btn-sm h-[48px] px-2 btn-warning text-base-100 flex z-[12] w-[120px]"
+            class="fixed left-2 btn btn-sm h-[48px] text-xs px-2 btn-warning text-base-100 flex z-[12] w-[110px]"
             style="top: {110 + currentStates.safeTop}px"
             on:click="{addContact}"
         >
@@ -290,7 +290,7 @@
 
     {#if resident && resident.active}
         <button
-            class="fixed right-3 btn btn-sm h-[48px] px-2 btn-front text-base-100 flex z-[12] w-[120px]"
+            class="fixed right-2 btn btn-sm h-[48px] text-xs px-2 btn-front text-base-100 flex z-[12] w-[110px]"
             style="top: {110 + currentStates.safeTop}px"
             on:click="{() => { eventsConnectionsShow = !eventsConnectionsShow; }}"
         >  
@@ -335,6 +335,7 @@
                                         avatar_hash: resident.avatar_hash,
                                         roles: [ 'client' ],
                                         telegram: '',
+                                        status: resident.status,
                                     }}"
                                     scaleLetters="2.5"
                                 />
@@ -765,7 +766,7 @@
     >
         <div class="w-full p-2">
             {#each eventsConnections as event}
-                <EventCard event="{event}" targetId="{resident ? resident.id : 0}" />
+                <EventCard event="{event}" targetId="{resident ? resident.id : 0}" status="{resident ? resident.status : 'бронзовый'}" />
             {/each}
         </div>
     </ModalSelector>

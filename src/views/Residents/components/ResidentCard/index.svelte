@@ -30,6 +30,7 @@
                 avatar_hash: resident.avatar_hash,
                 roles: [ 'client' ],
                 telegram: '',
+                status: resident.status,
             }}"
             scaleLetters="1.1"
         />

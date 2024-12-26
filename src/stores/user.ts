@@ -10,6 +10,7 @@ export type User = {
     roles: string[];
     telegram: string | null;
     legal: boolean;
+    status: string;
 };
 
 
@@ -20,6 +21,7 @@ const _default: User = {
     roles: [],
     telegram: null,
     legal: false,
+    status: 'бронзовый',
 };
 
 
