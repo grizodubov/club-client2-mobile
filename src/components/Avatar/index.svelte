@@ -1,6 +1,10 @@
 <script lang="ts">
     import { nameInitials } from '@/utils/names';
 
+    import Gold from './Gold.svelte';
+    import Silver from './Silver.svelte';
+    import Bronze from './Bronze.svelte';
+
 
     export let user: { [key: string]: any };
     export let scaleLetters: '1.1' | '1.2' | '1.3' | '1.4' | '1.5' | '2' | '2.5' | '3' | '3.5' | '4' | '4.5' | '5' | undefined = undefined;
@@ -49,5 +53,12 @@
             class:bg-base-200="{!online}"
             class:bg-success="{online}"
         ></div>
+    {/if}
+    {#if user.status}
+        <div class="absolute bottom-[-10%] right-[-10%] w-[46%] h-[46%]">
+            {#if user.status == 'золотой'}<Gold />{/if}
+            {#if user.status == 'серебряный'}<Silver />{/if}
+            {#if user.status == 'бронзовый'}<Bronze />{/if}
+        </div>
     {/if}
 </div>

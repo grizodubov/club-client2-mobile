@@ -64,6 +64,10 @@ const MODEL: {
                 null: true,
                 empty: true,
             },
+            status: {
+                type: 'string',
+                required: true,
+            },
         },
     },
 };
