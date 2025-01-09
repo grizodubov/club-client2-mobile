@@ -67,6 +67,11 @@ const MODEL: {
             status: {
                 type: 'string',
                 required: true,
+                empty: true,
+            },
+            legal: {
+                type: 'boolean',
+                required: true,
             },
         },
     },
@@ -121,6 +126,8 @@ export function auth(data: Data): void {
 	token.load();
 	const timeStamp = token.pull('time');
     //console.log('auth', token.pull(), data);
+    //console.log(data);
+    //console.log(validate(data, MODEL));
 	if (validate(data, MODEL)) {
 		if (data._time > timeStamp) {
 			token.push({

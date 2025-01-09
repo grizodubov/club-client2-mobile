@@ -137,6 +137,8 @@
 
     $: $user, userChange();
 
+    $: $states, statesChange();
+
 
     $: modalData = $modal as Modal;
 
@@ -147,7 +149,7 @@
     $: statesO = $states as any;
 
 
-    let deck;
+    //let deck;
     let cards: any[] = [];
     let cardsAmount: number = 0;
     let cardsStates = {};
@@ -162,7 +164,7 @@
     /* userChange */
     function userChange() {
         const id = user.pull('id');
-        //console.log('user_id: ', id);
+        //console.log('user_id: ', id, userId);
         if (userId != id) {
             userId = id;
             if (states.pull('api')) {
@@ -179,6 +181,24 @@
                     else {
                         router.go('/');
                     }
+                }
+            }
+        }
+    }
+
+
+    /* statesChange */
+    function statesChange() {
+        const st = states.pull('start');
+        //console.log('user_id: ', id, userId);
+        if (st) {
+            const ht = states.pull('hot');
+            if (!ht) {
+                states.push({ hot: true });
+                const id = user.pull('id');
+                if (id) {
+                    cardsShow = true;
+                    getConnections();
                 }
             }
         }
@@ -454,13 +474,7 @@
         setupFCM();
         if (main)
             main.addEventListener('click', blurInputs);
-        const id = user.pull('id');
-        if (id) {
-            getConnections();
-        }
-        else {
-            cardsShow = false;
-        }
+        cardsShow = false;
         return () => {
             if (main)
                 main.removeEventListener('click', blurInputs);
