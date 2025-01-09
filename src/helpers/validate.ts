@@ -43,6 +43,13 @@ export type ModelArray = {
     empty?: boolean;
 };
 
+/* EXPORT: ModelBoolean */
+export type ModelBoolean = {
+    type: 'boolean';
+    required?: boolean;
+    null?: boolean;
+};
+
 /* EXPORT: ModelDictionary */
 export type ModelDictionary = {
     type: 'dictionary';
@@ -52,7 +59,7 @@ export type ModelDictionary = {
     model: { [key: string]: Model };
 };
 
-type Model = ModelString | ModelNumber | ModelInteger | ModelArray | ModelDictionary;
+type Model = ModelString | ModelNumber | ModelInteger | ModelArray | ModelBoolean | ModelDictionary;
 
 
 const VALIDATORS: {
@@ -60,6 +67,7 @@ const VALIDATORS: {
     'number': (value: number, model: ModelNumber) => boolean;
     'integer': (value: number, model: ModelInteger) => boolean;
     'array': (value: any[], model: ModelArray) => boolean;
+    'boolean': (value: boolean, model: ModelBoolean) => boolean;
     'dictionary': (value: { [key: string]: any }, model: ModelDictionary) => boolean;
 } = {
     'string': (value, model: ModelString) => {
@@ -127,6 +135,13 @@ const VALIDATORS: {
             return false;
         return true;
     },
+    'boolean': (value, model: ModelBoolean) => {
+        if (model.null && value === null)
+            return true;
+        if (typeof value !== 'boolean')
+            return false;
+        return true;
+    },
     'dictionary': (value, model: ModelDictionary) => {
         if (model.null && value === null)
             return true;
@@ -156,29 +171,41 @@ export function validate(data: Data, model: { [key: string]: Model }, strict: bo
 		if (check) {
 			if (attr.type === 'dictionary') {
                 let valid: boolean = VALIDATORS[attr.type](data[modelKeys[i]], attr);
+                //console.log('-', modelKeys[i], valid);
                 if (!valid)
 					return false;
 				valid = validate(data[modelKeys[i]], attr.model, attr.strict ? true : false);
+                //console.log('-', modelKeys[i], valid);
 				if (!valid)
 					return false;
 			}
 			else if (attr.type === 'string') {
 				let valid: boolean = VALIDATORS['string'](data[modelKeys[i]], attr);
+                //console.log('-', modelKeys[i], valid);
 				if (!valid)
 					return false;
 			}
             else if (attr.type === 'number') {
 				let valid: boolean = VALIDATORS['number'](data[modelKeys[i]], attr);
+                //console.log('-', modelKeys[i], valid);
 				if (!valid)
 					return false;
 			}
             else if (attr.type === 'integer') {
 				let valid: boolean = VALIDATORS['integer'](data[modelKeys[i]], attr);
+                //console.log('-', modelKeys[i], valid);
 				if (!valid)
 					return false;
 			}
             else if (attr.type === 'array') {
 				let valid: boolean = VALIDATORS['array'](data[modelKeys[i]], attr);
+                //console.log('-', modelKeys[i], valid);
+				if (!valid)
+					return false;
+			}
+            else if (attr.type === 'boolean') {
+				let valid: boolean = VALIDATORS['boolean'](data[modelKeys[i]], attr);
+                //console.log('bool', modelKeys[i], valid);
 				if (!valid)
 					return false;
 			}
