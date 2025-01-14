@@ -429,3 +429,28 @@ export const userEventsConnectionsAll = {
 		return null;
 	}
 };
+
+
+
+/* userMeetingRequestAdd */
+export const userMeetingRequestAdd = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        targetId = 0,
+        active = true,
+    }) {
+		const response = await request({
+			path: '/user/meeting/request/add',
+			data: {
+                target_id: targetId,
+                active: active,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

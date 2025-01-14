@@ -4,7 +4,7 @@
 
    import { Avatar, Tag } from '@/components';
 
-   import { EventCard, ModalSelector, ModalPhoto } from './components';
+   import { EventCard, OnlineRequestCard, ModalSelector, ModalPhoto } from './components';
 
    import { type User, user, states } from '@/stores';
 
@@ -52,6 +52,10 @@
 
     let eventsConnections: any[] = [];
     let eventsConnectionsShow: boolean = false;
+
+    let online: boolean | null = null;
+    let onlineRequest: boolean | null = null;
+    let onlineReady: boolean = false;
 
     let contact: any;
 
@@ -123,6 +127,9 @@
 		retriever: userEventsConnections.retriever,
         onSuccess: data => {
             eventsConnections = data.events;
+            online = data.online;
+            onlineRequest = data.online_request;
+            onlineReady = true;
         },
 	});
 
@@ -765,9 +772,17 @@
         bind:open="{eventsConnectionsShow}"
     >
         <div class="w-full p-2">
-            {#each eventsConnections as event}
-                <EventCard event="{event}" targetId="{resident ? resident.id : 0}" status="{resident ? resident.status : 'бронзовый'}" />
-            {/each}
+            {#if onlineReady}
+                <OnlineRequestCard
+                    check="{online}"
+                    checkRequest="{onlineRequest}"
+                    targetId="{resident ? resident.id : 0}"
+                    status="{resident ? resident.status : 'бронзовый'}"
+                />
+                {#each eventsConnections as event}
+                    <EventCard event="{event}" targetId="{resident ? resident.id : 0}" status="{resident ? resident.status : 'бронзовый'}" />
+                {/each}
+            {/if}
         </div>
     </ModalSelector>
 
