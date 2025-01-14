@@ -266,6 +266,24 @@
 </script>
 
 
+<style>
+    .gold {
+        background-color: rgb(249,185,6);
+        background-image: linear-gradient(315deg, rgb(249,185,6) 0%, rgb(232,166,21) 74%);
+    }
+
+    .silver {
+        background-color: rgb(195,219,218);
+        background-image: linear-gradient(315deg, rgb(195,219,218) 0%, rgb(161,201,200) 74%);
+    }
+
+    .bronze {
+        background-color: rgb(227,127,34);
+        background-image: linear-gradient(315deg, rgb(227,127,34) 0%, rgb(207,109,28) 74%);
+    }
+</style>
+
+
 <div 
     class="w-full h-full flex flex-col"
 >
@@ -453,6 +471,27 @@
                     {/if}
 
                     {#if resident.active && resident.show}
+
+                        <div class="px-5 mt-4 mb-4 flex flex-col items-center">
+                            <div class="flex items-center opacity-50">
+                                <div class="text-xs leading-4 ml-[5px] text-left">Статус в клубе</div>
+                            </div>
+                            <div class="ml-2 mt-1">
+                                <div
+                                    class="text-base-100 rounded-xl min-h-[20px] flex items-center pl-2 pr-4"
+                                    class:gold="{resident.status == 'золотой'}"
+                                    class:silver="{resident.status == 'серебряный'}"
+                                    class:bronze="{resident.status == 'бронзовый'}"
+                                >
+                                    <div class="w-5 h-5 shrink-0 mr-2">
+                                        <svg class="w-5 h-5 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M17.002 15.244L17 21.245a.75.75 0 0 1-1.182.613l-3.818-2.687l-3.817 2.687a.75.75 0 0 1-1.181-.613l-.002-6A7.966 7.966 0 0 0 12 17a7.966 7.966 0 0 0 5.002-1.756zM12 2a7 7 0 1 1 0 14a7 7 0 0 1 0-14z" fill="currentColor"></path></g></svg>
+                                    </div>
+                                    <div
+                                        class="text-sm leading-[20px] mt-[2px] mb-[4px] font-medium"
+                                    >{resident.status}</div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="px-4 mt-4 mb-4 flex flex-col items-center">
                             <div class="flex items-center opacity-50">

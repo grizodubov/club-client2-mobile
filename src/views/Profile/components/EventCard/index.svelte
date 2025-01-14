@@ -92,7 +92,7 @@
                     <div class="relative text-2xl leading-7 font-bold text-base-100">{currentDate[0]}</div>
                     <div class="relative text-xs font-medium mb-0.5 text-base-100">{currentDate[1]}</div>
                 </div>
-                <div class="shrink-1 grow-1 ml-3">
+                <div class="shrink-1 grow-1 w-full ml-3">
                     <div class="mt-1 flex items-start text-{currentFormat?.color}">
                         <div class="w-4 h-4 shrink-0 grow-0">{@html currentFormat?.icon}</div>
                         <div class="text-xs leading-4 ml-1.5 text-left">{currentFormat?.name}</div>
@@ -199,7 +199,7 @@
                             on:click="{() => {
                                 confirmationShow = true;
                             }}"
-                        >{#if event.user.confirmation}Назначить встречу{:else}Пригласить и назначить встречу{/if}</button>
+                        >{#if event.user.confirmation}Назначить встречу на событии{:else}Пригласить и назначить встречу{/if}</button>
                     {/if}
                 {/if}
             </div>
