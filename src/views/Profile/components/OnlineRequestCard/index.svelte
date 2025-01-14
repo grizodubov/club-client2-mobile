@@ -64,42 +64,76 @@
 
 
 <div
-    class="w-full mt-2 mb-4 flex flex-col items-center"
+    class="w-full mt-2 mb-4"
 >
-    {#if $loadingUpdate || checkRequestControl != checkRequest}
-        <div class="h-7">Онлайн-встречи</div>
-        <div class="w-full h-[32px] flex justify-center items-center">
-            <span class="loading loading-xs loading-bars text-front"></span>
+    <div class="relative rounded-2xl w-full p-3 overflow-hidden">
+        <div class="absolute w-full h-full top-0 left-0 bg-success brightness-75 opacity-15"></div>
+        <div class="relative w-full">
+            <div class="flex justify-between items-start">
+                <div class="relative w-[66px] h-[66px] rounded-box flex flex-col items-center justify-center shrink-0 grow-0">
+                    <div class="absolute w-[66px] h-[66px] rounded-box bg-success brightness-75 top-0 left-0"></div>
+                    <svg class="relative w-9 h-9 text-base-100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><g fill="none"><path d="M10 7a2 2 0 1 1-4 0a2 2 0 0 1 4 0zM1 4.75C1 3.784 1.784 3 2.75 3h10.5c.966 0 1.75.784 1.75 1.75v6.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 11.25v-6.5zM11 12h2.25a.75.75 0 0 0 .75-.75v-6.5a.75.75 0 0 0-.75-.75H2.75a.75.75 0 0 0-.75.75v6.5c0 .414.336.75.75.75H5v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1z" fill="currentColor"></path></g></svg>
+                    <div class="relative text-xs font-medium mb-0.5 text-base-100">онлайн</div>
+                </div>
+                <div class="shrink-1 grow-1 w-full ml-3">
+                    <div class="mt-1 flex items-start text-success">
+                        <div class="text-xs leading-4 text-left">Онлайн-встреча</div>
+                    </div>
+                    {#if check}
+                        <div class="flex mt-2">
+                            <div class="relative flex justify-start items-center rounded-[12px] h-6 bg-base-100 bg-opacity-50 grow-0">
+                                <div class="ml-1.5 w-3.5 h-3.5 rounded-full overflow-hidden bg-success"></div>
+                                <div class="ml-1.5 mr-2.5 text-xs leading-6 font-medium">назначена онлайн-встреча</div>
+                            </div>
+                        </div>
+                    {:else}
+                        {#if checkRequest}
+                            <div class="flex mt-2">
+                                <div class="relative flex justify-start items-center rounded-[12px] h-6 bg-base-100 bg-opacity-50 grow-0">
+                                    <div class="ml-1.5 w-3.5 h-3.5 rounded-full overflow-hidden bg-warning"></div>
+                                    <div class="ml-1.5 mr-2.5 text-xs leading-6 font-medium">запрошена онлайн-встреча</div>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="text-sm leading-4 mt-1">Бизнес-знакомства без привязки к географии</div>
+                        {/if}
+                    {/if}
+                </div>
+            </div>
+            <div class="relative mt-3 flex flex-col items-start">
+                {#if $loadingUpdate || checkRequestControl != checkRequest}
+                    <div class="w-full h-[32px] flex justify-center items-center">
+                        <span class="loading loading-xs loading-bars text-front"></span>
+                    </div>
+                {:else}
+                    {#if check}
+                        <button
+                            class="btn btn-sm btn-front text-base-100"
+                            on:click="{() => {
+                                router.go('/meetings');
+                            }}"
+                        >Перейти ко встречам</button>
+                    {:else}
+                        {#if checkRequest}
+                            <button
+                                class="btn btn-sm btn-front text-base-100"
+                                on:click="{() => {
+                                    confirmationShow = true;
+                                }}"
+                            >Отменить запрос</button>
+                        {:else}
+                            <button
+                                class="btn btn-sm btn-front text-base-100"
+                                on:click="{() => {
+                                    confirmationShow = true;
+                                }}"
+                            >Запросить онлайн-встречу</button>
+                        {/if}
+                    {/if}
+                {/if}
+            </div>
         </div>
-    {:else}
-        {#if check}
-            <div class="h-7 text-sm">Назначена онлайн-встреча</div>
-            <button
-                class="btn btn-sm btn-front text-base-100"
-                on:click="{() => {
-                    router.go('/meetings');
-                }}"
-            >Перейти ко встречам</button>
-        {:else}
-            {#if checkRequest}
-                <div class="h-7 text-sm">Запрошена онлайн-встреча</div>
-                <button
-                    class="btn btn-sm btn-front text-base-100"
-                    on:click="{() => {
-                        confirmationShow = true;
-                    }}"
-                >Отменить запрос</button>
-            {:else}
-                <div class="h-7">Онлайн-встречи</div>
-                <button
-                    class="btn btn-sm btn-front text-base-100"
-                    on:click="{() => {
-                        confirmationShow = true;
-                    }}"
-                >Запросить онлайн-встречу</button>
-            {/if}
-        {/if}
-    {/if}
+    </div>
 </div>
 
 <ModalConfirmation
