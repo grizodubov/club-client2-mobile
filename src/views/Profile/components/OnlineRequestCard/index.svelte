@@ -18,7 +18,11 @@
     export let status: 'золотой' | 'серебряный' | 'бронзовый';
 
 
-    let checkRequestControl = checkRequest;
+    let checkRequestControl: boolean | null = null;
+
+    updateCheckReuquestControl(checkRequest);
+
+    $: checkRequest, updateCheckReuquestControl(checkRequest);
 
 
     $: currentUser = $user as User;
@@ -37,6 +41,11 @@
 	});
 
     let loadingUpdate = userMeetingRequestAddHandler.loading;
+
+
+    function updateCheckReuquestControl(r) {
+        checkRequestControl = r;
+    }
     
 
     /* update */
