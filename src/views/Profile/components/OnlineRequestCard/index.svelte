@@ -58,7 +58,7 @@
     class="w-full mt-2 mb-4 flex flex-col items-center"
 >
     {#if $loadingUpdate || checkRequestControl != checkRequest}
-        <div class="h-7">&nbsp;</div>
+        <div class="h-7">Онлайн-встречи</div>
         <div class="w-full h-[32px] flex justify-center items-center">
             <span class="loading loading-xs loading-bars text-front"></span>
         </div>
@@ -81,7 +81,7 @@
                     }}"
                 >Отменить запрос</button>
             {:else}
-                <div class="h-7">&nbsp;</div>
+                <div class="h-7">Онлайн-встречи</div>
                 <button
                     class="btn btn-sm btn-front text-base-100"
                     on:click="{() => {
