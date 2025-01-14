@@ -41,6 +41,8 @@
 
     $: currentDate = toDateText(connection.target_time).split(/\s+/);
 
+    $: cd = new Date(connection.target_time);
+
 
     let confirmationShow = false;
     let confirmationMark: number = 0;
@@ -165,7 +167,7 @@
                 <div class="w-[20px] h-[20px] rounded flex flex-col items-center justify-center shrink-0 grow-0 bg-secondary">
                     <div class="text-[10px] leading-7 font-bold text-base-100">{currentDate[0]}</div>
                 </div>
-                <div class="text-xs font-medium mb-0.5 text-base-100 text-secondary ml-[5px]">{currentDate[1]}</div>
+                <div class="text-xs font-medium mb-0.5 text-base-100 text-secondary ml-[5px]">{currentDate[1]} <span class="text-neutral ml-1">{('0' + cd.getHours().toString()).slice(-2)}:{('0' + cd.getMinutes().toString()).slice(-2)}</span></div>
             </div>
             <div class="flex items-center h-[24px] mt-0.5">
                 <div class="text-left font-medium text-[16px] leading-[24px] whitespace-nowrap overflow-hidden pr-0.5">{nameNormalization(resident.name, 2)}</div>

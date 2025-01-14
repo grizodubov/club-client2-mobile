@@ -89,12 +89,20 @@
         const result: any[] = [];
         const ln = list.length;
         for (let i = 0; i < ln; i ++) {
-            if (list[i].connection.state) {
-                const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
-                amountTotal += 1;
-                if ((mark !== null && f.mark.t) || (mark === null && f.mark.f)) {
+            if (archive) {
+                if (list[i].connection.state) {
+                    const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
+                    amountTotal += 1;
+                    if ((mark !== null && f.mark.t) || (mark === null && f.mark.f)) {
+                        result.push(list[i]);
+                        amountFiltered += 1;
+                    }
+                }
+            }
+            else {
+                if (!list[i].connection.state) {
+                    amountTotal += 1;
                     result.push(list[i]);
-                    amountFiltered += 1;
                 }
             }
         }
@@ -107,12 +115,20 @@
         const result: any[] = [];
         const ln = list.length;
         for (let i = 0; i < ln; i ++) {
-            if (list[i].connection.state) {
-                const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
-                amountTotal += 1;
-                if ((mark !== null && f.mark.t) || (mark === null && f.mark.f)) {
+            if (archive) {
+                if (list[i].connection.state) {
+                    const mark = list[i].connection.user_1_id == currentUser.id ? list[i].connection.user_rating_1 : list[i].connection.user_rating_2;
+                    amountTotal += 1;
+                    if ((mark !== null && f.mark.t) || (mark === null && f.mark.f)) {
+                        result.push(list[i]);
+                        amountFiltered += 1;
+                    }
+                }
+            }
+            else {
+                if (!list[i].connection.state) {
+                    amountTotal += 1;
                     result.push(list[i]);
-                    amountFiltered += 1;
                 }
             }
         }
