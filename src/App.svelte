@@ -158,7 +158,7 @@
     let cardsAmount: number = 0;
     let cardsStates = {};
     let cardsComments = {};
-    let cardsShow = true;
+    let cardsShow = false //true;
     let cardsClosing = false;
     //let cardsContacts = {};
 
@@ -176,8 +176,8 @@
                 //console.log('url: ', currentUrl, userId);
                 if (currentUrl) {
                     if (userId) {
-                        cardsShow = true;
-                        getConnections();
+                        cardsShow = false //true;
+                        //getConnections();
                         const url = router.record('onLogin', '/', true);
                         if (typeof url === 'string')
                             router.go(url);
@@ -201,8 +201,8 @@
                 states.push({ hot: true });
                 const id = user.pull('id');
                 if (id) {
-                    cardsShow = true;
-                    getConnections();
+                    cardsShow = false //true;
+                    //getConnections();
                 }
             }
         }
@@ -394,6 +394,7 @@
 
 
     /* getConnections */
+    /*
     function getConnections() {
         collector.get([
             [ 
@@ -402,6 +403,7 @@
             ],
         ]);
     }
+    */
 
 
     /* sendMark */
@@ -450,6 +452,7 @@
 
 
     /* addContact */
+    /*
     function addContact(id) {
         collector.get([
             [ 
@@ -460,6 +463,7 @@
             ],
         ]);
     }
+    */
 
 
     /* submitLegal */

@@ -4,7 +4,7 @@
 
     import { router } from '@/libs/Router';
 
-    import { type User, user, userFirstName } from '@/stores';
+    import { type User, user, /* userFirstName */ } from '@/stores';
 
     import { type Event, EventCard, UserCard, Users, LogButton, ScannerButton, QRButton } from './components';
     import { Avatar, PollCard } from '@/components';
