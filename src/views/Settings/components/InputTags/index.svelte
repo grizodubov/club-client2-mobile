@@ -16,6 +16,7 @@
     export let list: any[] = [];
     export let readonly: boolean = false;
     export let splitChar: string = ',';
+    export let marked: string[] = [];
 
 
     let focus: boolean = false;
@@ -33,7 +34,13 @@
     const re = new RegExp("\\s*" + splitChar.replace('|', '\\|') + "\\s*");
 
 
-    $: valueSplitted = value.split(re).map((v: string) => v.trim().toLowerCase()).filter(v => v);
+    $: valueSplitted = parseValue(value);
+
+    /* parseValue */
+    function parseValue(v) {
+        const temp = v.split(/\s*\+\s*/).filter(v => marked.indexOf(v) == -1).join(' + ').split(re).map((v: string) => v.trim().toLowerCase()).filter(v => v);
+        return temp;
+    }
 
 
     /* addTag */
