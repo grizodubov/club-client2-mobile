@@ -69,6 +69,23 @@
     let photoShow = false;
 
 
+    const tagsCategories = [ 'company_scope', 'company_needs', 'personal_expertise', 'personal_needs', 'licenses', 'hobbies' ];
+
+    $: marked = parseMarked(resident);
+
+    /* parseMarked */
+    function parseMarked(r): any {
+        let temp: any;
+        if (r) {
+            temp = tagsCategories.reduce((o, k) => ({ ...o, [k]: resident['tags_1_' + k + '_marked'].split(/\s*\+\s*/)}), {});
+        }
+        else {
+            temp = tagsCategories.reduce((o, k) => ({ ...o, [k]: []}), {});
+        }
+        return temp;
+    }
+
+
     /* DATA: residentInfoHandler */
 	const residentInfoHandler = new Entity({
 		model: residentInfo.model,
@@ -90,7 +107,7 @@
             resident = temp;
             const temp2 = {};
             if (data.suggestions['company scope']) {
-                temp2['company scope'] = data.suggestions['company scope'].reduce(
+                temp2['company scope'] = data.suggestions['company scope'].filter(tag => marked.company_scope.indexOf(tag) == -1).reduce(
                     (acc, tag) => {
                         return Object.assign(acc, { [tag]: true } );
                     },
@@ -98,7 +115,7 @@
                 );
             }
             if (data.suggestions['company needs']) {
-                temp2['company needs'] = data.suggestions['company needs'].reduce(
+                temp2['company needs'] = data.suggestions['company needs'].filter(tag => marked.company_needs.indexOf(tag) == -1).reduce(
                     (acc, tag) => {
                         return Object.assign(acc, { [tag]: true } );
                     },
@@ -626,7 +643,9 @@
                                 {#if resident.tags_1_company_scope}
                                     <div class="flex flex-wrap justify-center mt-1">
                                         {#each resident.tags_1_company_scope.split(/\s*\+\s*/) as tag}
-                                            <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" hit="{suggestions['company scope'] && suggestions['company scope'][tag]}" /></div>
+                                            {#if marked.company_scope.indexOf(tag) == -1}
+                                                <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" hit="{suggestions['company scope'] && suggestions['company scope'][tag]}" /></div>
+                                            {/if}
                                         {/each}
                                     </div>
                                 {:else}
@@ -643,7 +662,9 @@
                                 {#if resident.tags_1_company_needs}
                                     <div class="flex flex-wrap justify-center mt-1">
                                         {#each resident.tags_1_company_needs.split(/\s*\+\s*/) as tag}
-                                            <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" hit="{suggestions['company needs'] && suggestions['company needs'][tag]}" /></div>
+                                            {#if marked.company_needs.indexOf(tag) == -1}
+                                                <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" hit="{suggestions['company needs'] && suggestions['company needs'][tag]}" /></div>
+                                            {/if}
                                         {/each}
                                     </div>
                                 {:else}
@@ -660,7 +681,9 @@
                                 {#if resident.tags_1_licenses}
                                     <div class="flex flex-wrap justify-center mt-1">
                                         {#each resident.tags_1_licenses.split(/\s*\+\s*/) as tag}
-                                            <div class="ml-2 mt-1"><Tag type="catalog" tag="{tag}" /></div>
+                                            {#if marked.licenses.indexOf(tag) == -1}
+                                                <div class="ml-2 mt-1"><Tag type="catalog" tag="{tag}" /></div>
+                                            {/if}
                                         {/each}
                                     </div>
                                 {:else}
@@ -677,7 +700,9 @@
                                 {#if resident.tags_1_personal_expertise}
                                     <div class="flex flex-wrap justify-center mt-1">
                                         {#each resident.tags_1_personal_expertise.split(/\s*\+\s*/) as tag}
-                                            <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                            {#if marked.personal_expertise.indexOf(tag) == -1}
+                                                <div class="ml-2 mt-1"><Tag type="tag" tag="{tag}" /></div>
+                                            {/if}
                                         {/each}
                                     </div>
                                 {:else}
@@ -694,7 +719,9 @@
                                 {#if resident.tags_1_personal_needs}
                                     <div class="flex flex-wrap justify-center mt-1">
                                         {#each resident.tags_1_personal_needs.split(/\s*\+\s*/) as tag}
-                                            <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" /></div>
+                                            {#if marked.personal_needs.indexOf(tag) == -1}
+                                                <div class="ml-2 mt-1"><Tag type="interest" tag="{tag}" /></div>
+                                            {/if}
                                         {/each}
                                     </div>
                                 {:else}
@@ -711,7 +738,9 @@
                                 {#if resident.tags_1_hobbies}
                                     <div class="flex flex-wrap justify-center mt-1">
                                         {#each resident.tags_1_hobbies.split(/\s*\+\s*/) as tag}
-                                            <div class="ml-2 mt-1"><Tag type="catalog" tag="{tag}" /></div>
+                                            {#if marked.hobbies.indexOf(tag) == -1}
+                                                <div class="ml-2 mt-1"><Tag type="catalog" tag="{tag}" /></div>
+                                            {/if}
                                         {/each}
                                     </div>
                                 {:else}

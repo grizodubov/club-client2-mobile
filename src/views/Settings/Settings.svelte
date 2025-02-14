@@ -86,6 +86,23 @@
     let tags: any[] = [];
 
 
+    const tagsCategories = [ 'company_scope', 'company_needs', 'personal_expertise', 'personal_needs', 'licenses', 'hobbies' ];
+
+    $: marked = parseMarked(resident);
+
+    /* parseMarked */
+    function parseMarked(r): any {
+        let temp: any;
+        if (r) {
+            temp = tagsCategories.reduce((o, k) => ({ ...o, [k]: resident['tags_1_' + k + '_marked'].split(/\s*\+\s*/)}), {});
+        }
+        else {
+            temp = tagsCategories.reduce((o, k) => ({ ...o, [k]: []}), {});
+        }
+        return temp;
+    }
+
+
     /* DATA: userInfoHandler */
 	const userInfoHandler = new Entity({
 		model: userInfo.model,
@@ -621,6 +638,7 @@
                             placeholder="Специализация компании"
                             type="tag"
                             bind:value="{residentForm.tags_1_company_scope}"
+                            marked="{marked.company_scope}"
                             splitChar="|"
                             readonly="{true}"
                         />
@@ -630,6 +648,7 @@
                             placeholder="Потребности компании"
                             type="interest"
                             bind:value="{residentForm.tags_1_company_needs}"
+                            marked="{marked.company_needs}"
                             splitChar="|"
                             readonly="{true}"
                         />
@@ -639,6 +658,7 @@
                             placeholder="Допуски, лицензии, сертификаты"
                             type="catalog"
                             bind:value="{residentForm.tags_1_licenses}"
+                            marked="{marked.company_licenses}"
                             splitChar="|"
                             readonly="{true}"
                         />
@@ -649,6 +669,7 @@
                             placeholder="Личная экспертиза"
                             type="tag"
                             bind:value="{residentForm.tags_1_personal_expertise}"
+                            marked="{marked.personal_expertise}"
                             splitChar="|"
                             readonly="{true}"
                         />
@@ -658,6 +679,7 @@
                             placeholder="Потребности в экспертизе"
                             type="tag"
                             bind:value="{residentForm.tags_1_personal_needs}"
+                            marked="{marked.personal_needs}"
                             splitChar="|"
                             readonly="{true}"
                         />
@@ -667,6 +689,7 @@
                             placeholder="Хобби, увлечения"
                             type="tag"
                             bind:value="{residentForm.tags_1_hobbies}"
+                            marked="{marked.hobbies}"
                             splitChar="|"
                             readonly="{true}"
                         />
