@@ -292,7 +292,8 @@
 >
     <div class="flex flex-col w-full h-full justify-between items-center">
         {#if confirmationUser}
-            {#if currentUser.status != confirmationUser.status && (currentUser.status == 'бронзовый' || (currentUser.status == 'серебряный' && confirmationUser.status == 'золотой'))}
+            <!--{#if currentUser.status != status && (currentUser.status == 'бронзовый' || (currentUser.status == 'серебряный' && status == 'золотой'))}-->
+            {#if currentUser.status != status && currentUser.status == 'бронзовый'}
                 <div class="w-7 h-7 text-error mt-2.5">
                     <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><g fill="none"><path d="M9.626 5.07a5.493 5.493 0 0 0-3.299 1.847A2.751 2.751 0 1 1 9.626 5.07zM5.6 8c-.384.75-.6 1.6-.6 2.5c0 1.31.458 2.512 1.222 3.457C3.555 13.653 2 11.803 2 10v-.5A1.5 1.5 0 0 1 3.5 8h2.1zm4.275.5a.625.625 0 1 1 1.25 0a.625.625 0 0 1-1.25 0zm1.125 4a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 1 0v2zm-5-2a4.5 4.5 0 1 1 9 0a4.5 4.5 0 0 1-9 0zm1 0a3.5 3.5 0 1 0 7 0a3.5 3.5 0 0 0-7 0z" fill="currentColor"></path></g></svg>
                 </div>
