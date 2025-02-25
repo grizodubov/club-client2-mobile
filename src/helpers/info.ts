@@ -15,6 +15,7 @@ export type Info = {
     onOpen: any,
     onClose: any,
     componentInstance: any,
+    actionCallback: any,
 };
 
 
@@ -26,13 +27,14 @@ const _default: Info = {
     onOpen: null,
     onClose: null,
     componentInstance: null,
+    actionCallback: null,
 };
 
 
 export const info = new Store('info', _default);
 
 
-export function infoCreate(component: ComponentType, params: undefined | { [key: string]: any }, onOpen: any = null, onClose: any = null) {
+export function infoCreate(component: ComponentType, params: undefined | { [key: string]: any }, onOpen: any = null, onClose: any = null, onAction: any = null) {
     const infoInstance = new CupertinoPane('#info', {
         backdrop: true,
         backdropOpacity: 0.5,
@@ -85,14 +87,15 @@ export function infoCreate(component: ComponentType, params: undefined | { [key:
         onOpen: onOpen,
         onClose: onClose,
         componentInstance: null,
+        actionCallback: onAction,
     });
 };
 
 
-export function infoShow() {
+export function infoShow(animation = true) {
     const temp = info.pull();
     if (temp.instance) {
-        temp.instance.present({ animate: true });
+        temp.instance.present({ animate: animation });
     }
 };
 
@@ -121,7 +124,10 @@ export function infoDestroy(animate: boolean = false) {
             component: null,
             params: undefined,
             state: false,
+            onOpen: null,
+            onClose: null,
             componentInstance: null,
+            actionCallback: null,
         });
     }
 };

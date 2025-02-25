@@ -8,7 +8,6 @@ import { type EventsFilters, eventsFilters, activeEventsFiltersAmount } from './
 import { type CommunitiesFilters, communitiesFilters, activeCommunitiesFiltersAmount } from './communitiesFilters';
 import { type CommunityFilters, communityFilters, activeCommunityFiltersAmount } from './communityFilters';
 
-
 export {
     states,
     token,
