@@ -17,7 +17,7 @@
         <div class="absolute w-full h-full top-0 left-0 bg-base-300 opacity-50"></div>
         <div class="relative w-full">
             <div class="text-sm font-semibold mt-1 leading-[18px] w-full text-left">Онлайн-встречи</div>
-            {#each connections as item (item.user.id)}
+            {#each connections as item (item.connection.id)}
                 <div
                     class="mt-3"
                     in:fade="{{ duration: 100 }}"
