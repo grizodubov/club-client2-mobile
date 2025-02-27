@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy, tick } from 'svelte';
     import { fade } from 'svelte/transition';
 
     import { router } from '@/libs/Router';
@@ -27,6 +27,8 @@
     import {
 		getRatingPolls,
 	} from '@/queries/poll';
+
+    import { homePopupConfig } from '@/stores/scrolls';
 
 
     // svelte-ignore unused-export-let
@@ -140,11 +142,37 @@
 
     let infoTitle = '';
 
+    
+    let popupStart = false;
+    let popupConfig: {
+        title: string,
+        users: any[],
+    } = {
+        title: '',
+        users: [],
+    };
+    let popupState = false;
+
 
     let cards: { [key: string]: any }[] = [];
 
 
     $: currentUser = $user as User;
+
+
+    /* popupAndScrollToPosition */
+    async function popupAndScrollToPosition() {
+        if ($homePopupConfig && !popupStart) {
+            popupStart = true;
+            await tick();
+            infoUpdate(
+                $homePopupConfig
+            );
+            popupConfig = $homePopupConfig;
+            popupState = true;
+            infoShow(false);
+        }
+    }
 
 
     /* getEvents */
@@ -208,10 +236,19 @@
 
     /* onMount */
 	onMount(() => {
-        infoCreate(Users, {
-            title: '',
-            users: [],
-        });
+        infoCreate(
+            Users,
+            {
+                title: '',
+                users: [],
+            },
+            () => {
+                popupState = true;
+            },
+            () => {
+                popupState = false;
+            },
+        );
         refresh();
 		const sub = subscribe('events', refresh);
 		return () => {
@@ -219,6 +256,17 @@
             sub.close();
         };
 	});
+
+
+    /* onDestroy */
+    onDestroy(() => {
+        if (popupState) {
+            $homePopupConfig = Object.assign({}, popupConfig);
+        }
+        else {
+            $homePopupConfig = null;
+        }
+    });
 </script>
 
 
@@ -326,7 +374,7 @@
 
             <!-- Контакты -->
             {#if contacts.length}
-                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3" use:popupAndScrollToPosition>
                     <div class="flex justify-start items-center">
                         <div class="h-9 flex flex-col grow-0"><div class="font-semibold leading-[18px] text-left">Избранные</div><div class="font-semibold leading-[18px] text-left">контакты</div></div>
                         <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm shrink-0"><span>{contacts.length}</span></div>
@@ -335,6 +383,10 @@
                         class="btn btn-sm btn-front text-base-100" on:click="{() => {
                             infoTitle = 'Избранные контакты';
                             infoUpdate({
+                                title: infoTitle,
+                                users: contacts,
+                            });
+                            popupConfig = ({
                                 title: infoTitle,
                                 users: contacts,
                             });
@@ -365,7 +417,7 @@
 
             <!-- Партнёры -->
             {#if recommendations.length}
-                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3" use:popupAndScrollToPosition>
                     <div class="flex justify-start items-center">
                         <div class="h-9 flex flex-col grow-0"><div class="font-semibold leading-[18px] text-left">Потенциальные</div><div class="font-semibold leading-[18px] text-left">партнёры</div></div>
                         <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm shrink-0"><span>{recommendationsAll.length}</span></div>
@@ -374,6 +426,10 @@
                         class="btn btn-sm btn-front text-base-100" on:click="{() => {
                             infoTitle = 'Потенциальные партнёры';
                             infoUpdate({
+                                title: infoTitle,
+                                users: recommendationsAll,
+                            });
+                            popupConfig = ({
                                 title: infoTitle,
                                 users: recommendationsAll,
                             });

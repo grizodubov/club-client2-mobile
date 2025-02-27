@@ -364,8 +364,8 @@
                         class="absolute w-[132px] h-[132px] rounded-full border-4 border-base-100 bg-front z-[11]"
                     >
                         {#if resident && (!start || !$residentInfoLoading)}
-                            <button
-                                on:click="{() => {
+                            <a href="/"
+                                on:click|preventDefault="{() => {
                                     if (resident && resident.avatar_hash)
                                         photoShow = true;
                                 }}"
@@ -381,7 +381,7 @@
                                     }}"
                                     scaleLetters="2.5"
                                 />
-                            </button>
+                            </a>
                             {#if resident.active}
                                 <button
                                     class="absolute top-[-8px] left-[-12px] w-[44px] h-[44px]"

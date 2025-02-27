@@ -18,6 +18,6 @@
 >
     <slot />
     {#if binding}
-        <div class="absolute w-[18px] h-[18px] bg-secondary text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full bottom-[1px] right-[-5px]"><span>{binding}</span></div>
+        <div class="absolute w-[18px] h-[18px] bg-error text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full bottom-[1px] right-[-5px]"><span>{binding}</span></div>
     {/if}
 </button>

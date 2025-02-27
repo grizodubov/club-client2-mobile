@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, tick } from 'svelte';
+    import { onMount, onDestroy, tick } from 'svelte';
     import { fade } from 'svelte/transition';
 
     import { Filters, ResidentCard, InputText } from './components';
@@ -26,8 +26,9 @@
         userFavoritesSet,
     } from '@/queries/user';
 
-
     import { type WordForms, nwfi } from '@/utils/numword';
+
+    import { residentsY } from '@/stores/scrolls';
 
 
     const wordForms: WordForms = {
@@ -39,6 +40,11 @@
     export let params: { [key: string]: any } | undefined = undefined; params;
     let className: string = '';
 	export { className as class }; className;
+
+
+    let scrollArea;
+    let scrollBeacon = 0;
+    let scrollStart = true;
 
 
     $: currentUser = $user as User;
@@ -138,6 +144,25 @@
 		model: userContactAdd.model,
 		retriever: userContactAdd.retriever,
 	});
+
+
+    /* setScrollBeacon */
+    function setScrollBeacon(e) {
+        scrollBeacon = e.target.scrollTop;
+    }
+
+
+    /* scrollToPosition */
+    async function scrollToPosition() {
+        await tick();
+        if (scrollArea) {
+            scrollArea.scrollTo({
+                left: 0,
+                top: $residentsY,
+                behavior: 'instant',
+            });
+        }
+    }
 
 
     /* filterResidents */
@@ -267,6 +292,14 @@
             sub.close();
         };
 	});
+
+
+    /* onDestroy */
+    onDestroy(() => {
+        if (scrollArea) {
+            $residentsY = scrollBeacon;
+        }
+    });
 </script>
 
 
@@ -320,7 +353,7 @@
                         <span class="loading loading-bars text-front"></span>
                     </div>
                 {:else}
-                    <div class="h-full scrollable-y">
+                    <div class="w-full h-full scrollable-y" on:scroll="{setScrollBeacon}" bind:this="{scrollArea}">
                         {#if cardsAmount}
                             <button
                                 class="mt-[104px] pl-2 pr-4 py-2 mb-5 bg-moderate text-base-100 rounded-full mx-3 flex items-center"
@@ -331,17 +364,23 @@
                                 }}"
                             ><span class="text-xl font-semibold rounded-full bg-info w-8 h-8 flex items-center justify-center">{cardsAmount}</span><span class="text-sm ml-2.5">{wordForms['новый потенциальный партнёр'][nwfi(cardsAmount)]}</span></button>
                         {/if}
-                        {#each residentsFiltered as resident (resident.id)}
-                            <div
-                                class="mb-5 first:mt-[104px]"
-                                in:fade="{{ duration: 100 }}"
-                            >
-                                <ResidentCard
-                                    resident="{resident}"
-                                    contact="{contacts[resident.id.toString()] && contacts[resident.id.toString()].contact}"
-                                />
-                            </div>
-                        {/each}
+                        {#if residentsFiltered.length}
+                            {#each [ ...residentsFiltered, { id: 0 } ] as resident (resident.id)}
+                                {#if resident.id !== 0}
+                                    <div
+                                        class="first:mt-[104px] mb-5"
+                                        in:fade="{{ duration: 100 }}"
+                                    >
+                                        <ResidentCard
+                                            resident="{resident}"
+                                            contact="{contacts[resident.id.toString()] && contacts[resident.id.toString()].contact}"
+                                        />
+                                    </div>
+                                {:else}
+                                    <div class="w-full first:mt-[104px] h-[0px]" use:scrollToPosition></div>
+                                {/if}
+                            {/each}
+                        {/if}
                     </div>
                 {/if}
             </div>

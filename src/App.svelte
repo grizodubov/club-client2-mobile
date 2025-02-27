@@ -527,7 +527,7 @@
 
 <div id="info">
     {#if infoData.component}
-        <svelte:component this="{infoData.component}" params="{infoData.params}" bind:this="{infoData.componentInstance}" />
+        <svelte:component this="{infoData.component}" params="{infoData.params}" bind:this="{infoData.componentInstance}" on:action="{(event) => { if (infoData.actionCallback) { infoData.actionCallback(event.detail); }}}" />
     {/if}
 </div>
 

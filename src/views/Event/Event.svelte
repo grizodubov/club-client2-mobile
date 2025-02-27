@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy, tick } from 'svelte';
     import { fade } from 'svelte/transition';
 
     import { EVENTS } from '@/config/events.cfg';
@@ -28,6 +28,8 @@
 		userEventAdd,
         userEventDel,
 	} from '@/queries/user';
+
+    import { eventPopupConfig } from '@/stores/scrolls';
 
 
     // svelte-ignore unused-export-let
@@ -59,6 +61,13 @@
 
     let loadingParticipate = false;
 
+    let popupConfig = {
+        connection: false,
+        online: false,
+        suggestion: false,
+    };
+    let popupState = false;
+
 
     $: connectionsUsers = setConnectionsUsers(connections, speakers, participants);
     
@@ -73,6 +82,20 @@
     const bgImageUrlFallback = 'https://static.clubgermes.ru/events/event.png';
 
     $: bgImageUrl = event ? 'https://static.clubgermes.ru/events/' + event.id.toString() + '/icon.png' : bgImageUrlFallback;
+
+
+    /* popupAndScrollToPosition */
+    async function popupAndScrollToPosition() {
+        if ($eventPopupConfig) {
+            await tick();
+            infoUpdate({
+                filter: $eventPopupConfig,
+            });
+            popupConfig = $eventPopupConfig;
+            popupState = true;
+            infoShow(false);
+        }
+    }
 
 
     /* setConnectionsUsers */
@@ -219,19 +242,33 @@
     /* onMount */
 	onMount(() => {
         const state = events.pull();
-        infoCreate(Visitors, {
-            eventId: parseInt(params?.id),
-            state: null,
-            participants: [],
-            speakers: [],
-            connections: [],
-            suggestions: [],
-            filter: {
-                connection: false,
-                online: false,
-                suggestion: false,
+        infoCreate(
+            Visitors,
+            {
+                eventId: parseInt(params?.id),
+                state: null,
+                participants: [],
+                speakers: [],
+                connections: [],
+                suggestions: [],
+                filter: {
+                    connection: false,
+                    online: false,
+                    suggestion: false,
+                },
             },
-        });
+            () => {
+                popupState = true;
+            },
+            () => {
+                popupState = false;
+            },
+            (detail) => {
+                if (detail.action == 'online') {
+                    popupConfig = Object.assign(popupConfig, { online: detail.online });
+                }
+            },
+        );
         get();
         const sub = subscribe('events', refresh);
         return () => {
@@ -239,6 +276,17 @@
             sub.close();
         };
 	});
+
+
+    /* onDestroy */
+    onDestroy(() => {
+        if (popupState) {
+            $eventPopupConfig = Object.assign({}, popupConfig);
+        }
+        else {
+            $eventPopupConfig = null;
+        }
+    });
 </script>
 
 
@@ -386,6 +434,11 @@
                                                 suggestion: false,
                                             },
                                         });
+                                        popupConfig = {
+                                            connection: true,
+                                            online: false,
+                                            suggestion: false,
+                                        };
                                         infoShow();
                                     }}"
                                 >
@@ -479,7 +532,7 @@
 
                         <!-- Участники -->
                         {#if participants.length}
-                            <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3">
+                            <div class="flex justify-between items-center h-9 mt-6 mb-5 px-3" use:popupAndScrollToPosition>
                                 <div class="flex justify-start items-center">
                                     <div class="font-semibold text-lg leading-9">Участники</div>
                                     <div class="rounded-full w-9 h-9 text-center leading-9 ml-2.5 font-semibold bg-base-200 text-sm"><span>{participants.length}</span></div>
@@ -493,6 +546,11 @@
                                                 suggestion: false,
                                             },
                                         });
+                                        popupConfig = {
+                                            connection: false,
+                                            online: false,
+                                            suggestion: false,
+                                        };
                                         infoShow();
                                      }}"
                                 >Все участники</button>
@@ -528,16 +586,18 @@
                             -->
 
                             <div class="h-[172px] overflow-y-hidden">
-                                <div class="carousel w-full h-full">
-                                    {#each participants as participant (participant.id)}
-                                        <div
-                                            class="carousel-item last:pr-3"
-                                            in:fade="{{ duration: 100 }}"
-                                        >
-                                            <UserCard user="{participant}" event="{event}" showTags="{false}" online="{participant.audit && participant.audit == 2}" />
-                                        </div>
-                                    {/each}
-                                </div>
+                                {#if participants.length}
+                                    <div class="carousel w-full h-full">
+                                        {#each participants as participant (participant.id)}
+                                            <div
+                                                class="carousel-item last:pr-3"
+                                                in:fade="{{ duration: 100 }}"
+                                            >
+                                                <UserCard user="{participant}" event="{event}" showTags="{false}" online="{participant.audit && participant.audit == 2}" />
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {/if}
                             </div>
                         {/if}
 
