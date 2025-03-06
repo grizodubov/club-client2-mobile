@@ -38,7 +38,7 @@
         </div>
         {#if resident.meetings_flag}
             <div class="w-full flex justify-center mt-[4px]">
-                <div class="bg-moderate text-base-100 px-2 py-[2px] leading-4 text-[10px] font-semibold shrink-0 grow-0 rounded-lg">ЗНАКОМЫ</div>
+                <div class="bg-moderate text-base-100 px-[7px] py-[2px] leading-4 text-[9px] font-semibold shrink-0 grow-0 rounded-lg">ЗНАКОМЫ</div>
             </div>
         {/if}
         {#if resident.favorites_flag === true}
