@@ -415,12 +415,14 @@ export const userEventsConnectionsAll = {
 	/* retriever */
 	retriever: async function({
         archive = false,
+        requests = false,
     }) {
         const dt = new Date();
 		const response = await request({
 			path: '/user/events/connections/all',
 			data: {
                 archive: archive,
+                requests: requests,
                 dt: dt.getFullYear().toString() + '-' + ('0' + (dt.getMonth() + 1).toString()).slice(-2) + '-' + ('0' + dt.getDate().toString()).slice(-2),
             },
 		});
@@ -441,12 +443,64 @@ export const userMeetingRequestAdd = {
 	retriever: async function({
         targetId = 0,
         active = true,
+        timeSlots = [ null, null, null ],
     }) {
 		const response = await request({
 			path: '/user/meeting/request/add',
 			data: {
                 target_id: targetId,
                 active: active,
+                time_slots: timeSlots,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+
+/* userMeetingRequestResponse */
+export const userMeetingRequestResponse = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        meetingId = 0,
+        r = true,
+    }) {
+		const response = await request({
+			path: '/meetings/request/response',
+			data: {
+                meeting_id: meetingId,
+                response: r,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+
+/* userMeetingRequestConfirmation */
+export const userMeetingRequestConfirmation = {
+	/* model */
+	model: {
+    },
+	/* retriever */
+	retriever: async function({
+        meetingId = 0,
+        targetTime = 0,
+    }) {
+		const response = await request({
+			path: '/meetings/request/confirm',
+			data: {
+                meeting_id: meetingId,
+                target_time: targetTime,
             },
 		});
 		if (response.status == 200)

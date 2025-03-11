@@ -4,6 +4,7 @@ import OnlineRequestCard from './OnlineRequestCard/index.svelte';
 import ModalSelector from './ModalSelector/index.svelte';
 import ModalConfirmation from './ModalConfirmation/index.svelte';
 import ModalPhoto from './ModalPhoto/index.svelte';
+import CalendarSlider from './CalendarSlider/index.svelte';
 
 
 export {
@@ -13,4 +14,5 @@ export {
     ModalSelector,
     ModalConfirmation,
     ModalPhoto,
+    CalendarSlider,
 };
