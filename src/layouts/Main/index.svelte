@@ -26,7 +26,7 @@
 
     $: amount = ($bindings as any).notifications;
 
-    $: amount2 = ($bindings as any).pendings;
+    $: amount2 = ($bindings as any).pendings + ($bindings as any).requests;
 
 
     /* getDeviceInfo */

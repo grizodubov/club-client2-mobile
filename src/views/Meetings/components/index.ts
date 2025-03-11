@@ -6,6 +6,8 @@ import ResidentCardOffline from './ResidentCardOffline/index.svelte';
 import ModalConfirmation from './ModalConfirmation/index.svelte';
 import OnlineCard from './OnlineCard/index.svelte';
 import ResidentCardOnline from './ResidentCardOnline/index.svelte';
+import RequestCard from './RequestCard/index.svelte';
+import ResidentCardRequest from './ResidentCardRequest/index.svelte';
 
 export {
     type Event,
@@ -16,4 +18,6 @@ export {
     ModalConfirmation,
     OnlineCard,
     ResidentCardOnline,
+    RequestCard,
+    ResidentCardRequest,
 };

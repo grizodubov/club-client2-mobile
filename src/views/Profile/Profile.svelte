@@ -53,10 +53,11 @@
     let eventsConnections: any[] = [];
     let eventsConnectionsShow: boolean = false;
 
-    let online: boolean | null = null;
-    let onlineRequest: boolean | null = null;
+    let online: Date | null = null;
+    let onlineRequest: Date[] | null = null;
     let onlineReady: boolean = false;
-
+    let slotsBusy: number[] = [];
+    
     let contact: any;
 
     let start = true;
@@ -144,9 +145,10 @@
 		retriever: userEventsConnections.retriever,
         onSuccess: data => {
             eventsConnections = data.events;
-            online = data.online;
-            onlineRequest = data.online_request;
+            online = data.online ? new Date(data.online) : null;
+            onlineRequest = data.online_request ? data.online_request.map(s => new Date(s)) : null;
             onlineReady = true;
+            slotsBusy = data.busy_slots;
         },
 	});
 
@@ -846,6 +848,8 @@
                     checkRequest="{onlineRequest}"
                     targetId="{resident ? resident.id : 0}"
                     status="{resident ? resident.status : 'бронзовый'}"
+                    resident="{resident}"
+                    slotsBusy="{slotsBusy}"
                 />
                 {#each eventsConnections as event}
                     <EventCard event="{event}" targetId="{resident ? resident.id : 0}" status="{resident ? resident.status : 'бронзовый'}" />
