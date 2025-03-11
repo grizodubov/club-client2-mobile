@@ -4,29 +4,29 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (6.0.0):
     - Capacitor
-  - CapacitorCamera (6.0.1):
+  - CapacitorCamera (6.1.2):
     - Capacitor
   - CapacitorCommunityFirebaseAnalytics (6.0.0):
     - Capacitor
     - FirebaseAnalytics
   - CapacitorCordova (6.1.0)
-  - CapacitorDevice (6.0.0):
+  - CapacitorDevice (6.0.2):
     - Capacitor
   - CapacitorFirebaseCrashlytics (6.0.0):
     - Capacitor
     - FirebaseCrashlytics (~> 10.24)
   - CapacitorHaptics (6.0.0):
     - Capacitor
-  - CapacitorKeyboard (6.0.1):
+  - CapacitorKeyboard (6.0.3):
     - Capacitor
-  - CapacitorMlkitBarcodeScanning (6.1.0):
+  - CapacitorMlkitBarcodeScanning (6.2.0):
     - Capacitor
     - GoogleMLKit/BarcodeScanning (= 5.0.0)
-  - CapacitorPluginSafeArea (3.0.1):
+  - CapacitorPluginSafeArea (3.0.4):
     - Capacitor
-  - CapacitorPushNotifications (6.0.1):
+  - CapacitorPushNotifications (6.0.4):
     - Capacitor
-  - CapacitorStatusBar (6.0.0):
+  - CapacitorStatusBar (6.0.2):
     - Capacitor
   - CapgoCapacitorUpdater (6.0.38):
     - Alamofire
@@ -277,20 +277,20 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  Capacitor: 187bd7847b6f71467015a20200a1a071be3e5f14
-  CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
-  CapacitorCamera: 3b77b3e8311b98220de65e63445c0e4d0b30ce3a
-  CapacitorCommunityFirebaseAnalytics: dd31faa0a3e6f4d00624080ee5b9439b484cd092
+  Capacitor: 3aff4dee0552f6badcd04f47ab3174387d71f47d
+  CapacitorApp: 30145f2ea2311e4f3744472119ec87d2ddf4c0a7
+  CapacitorCamera: 9bc7b005d0e6f1d5f525b8137045b60cffffce79
+  CapacitorCommunityFirebaseAnalytics: 4d041384ba78907803c9783dd6d65cb15a1e6f05
   CapacitorCordova: be703980ca797f847c3356f78fa175d21c8330c2
-  CapacitorDevice: f8fd88f9edd1261c55a109f32015b09bbbfdc4a0
-  CapacitorFirebaseCrashlytics: 7ac40f5422ab4186264cdfa08cfeb96ec4d692c3
-  CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
-  CapacitorKeyboard: 5f32a712adf41e07a61caafb82cf29fb6d8ba123
-  CapacitorMlkitBarcodeScanning: 63e217d376f8f63b1be84c0d19568f318e87f4d3
-  CapacitorPluginSafeArea: b99681e1d9986ae1c059ca0e1b5e7025916e5e04
-  CapacitorPushNotifications: 293fabe42c7229756078e81f2d3a60394ba4e5d8
-  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
-  CapgoCapacitorUpdater: 5b5982de3ace65f49af8b7bfba507a7e75a3bab4
+  CapacitorDevice: 9efd479d71d1baad74b75df531184c3f730eaa48
+  CapacitorFirebaseCrashlytics: f2d1d3e172996c885c7070705623b44ce3793f69
+  CapacitorHaptics: 0cea833e6a8bf489dd6acaaebf6d953b90086c59
+  CapacitorKeyboard: e89189ad398b815b6ff7e52271f0fb4f911a0a0a
+  CapacitorMlkitBarcodeScanning: 7652be9c7922f39203a361de735d340ae37e134e
+  CapacitorPluginSafeArea: f096bc36693251a7e55fc3571487dd337c0ddb6a
+  CapacitorPushNotifications: b3f20973cb167cb8fee622e309ec521134798241
+  CapacitorStatusBar: b16799a26320ffa52f6c8b01737d5a95bbb8f3eb
+  CapgoCapacitorUpdater: 2213820e1763758961e1e37df26fa2a59475ea0b
   Firebase: 5121c624121af81cbc81df3bda414b3c28c4f3c3
   FirebaseAnalytics: 1e06fe7d246af7230b08d1d9cdca54a4624dd461
   FirebaseCore: 857dc1c6dd1255675047404d8466f7dfaac5d779
@@ -320,4 +320,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: c41a525dbe8c618e6035cb1e085392acaba928a6
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
