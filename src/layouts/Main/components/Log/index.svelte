@@ -453,6 +453,138 @@
 
 
 
+                {:else if n.event == 'online_request'}
+                    <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
+                        <div
+                            class="text-xs w-full mb-1"
+                            class:opacity-50="{n.time_view}"
+                        >{toFeedDate(n.time_notify)}</div>
+                        <div class="w-full flex items-start">
+                            <button
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    logHide();
+                                }}"
+                                class="w-8 h-8 shrink-0 grow-0 mt-0.5 mr-2.5"
+                                class:opacity-50="{n.time_view}"
+                            >
+                                <Avatar
+                                    user="{{
+                                        id: n.data.initiator.id,
+                                        name: n.data.initiator.name,
+                                        avatar_hash: n.data.initiator.hash,
+                                        roles: [ 'client' ],
+                                        telegram: '',
+                                    }}"
+                                />
+                                </button>
+                            <div
+                                class="text-sm w-full shrink-1 grow-1"
+                                class:opacity-50="{n.time_view}"
+                            ><button
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    logHide();
+                                }}"
+                                class="font-semibold text-moderate"
+                            >{nameNormalization(n.data.initiator.name, 2)}</button> предложил провести онлайн-встречу</div>
+                        </div>
+                        <div class="flex justify-between mt-2">
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">В профиль</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path><path d="M26 30h-2v-5a5 5 0 0 0-5-5h-6a5 5 0 0 0-5 5v5H6v-5a7 7 0 0 1 7-7h6a7 7 0 0 1 7 7z" fill="currentColor"></path></svg>
+                            </button>
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/meetings/');
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">Ко встречам</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 22H6V12h20v14zm0-16H6V6h4v2h2V6h8v2h2V6h4v4z" fill="currentColor"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+            
+
+                {:else if n.event == 'online_manager_confirmation'}
+                    <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
+                        <div
+                            class="text-xs w-full mb-1"
+                            class:opacity-50="{n.time_view}"
+                        >{toFeedDate(n.time_notify)}</div>
+                        <div class="w-full flex items-start">
+                            <button
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.recepient.id.toString());
+                                    logHide();
+                                }}"
+                                class="w-8 h-8 shrink-0 grow-0 mt-0.5 mr-2.5"
+                                class:opacity-50="{n.time_view}"
+                            >
+                                <Avatar
+                                    user="{{
+                                        id: n.data.recepient.id,
+                                        name: n.data.recepient.name,
+                                        avatar_hash: n.data.recepient.hash,
+                                        roles: [ 'client' ],
+                                        telegram: '',
+                                    }}"
+                                />
+                                </button>
+                            <div
+                                class="text-sm w-full shrink-1 grow-1"
+                                class:opacity-50="{n.time_view}"
+                            ><button
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.recepient.id.toString());
+                                    logHide();
+                                }}"
+                                class="font-semibold text-moderate"
+                            >{nameNormalization(n.data.recepient.name, 2)}, согласовано время онлайн-встречи</button></div>
+                        </div>
+                        <div class="flex justify-between mt-2">
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/residents/' + n.data.recepient.id.toString());
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">В профиль</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M16 4a5 5 0 1 1-5 5a5 5 0 0 1 5-5m0-2a7 7 0 1 0 7 7a7 7 0 0 0-7-7z" fill="currentColor"></path><path d="M26 30h-2v-5a5 5 0 0 0-5-5h-6a5 5 0 0 0-5 5v5H6v-5a7 7 0 0 1 7-7h6a7 7 0 0 1 7 7z" fill="currentColor"></path></svg>
+                            </button>
+                            <button
+                                class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
+                                on:click="{() => {
+                                    view(n.time_notify_key);
+                                    router.go('/meetings/');
+                                    logHide();
+                                }}"
+                            >
+                                <span class:opacity-50="{n.time_view}">Ко встречам</span>
+                                <svg class="w-4 h-4" class:opacity-50="{n.time_view}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 22H6V12h20v14zm0-16H6V6h4v2h2V6h8v2h2V6h4v4z" fill="currentColor"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+    
+
                 {:else if n.event == 'arrive'}
                     <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
                         <div
