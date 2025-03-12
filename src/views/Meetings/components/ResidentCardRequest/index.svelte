@@ -5,6 +5,8 @@
 
     import { nameNormalization } from '@/utils/names';
 
+    import { ModalConfirmation } from './..';
+
     import { Entity, collector } from '@/helpers/entity';
 
     import { monthes, weekdaysShort } from '@/utils/dates';
@@ -26,6 +28,10 @@
 
     export let resident: { [key: string]: any };
     export let connection: { [key: string]: any };
+
+
+    let confirmationShow = false;
+    let confirmationTime: Date | null = null;
 
 
     $: position = resident.position ? resident.position.toUpperCase() : '';
@@ -69,7 +75,6 @@
 
 
     let loading = false;
-
 
 
     /* DATA: onlineConnectionMarkHandler */
@@ -198,9 +203,8 @@
                             <button
                                 class="w-[64px] h-[92px] flex flex-col items-center justify-between bg-scene rounded-2xl overflow-hidden text-base-100 ml-2 first:ml-0"
                                 on:click="{() => {
-                                    loading = true;
-                                    confirm(connection.id, slot.getTime());
-                                    setTimeout(() => { loading = false; }, 2000);
+                                    confirmationShow = true;
+                                    confirmationTime = slot;
                                 }}"
                             >
                                 <div class="h-[14px] text-[10px] opacity-70 mt-[4px] leading-[14px]">{monthes[slot.getMonth()]}</div>
@@ -345,3 +349,36 @@
     {/if}
     -->
 </div>
+
+<ModalConfirmation
+    bind:open="{confirmationShow}"
+>
+    <div class="flex flex-col w-full h-full justify-around items-center">
+        {#if confirmationTime}
+            <div class="w-full px-3">
+                <div class="text-center text-sm mb-4 opacity-60">Время онлайн-встречи:</div>
+            </div>
+            <div
+                class="w-[64px] h-[92px] flex flex-col items-center justify-between bg-scene rounded-2xl overflow-hidden text-base-100 ml-2 first:ml-0"
+            >
+                <div class="h-[14px] text-[10px] opacity-70 mt-[4px] leading-[14px]">{monthes[confirmationTime.getMonth()]}</div>
+                <div class="text-center">
+                    <div class="text-lg font-semibold leading-[21px]">{confirmationTime.getDate()}</div>
+                    <div class="text-sm opacity-90 leading-[17px]">{weekdaysShort[confirmationTime.getDay()]}</div>
+                </div>
+                <div class="h-5"><div class="font-semibold tracking-wide text-sm leading-5 mt-[-4px]">{confirmationTime.getHours().toString()}:{('0' + confirmationTime.getMinutes().toString()).slice(-2)}</div></div>
+            </div>
+            <div class="flex my-2">
+                <button
+                    class="btn btn-sm btn-front text-base-100 flex shrink-0 grow-0"
+                    on:click="{() => {
+                        loading = true;
+                        confirm(connection.id, confirmationTime?.getTime());
+                        setTimeout(() => { loading = false; }, 2000);
+                        confirmationShow = false;
+                    }}"
+                >Подтвердить</button>
+            </div>
+        {/if}
+    </div>
+</ModalConfirmation>
