@@ -5,6 +5,7 @@ import ModalSelector from './ModalSelector/index.svelte';
 import ModalConfirmation from './ModalConfirmation/index.svelte';
 import ModalPhoto from './ModalPhoto/index.svelte';
 import CalendarSlider from './CalendarSlider/index.svelte';
+import InputArea from './InputArea/index.svelte';
 
 
 export {
@@ -15,4 +16,5 @@ export {
     ModalConfirmation,
     ModalPhoto,
     CalendarSlider,
+    InputArea,
 };
