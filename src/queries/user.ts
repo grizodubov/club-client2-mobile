@@ -444,6 +444,7 @@ export const userMeetingRequestAdd = {
         targetId = 0,
         active = true,
         timeSlots = [ null, null, null ],
+        comment = '',
     }) {
 		const response = await request({
 			path: '/user/meeting/request/add',
@@ -451,6 +452,7 @@ export const userMeetingRequestAdd = {
                 target_id: targetId,
                 active: active,
                 time_slots: timeSlots,
+                comment: comment,
             },
 		});
 		if (response.status == 200)

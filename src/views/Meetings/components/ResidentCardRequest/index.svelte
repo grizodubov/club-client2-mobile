@@ -196,6 +196,12 @@
                     </div>
                 {:else}
                     <div class="flex mt-2 text-sm font-medium">
+                        Тема встречи:
+                    </div>
+                    <div class="flex mt-1 text-sm">
+                        {connection.comment}
+                    </div>
+                    <div class="flex mt-2 text-sm font-medium">
                         Выберите время для встречи:
                     </div>
                     <div class="flex mt-2">

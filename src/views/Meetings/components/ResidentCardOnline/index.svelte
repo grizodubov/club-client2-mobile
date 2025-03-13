@@ -181,6 +181,12 @@
             {#if catalog}
                 <div class="text-left font-medium text-[10px] leading-[14px] text-moderate mt-0.5">{catalog}</div>
             {/if}
+            <div class="flex mt-2 text-sm font-medium">
+                Тема встречи:
+            </div>
+            <div class="flex mt-1 text-sm">
+                {connection.comment}
+            </div>
             {#if responsePartner !== null}
                 <div class="flex mt-1.5">
                     {#if responsePartner}
