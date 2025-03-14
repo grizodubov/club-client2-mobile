@@ -510,3 +510,23 @@ export const userMeetingRequestConfirmation = {
 		return null;
 	}
 };
+
+
+
+/* meetingsFlags */
+export const meetingsFlags = {
+	/* model */
+	model: {
+        flags: {},
+    },
+	/* retriever */
+	retriever: async function() {
+		const response = await request({
+			path: '/meetings/flags',
+			data: {},
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};

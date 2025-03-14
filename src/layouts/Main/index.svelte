@@ -4,7 +4,7 @@
 
     import { onMount } from 'svelte';
 
-    import { states, bindings } from '@/stores';
+    import { states, bindings, meetings } from '@/stores';
 
     import { MenuButton } from './components';
 
@@ -12,11 +12,27 @@
 
     import { push as notify } from '@/helpers/notification';
 
+    import { Entity, collector } from '@/helpers/entity';
+
+    import {
+		meetingsFlags,
+	} from '@/queries/user';
+
 
     // svelte-ignore unused-export-let
     export let params: { [key: string]: any } | undefined = undefined; params;
     let className: string = '';
 	export { className as class }; className;
+
+
+    /* DATA: meetingsFlagsHandler */
+	const meetingsFlagsHandler = new Entity({
+		model: meetingsFlags.model,
+		retriever: meetingsFlags.retriever,
+        onSuccess: data => {
+            $meetings = data.flags;
+        },
+	});
 
 
     let showKeyboard = false;
@@ -56,6 +72,19 @@
             }
     }
 
+
+    /* getMeetingsFlags */
+    function getMeetingsFlags() {
+        collector.get([
+            [ 
+                meetingsFlagsHandler,
+                {}
+            ],
+        ]);
+    }
+
+
+    getMeetingsFlags();
 
     /* onMount */
 	onMount(() => {

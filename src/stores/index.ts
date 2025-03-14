@@ -7,6 +7,7 @@ import { type ResidentsFilters, residentsFilters, activeResidentsFiltersAmount }
 import { type EventsFilters, eventsFilters, activeEventsFiltersAmount } from './eventsFilters';
 import { type CommunitiesFilters, communitiesFilters, activeCommunitiesFiltersAmount } from './communitiesFilters';
 import { type CommunityFilters, communityFilters, activeCommunityFiltersAmount } from './communityFilters';
+import { meetings } from './meetings';
 
 export {
     states,
@@ -28,4 +29,5 @@ export {
     type CommunityFilters,
     communityFilters,
     activeCommunityFiltersAmount,
+    meetings,
 };

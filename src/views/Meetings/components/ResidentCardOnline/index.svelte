@@ -16,7 +16,7 @@
         onlineConnectionMark,
     } from '@/queries/event';
 
-    import { type User, user } from '@/stores';
+    import { type User, user, meetings } from '@/stores';
 
 
     $: currentUser = $user as User;
@@ -42,6 +42,9 @@
     $: currentDate = toDateText(connection.target_time).split(/\s+/);
 
     $: cd = new Date(connection.target_time);
+
+    $: flag_meetings = $meetings[resident.id.toString()] && $meetings[resident.id.toString()].meetings;
+    $: flag_favorites = $meetings[resident.id.toString()] !== undefined ? $meetings[resident.id.toString()].favorites : null;
 
 
     let confirmationShow = false;
@@ -126,6 +129,16 @@
                     }}"
                     scaleLetters="1.1"
                 />
+                {#if flag_meetings}
+                    <div class="relative w-full flex justify-center mt-[-6px] z-10">
+                        <div
+                            class="text-base-100 px-[5px] py-[1px] leading-3 text-[8px] font-semibold shrink-0 grow-0 rounded-lg"
+                            class:bg-success="{flag_favorites === true}"
+                            class:bg-error="{flag_favorites === false}"
+                            class:bg-warning="{flag_favorites === null}"
+                        >ЗНАКОМЫ</div>
+                    </div>
+                {/if}
                 {#if resident.favorites_flag === true}
                     <div class="absolute top-[0px] left-[0px] w-[18px] h-[18px] text-base-100 flex items-center justify-center bg-success rounded-full">
                         <svg class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69L432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" fill="currentColor"></path></svg>

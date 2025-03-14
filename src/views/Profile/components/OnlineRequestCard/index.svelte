@@ -244,193 +244,195 @@
                 >Закрыть</button>
             {:else}
                 <!-- request :: begin -->
-                <div class="w-full h-full flex flex-col items-center">
-                    <div class="w-full flex items-start overflow-hidden px-3 pt-5 shrink-0 grow-0">
-                        <div class="w-[68px] h-[68px] rounded-full shrink-0 grow-0">
-                            <Avatar
-                                user="{{
-                                    id: resident.id,
-                                    name: resident.name,
-                                    avatar_hash: resident.avatar_hash,
-                                    roles: [ 'client' ],
-                                    telegram: '',
-                                    status: '',
-                                }}"
-                                scaleLetters="1.1"
-                            />
+                {#if resident}
+                    <div class="w-full h-full flex flex-col items-center">
+                        <div class="w-full flex items-start overflow-hidden px-3 pt-5 shrink-0 grow-0">
+                            <div class="w-[68px] h-[68px] rounded-full shrink-0 grow-0">
+                                <Avatar
+                                    user="{{
+                                        id: resident.id,
+                                        name: resident.name,
+                                        avatar_hash: resident.avatar_hash,
+                                        roles: [ 'client' ],
+                                        telegram: '',
+                                        status: '',
+                                    }}"
+                                    scaleLetters="1.1"
+                                />
+                            </div>
+                            <div class="ml-4 shrink-1 grow-1 w-full">
+                                <div class="text-left font-medium text-[16px] leading-[28px] whitespace-nowrap overflow-hidden pr-0.5">{nameNormalization(resident.name, 2)}</div>
+                                {#if resident.position}
+                                    <div class="text-left text-[10px] opacity-80 uppercase">{resident.position}</div>
+                                {/if}
+                                {#if resident.company}
+                                    <div class="text-left font-medium text-[10px] text-front mt-0.5 uppercase">{resident.company}</div>
+                                {/if}
+                            </div>
                         </div>
-                        <div class="ml-4 shrink-1 grow-1 w-full">
-                            <div class="text-left font-medium text-[16px] leading-[28px] whitespace-nowrap overflow-hidden pr-0.5">{nameNormalization(resident.name, 2)}</div>
-                            {#if resident.position}
-                                <div class="text-left text-[10px] opacity-80 uppercase">{resident.position}</div>
-                            {/if}
-                            {#if resident.company}
-                                <div class="text-left font-medium text-[10px] text-front mt-0.5 uppercase">{resident.company}</div>
-                            {/if}
-                        </div>
-                    </div>
-                    <div class="relative w-full h-full overflow-hidden shrink-1 grow-1">
-                        <div
-                            class="absolute w-[200%] transition-all duration-2 flex items-start"
-                            class:ml-[0px]="{step == 1 || !confirmationShow}"
-                            class:ml-[-100%]="{step == 2}"
-                        >
-                            <!-- step 1 -->
-                            <div class="w-1/2 shrink-0 grow-0">
-                                <div class="text-center text-sm px-3 mt-5">Обозначьте тему встречи:</div>
-                                <div class="h-[240px] w-full mt-5 px-3">
-                                    <InputArea bind:value="{comment}" placeholder="Тема встречи" />
+                        <div class="relative w-full h-full overflow-hidden shrink-1 grow-1">
+                            <div
+                                class="absolute w-[200%] transition-all duration-2 flex items-start"
+                                class:ml-[0px]="{step == 1 || !confirmationShow}"
+                                class:ml-[-100%]="{step == 2}"
+                            >
+                                <!-- step 1 -->
+                                <div class="w-1/2 shrink-0 grow-0">
+                                    <div class="text-center text-sm px-3 mt-5">Обозначьте тему встречи:</div>
+                                    <div class="h-[240px] w-full mt-5 px-3">
+                                        <InputArea bind:value="{comment}" placeholder="Тема встречи" />
+                                    </div>
+                                </div>
+                                <!-- step 2 -->
+                                <div class="w-1/2 shrink-0 grow-0">
+                                    <div class="text-center text-sm px-3 mt-5">Выберите три времени для онлайн-встречи:</div>
+                                    <div class="w-full flex items-center justify-around mt-5">
+                                        <button
+                                            class="w-[132px] bg-base-200 rounded-xl font-semibold px-3.5 text-center leading-7 shrink-0 grow-0 text-xs opacity-90"
+                                            on:click="{() => {
+                                                const d = new Date();
+                                                d.setDate(d.getDate() + 1);
+                                                d.setHours(0, 0, 0, 0);
+                                                calendarSlider.setActiveDate(d, 200);
+                                                slots = times.map(t => new Date(d.getFullYear(), d.getMonth(), d.getDate(), t[0], t[1], 0, 0));
+                                            }}"
+                                        >ЗАВТРА</button>
+                                        <button
+                                            class="w-[132px] bg-base-200 rounded-xl font-semibold px-3.5 text-center leading-7 shrink-0 grow-0 text-xs opacity-90"
+                                            on:click="{() => {
+                                                const d = new Date();
+                                                d.setDate(d.getDate() + 2);
+                                                d.setHours(0, 0, 0, 0);
+                                                calendarSlider.setActiveDate(d, 200);
+                                                slots = times.map(t => new Date(d.getFullYear(), d.getMonth(), d.getDate(), t[0], t[1], 0, 0));
+                                            }}"
+                                        >ПОСЛЕЗАВТРА</button>
+                                    </div>
+                                    <div class="w-full mt-6 mb-6">
+                                        <CalendarSlider
+                                            bind:this="{calendarSlider}"
+                                            on:dateActiveChange="{(event) => {
+                                                const d = event.detail;
+                                                if (d)
+                                                    slots = times.map(t => new Date(d.getFullYear(), d.getMonth(), d.getDate(), t[0], t[1], 0, 0));
+                                            }}"
+                                        />
+                                    </div>
+                                    <div class="w-full grid grid-cols-4 gap-y-2 px-1">
+                                        {#each slots as slot (slot.getTime().toString())}
+                                            <div class="w-full flex justify-center">
+                                                <button
+                                                    class="max-w-20 bg-base-200 rounded-xl font-semibold px-3.5 text-center tracking-wide text-sm leading-9 opacity-90"
+                                                    class:text-base-300="{!isAvailable(slot)}"
+                                                    class:bg-opacity-60="{!isAvailable(slot)}"
+                                                    class:bg-success="{slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) > -1}"
+                                                    class:text-base-100="{slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) > -1}"
+                                                    class:opacity-100="{slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) > -1}"
+                                                    on:click="{() => {
+                                                        if (isAvailable(slot)) {
+                                                            if (slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) == -1) {
+                                                                let i = 0;
+                                                                while (slotsSelected[i] !== null && i < 2) {
+                                                                    i++;
+                                                                }
+                                                                const d = calendarSlider.getActiveDate();
+                                                                slotsSelected[i] = new Date(d.getFullYear(), d.getMonth(), d.getDate(), slot.getHours(), slot.getMinutes(), 0, 0);
+                                                            }
+                                                            else {
+                                                                slotsSelected = slotsSelected.map(s => {
+                                                                    if (s !== null && s.getTime() != slot.getTime()) {
+                                                                        return s;
+                                                                    }
+                                                                    return null;
+                                                                }).toSorted((a, b) => {
+                                                                    if (a === null && b !== null)
+                                                                        return 1;
+                                                                    if (a !== null && b === null)
+                                                                        return -1;
+                                                                    return 0;
+                                                                });
+                                                            }
+                                                        }
+                                                    }}"
+                                                >{slot.getHours().toString()}:{('0' + slot.getMinutes().toString()).slice(-2)}</button>
+                                            </div>
+                                        {/each}
+                                    </div>
                                 </div>
                             </div>
-                            <!-- step 2 -->
-                            <div class="w-1/2 shrink-0 grow-0">
-                                <div class="text-center text-sm px-3 mt-5">Выберите три времени для онлайн-встречи:</div>
-                                <div class="w-full flex items-center justify-around mt-5">
-                                    <button
-                                        class="w-[132px] bg-base-200 rounded-xl font-semibold px-3.5 text-center leading-7 shrink-0 grow-0 text-xs opacity-90"
-                                        on:click="{() => {
-                                            const d = new Date();
-                                            d.setDate(d.getDate() + 1);
-                                            d.setHours(0, 0, 0, 0);
-                                            calendarSlider.setActiveDate(d, 200);
-                                            slots = times.map(t => new Date(d.getFullYear(), d.getMonth(), d.getDate(), t[0], t[1], 0, 0));
-                                        }}"
-                                    >ЗАВТРА</button>
-                                    <button
-                                        class="w-[132px] bg-base-200 rounded-xl font-semibold px-3.5 text-center leading-7 shrink-0 grow-0 text-xs opacity-90"
-                                        on:click="{() => {
-                                            const d = new Date();
-                                            d.setDate(d.getDate() + 2);
-                                            d.setHours(0, 0, 0, 0);
-                                            calendarSlider.setActiveDate(d, 200);
-                                            slots = times.map(t => new Date(d.getFullYear(), d.getMonth(), d.getDate(), t[0], t[1], 0, 0));
-                                        }}"
-                                    >ПОСЛЕЗАВТРА</button>
+                        </div>
+                    </div>
+                    <div class="w-full flex flex-col pb-5 items-center shrink-0 grow-0">
+                        {#if step == 1}
+                            <button
+                                class="btn btn-front text-base-100 flex shrink-0 grow-0 mt-6"
+                                class:btn-front="{comment.trim().length > 0}"
+                                disabled="{comment.trim().length < 1}"
+                                on:click="{() => {
+                                    step = 2;
+                                }}"
+                            >Выбрать время</button>
+                        {:else}
+                            <div class="w-full flex items-center h-[92px] px-4">
+                                <div
+                                    class="w-7 h-7 text-success shrink-9 grow-0 transition-all duration-200"
+                                    class:opacity-0="{slotsSelected.filter(s => s !== null).length == 0}"
+                                >
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M14.755 15a2.249 2.249 0 0 1 2.248 2.249v.918a2.75 2.75 0 0 1-.512 1.6C14.945 21.93 12.42 23 9 23c-3.422 0-5.945-1.072-7.487-3.236a2.75 2.75 0 0 1-.51-1.596v-.92A2.249 2.249 0 0 1 3.253 15h11.502zm4.3-13.596a.75.75 0 0 1 1.023.279A12.694 12.694 0 0 1 21.75 8c0 2.254-.586 4.424-1.683 6.336a.75.75 0 1 1-1.301-.746A11.194 11.194 0 0 0 20.25 8c0-1.983-.513-3.89-1.475-5.573a.75.75 0 0 1 .28-1.023zM9 3.004a5 5 0 1 1 0 10a5 5 0 0 1 0-10zm6.589.396a.75.75 0 0 1 1.023.28A8.713 8.713 0 0 1 17.75 8c0 1.538-.398 3.02-1.143 4.328a.75.75 0 1 1-1.304-.743A7.213 7.213 0 0 0 16.25 8a7.213 7.213 0 0 0-.942-3.578a.75.75 0 0 1 .28-1.022z" fill="currentColor"></path></g></svg>
                                 </div>
-                                <div class="w-full mt-6 mb-6">
-                                    <CalendarSlider
-                                        bind:this="{calendarSlider}"
-                                        on:dateActiveChange="{(event) => {
-                                            const d = event.detail;
-                                            if (d)
-                                                slots = times.map(t => new Date(d.getFullYear(), d.getMonth(), d.getDate(), t[0], t[1], 0, 0));
-                                        }}"
-                                    />
-                                </div>
-                                <div class="w-full grid grid-cols-4 gap-y-2 px-1">
-                                    {#each slots as slot (slot.getTime().toString())}
-                                        <div class="w-full flex justify-center">
+                                <div class="w-full grid grid-cols-3 px-1 shrink-1 grow-1">
+                                    {#each slotsSelected.filter(s => s !== null) as slot (slot.getTime().toString())}
+                                        <div
+                                            class="w-full flex justify-center"
+                                            in:fly={{ duration: 200, x: -20, opacity: 0 }}
+                                            out:fly={{ duration: 200, x: 20, opacity: 0 }}
+                                            animate:flip={{ duration: 200 }}
+                                        >
                                             <button
-                                                class="max-w-20 bg-base-200 rounded-xl font-semibold px-3.5 text-center tracking-wide text-sm leading-9 opacity-90"
-                                                class:text-base-300="{!isAvailable(slot)}"
-                                                class:bg-opacity-60="{!isAvailable(slot)}"
-                                                class:bg-success="{slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) > -1}"
-                                                class:text-base-100="{slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) > -1}"
-                                                class:opacity-100="{slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) > -1}"
+                                                class="relative w-[64px] h-[92px] flex flex-col items-center justify-between bg-scene rounded-2xl text-base-100"
                                                 on:click="{() => {
-                                                    if (isAvailable(slot)) {
-                                                        if (slotsSelected.findIndex(s => s && s.getTime() == slot.getTime()) == -1) {
-                                                            let i = 0;
-                                                            while (slotsSelected[i] !== null && i < 2) {
-                                                                i++;
-                                                            }
-                                                            const d = calendarSlider.getActiveDate();
-                                                            slotsSelected[i] = new Date(d.getFullYear(), d.getMonth(), d.getDate(), slot.getHours(), slot.getMinutes(), 0, 0);
+                                                    slotsSelected = slotsSelected.map(s => {
+                                                        if (s !== null && s.getTime() != slot.getTime()) {
+                                                            return s;
                                                         }
-                                                        else {
-                                                            slotsSelected = slotsSelected.map(s => {
-                                                                if (s !== null && s.getTime() != slot.getTime()) {
-                                                                    return s;
-                                                                }
-                                                                return null;
-                                                            }).toSorted((a, b) => {
-                                                                if (a === null && b !== null)
-                                                                    return 1;
-                                                                if (a !== null && b === null)
-                                                                    return -1;
-                                                                return 0;
-                                                            });
-                                                        }
-                                                    }
+                                                        return null;
+                                                    }).toSorted((a, b) => {
+                                                        if (a === null && b !== null)
+                                                            return 1;
+                                                        if (a !== null && b === null)
+                                                            return -1;
+                                                        return 0;
+                                                    });
                                                 }}"
-                                            >{slot.getHours().toString()}:{('0' + slot.getMinutes().toString()).slice(-2)}</button>
+                                            >
+                                                <div class="h-[14px] text-[10px] opacity-70 mt-[4px] leading-[14px]">{monthes[slot.getMonth()]}</div>
+                                                <div class="text-center">
+                                                    <div class="text-lg font-semibold leading-[21px]">{slot.getDate()}</div>
+                                                    <div class="text-sm opacity-90 leading-[17px]">{weekdaysShort[slot.getDay()]}</div>
+                                                </div>
+                                                <div class="h-5"><div class="font-semibold tracking-wide text-sm leading-5 mt-[-4px]">{slot.getHours().toString()}:{('0' + slot.getMinutes().toString()).slice(-2)}</div></div>
+                                                <div class="absolute top-[-4px] right-[-4px] rounded-full w-[18px] h-[18px] overflow-hidden bg-error flex items-center justify-center">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M289.94 256l95-95A24 24 0 0 0 351 127l-95 95l-95-95a24 24 0 0 0-34 34l95 95l-95 95a24 24 0 1 0 34 34l95-95l95 95a24 24 0 0 0 34-34z" fill="currentColor"></path></svg>
+                                                </div>
+                                            </button>
                                         </div>
                                     {/each}
                                 </div>
                             </div>
-                        </div>
+                            <button
+                                class="btn btn-front text-base-100 flex shrink-0 grow-0 mt-6"
+                                class:btn-front="{slotsSelected.filter(s => s !== null).length == 3}"
+                                disabled="{slotsSelected.filter(s => s !== null).length != 3}"
+                                on:click="{() => {
+                                    if (slotsSelected.filter(s => s !== null).length == 3) {
+                                        update();
+                                        confirmationShow = false;
+                                    }
+                                }}"
+                            >Подтвердить время</button>
+                        {/if}
                     </div>
-                </div>
-                <div class="w-full flex flex-col pb-5 items-center shrink-0 grow-0">
-                    {#if step == 1}
-                        <button
-                            class="btn btn-front text-base-100 flex shrink-0 grow-0 mt-6"
-                            class:btn-front="{comment.trim().length > 0}"
-                            disabled="{comment.trim().length < 1}"
-                            on:click="{() => {
-                                step = 2;
-                            }}"
-                        >Выбрать время</button>
-                    {:else}
-                        <div class="w-full flex items-center h-[92px] px-4">
-                            <div
-                                class="w-7 h-7 text-success shrink-9 grow-0 transition-all duration-200"
-                                class:opacity-0="{slotsSelected.filter(s => s !== null).length == 0}"
-                            >
-                                <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><g fill="none"><path d="M14.755 15a2.249 2.249 0 0 1 2.248 2.249v.918a2.75 2.75 0 0 1-.512 1.6C14.945 21.93 12.42 23 9 23c-3.422 0-5.945-1.072-7.487-3.236a2.75 2.75 0 0 1-.51-1.596v-.92A2.249 2.249 0 0 1 3.253 15h11.502zm4.3-13.596a.75.75 0 0 1 1.023.279A12.694 12.694 0 0 1 21.75 8c0 2.254-.586 4.424-1.683 6.336a.75.75 0 1 1-1.301-.746A11.194 11.194 0 0 0 20.25 8c0-1.983-.513-3.89-1.475-5.573a.75.75 0 0 1 .28-1.023zM9 3.004a5 5 0 1 1 0 10a5 5 0 0 1 0-10zm6.589.396a.75.75 0 0 1 1.023.28A8.713 8.713 0 0 1 17.75 8c0 1.538-.398 3.02-1.143 4.328a.75.75 0 1 1-1.304-.743A7.213 7.213 0 0 0 16.25 8a7.213 7.213 0 0 0-.942-3.578a.75.75 0 0 1 .28-1.022z" fill="currentColor"></path></g></svg>
-                            </div>
-                            <div class="w-full grid grid-cols-3 px-1 shrink-1 grow-1">
-                                {#each slotsSelected.filter(s => s !== null) as slot (slot.getTime().toString())}
-                                    <div
-                                        class="w-full flex justify-center"
-                                        in:fly={{ duration: 200, x: -20, opacity: 0 }}
-                                        out:fly={{ duration: 200, x: 20, opacity: 0 }}
-                                        animate:flip={{ duration: 200 }}
-                                    >
-                                        <button
-                                            class="relative w-[64px] h-[92px] flex flex-col items-center justify-between bg-scene rounded-2xl text-base-100"
-                                            on:click="{() => {
-                                                slotsSelected = slotsSelected.map(s => {
-                                                    if (s !== null && s.getTime() != slot.getTime()) {
-                                                        return s;
-                                                    }
-                                                    return null;
-                                                }).toSorted((a, b) => {
-                                                    if (a === null && b !== null)
-                                                        return 1;
-                                                    if (a !== null && b === null)
-                                                        return -1;
-                                                    return 0;
-                                                });
-                                            }}"
-                                        >
-                                            <div class="h-[14px] text-[10px] opacity-70 mt-[4px] leading-[14px]">{monthes[slot.getMonth()]}</div>
-                                            <div class="text-center">
-                                                <div class="text-lg font-semibold leading-[21px]">{slot.getDate()}</div>
-                                                <div class="text-sm opacity-90 leading-[17px]">{weekdaysShort[slot.getDay()]}</div>
-                                            </div>
-                                            <div class="h-5"><div class="font-semibold tracking-wide text-sm leading-5 mt-[-4px]">{slot.getHours().toString()}:{('0' + slot.getMinutes().toString()).slice(-2)}</div></div>
-                                            <div class="absolute top-[-4px] right-[-4px] rounded-full w-[18px] h-[18px] overflow-hidden bg-error flex items-center justify-center">
-                                                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M289.94 256l95-95A24 24 0 0 0 351 127l-95 95l-95-95a24 24 0 0 0-34 34l95 95l-95 95a24 24 0 1 0 34 34l95-95l95 95a24 24 0 0 0 34-34z" fill="currentColor"></path></svg>
-                                            </div>
-                                        </button>
-                                    </div>
-                                {/each}
-                            </div>
-                        </div>
-                        <button
-                            class="btn btn-front text-base-100 flex shrink-0 grow-0 mt-6"
-                            class:btn-front="{slotsSelected.filter(s => s !== null).length == 3}"
-                            disabled="{slotsSelected.filter(s => s !== null).length != 3}"
-                            on:click="{() => {
-                                if (slotsSelected.filter(s => s !== null).length == 3) {
-                                    update();
-                                    confirmationShow = false;
-                                }
-                            }}"
-                        >Подтвердить время</button>
-                    {/if}
-                </div>
+                {/if}
                 <!-- request :: end -->
             {/if}
         {/if}
