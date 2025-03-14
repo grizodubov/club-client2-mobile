@@ -7,6 +7,8 @@
 
     import { nameNormalization } from '@/utils/names';
 
+    import { meetings } from '@/stores';
+
 
     export let user: { [key: string]: any };
     export let event: { [key: string]: any };
@@ -21,6 +23,9 @@
     $: company = user.company ? user.company.toUpperCase() : '';
 
     $: catalog = user.catalog ? cropCatalog(user.catalog) : '';
+
+    $: flag_meetings = $meetings[user.id.toString()] && $meetings[user.id.toString()].meetings;
+    $: flag_favorites = $meetings[user.id.toString()] !== undefined ? $meetings[user.id.toString()].favorites : null;
 
 
     /* cropCatalog */
@@ -60,6 +65,16 @@
                             telegram: '',
                         }}" online="{online}" />
                     </div>
+                    {#if flag_meetings}
+                        <div class="w-full flex justify-center mt-[3px]">
+                            <div
+                                class="text-base-100 px-[5px] py-[1px] leading-3 text-[8px] font-semibold shrink-0 grow-0 rounded-lg"
+                                class:bg-success="{flag_favorites === true}"
+                                class:bg-error="{flag_favorites === false}"
+                                class:bg-warning="{flag_favorites === null}"
+                            >ЗНАКОМЫ</div>
+                        </div>
+                    {/if}
                 </div>
                 <div class="ml-4 shrink-1 grow-1 w-full">
                     <div class="mb-[4px] mt-[2px]">

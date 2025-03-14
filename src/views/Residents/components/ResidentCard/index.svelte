@@ -5,6 +5,8 @@
 
     import { nameNormalization } from '@/utils/names';
 
+    import { meetings } from '@/stores';
+
 
     export let resident: { [key: string]: any };
     export let contact: boolean = false;
@@ -15,6 +17,9 @@
     $: company = resident.company ? resident.company.toUpperCase() : '';
 
     $: catalog = resident.catalog ? resident.catalog.split(/\s*,\s*/).filter(c => c).join(', ').toUpperCase() : '';
+
+    $: flag_meetings = $meetings[resident.id.toString()] && $meetings[resident.id.toString()].meetings;
+    $: flag_favorites = $meetings[resident.id.toString()] !== undefined ? $meetings[resident.id.toString()].favorites : null;
 </script>
 
 
@@ -36,9 +41,14 @@
                 scaleLetters="1.1"
             />
         </div>
-        {#if resident.meetings_flag}
+        {#if flag_meetings}
             <div class="w-full flex justify-center mt-[4px]">
-                <div class="bg-primary text-base-100 px-[6px] py-[1px] leading-4 text-[9px] font-semibold shrink-0 grow-0 rounded-lg">ЗНАКОМЫ</div>
+                <div
+                    class="text-base-100 px-[6px] py-[1px] leading-4 text-[9px] font-semibold shrink-0 grow-0 rounded-lg"
+                    class:bg-success="{flag_favorites === true}"
+                    class:bg-error="{flag_favorites === false}"
+                    class:bg-warning="{flag_favorites === null}"
+                >ЗНАКОМЫ</div>
             </div>
         {/if}
         {#if resident.favorites_flag === true}

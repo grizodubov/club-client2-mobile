@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onDestroy, tick } from 'svelte';
 
-    import { type User, user } from '@/stores';
+    import { type User, user, meetings } from '@/stores';
 
     import { Avatar } from '@/components';
 
@@ -123,7 +123,7 @@
                                     class="relative w-[64px] h-[84px] self-start shrink-0 grow-0"
                                 >
                                     <button
-                                        class="relative top-[0px] w-[64px] h-[64px] mb-[20px]"
+                                        class="relative top-[0px] w-[64px] h-[64px] mb-[4px]"
                                         on:click="{() => {
                                             router.go('/residents/' + user.id.toString());
                                         }}"
@@ -138,7 +138,17 @@
                                             }}"
                                             online="{user.audit == 2}"
                                         />
-                                        </button>
+                                    </button>
+                                    {#if $meetings[user.id.toString()] && $meetings[user.id.toString()].meetings}
+                                        <div class="w-full flex justify-center">
+                                            <div
+                                                class="text-base-100 px-[6px] py-[1px] leading-4 text-[9px] font-semibold shrink-0 grow-0 rounded-lg"
+                                                class:bg-success="{$meetings[user.id.toString()] !== undefined && $meetings[user.id.toString()].favorites === true}"
+                                                class:bg-error="{$meetings[user.id.toString()] !== undefined && $meetings[user.id.toString()].favorites === false}"
+                                                class:bg-warning="{$meetings[user.id.toString()] === undefined || $meetings[user.id.toString()].favorites === null}"
+                                            >ЗНАКОМЫ</div>
+                                        </div>
+                                    {/if}
                                 </div>
                                 <div class="ml-4 shrink-1 grow-1 w-full flex flex-col justify-between">
                                     <div class="w-full">

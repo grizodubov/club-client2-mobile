@@ -30,6 +30,7 @@
     let meetingsOnline: { [key: string]: any }[] = [];
     let meetingsRequests: { [key: string]: any }[] = [];
 
+
     $: meetingsFiltered = parseData(meetings, filter);
     $: meetingsOfflineFiltered = parseOfflineData(meetingsOffline, filter);
     $: meetingsOnlineFiltered = parseOnlineData(meetingsOnline, filter);
