@@ -44,10 +44,7 @@
         {#if flag_meetings}
             <div class="w-full flex justify-center mt-[4px]">
                 <div
-                    class="text-base-100 px-[6px] py-[1px] leading-4 text-[9px] font-semibold shrink-0 grow-0 rounded-lg"
-                    class:bg-success="{flag_favorites === true}"
-                    class:bg-error="{flag_favorites === false}"
-                    class:bg-warning="{flag_favorites === null}"
+                    class="text-base-100 px-[6px] py-[1px] leading-4 text-[9px] font-semibold shrink-0 grow-0 rounded-lg bg-success"
                 >ЗНАКОМЫ</div>
             </div>
         {/if}
