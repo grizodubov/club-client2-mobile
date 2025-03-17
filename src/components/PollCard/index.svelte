@@ -74,7 +74,7 @@
                             <div class="text-sm text-left">{answer.replace(/^\{[gyr]\}/, '')}</div>
                             {#if selected.indexOf(i) > -1}
                                 <div
-                                    class="border-2 border-front bg-front w-7 h-7 flex items-center justify-center text-base-100"
+                                    class="border-2 border-front bg-front w-7 h-7 flex items-center justify-center text-base-100 shrink-0 grow-0"
                                     class:rounded-full="{!poll.many}"
                                     class:rounded-lg="{poll.many}"
                                 >
@@ -82,7 +82,7 @@
                                 </div>
                             {:else}
                                 <div
-                                    class="border-2 border-front w-7 h-7"
+                                    class="border-2 border-front w-7 h-7 shrink-0 grow-0"
                                     class:rounded-full="{!poll.many}"
                                     class:rounded-lg="{poll.many}"
                                 ></div>
