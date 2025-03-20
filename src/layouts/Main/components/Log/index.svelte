@@ -332,7 +332,7 @@
 
 
 
-                {:else if n.event == 'online_response'}
+                {:else if n.event == 'online_response' && n.data.target}
                     <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
                         <div
                             class="text-xs w-full mb-1"
@@ -342,7 +342,7 @@
                             <button
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    router.go('/residents/' + n.data.target.id.toString());
                                     logHide();
                                 }}"
                                 class="w-8 h-8 shrink-0 grow-0 mt-0.5 mr-2.5"
@@ -350,9 +350,9 @@
                             >
                                 <Avatar
                                     user="{{
-                                        id: n.data.initiator.id,
-                                        name: n.data.initiator.name,
-                                        avatar_hash: n.data.initiator.hash,
+                                        id: n.data.target.id,
+                                        name: n.data.target.name,
+                                        avatar_hash: n.data.target.hash,
                                         roles: [ 'client' ],
                                         telegram: '',
                                     }}"
@@ -364,18 +364,18 @@
                             ><button
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    router.go('/residents/' + n.data.target.id.toString());
                                     logHide();
                                 }}"
                                 class="font-semibold text-moderate"
-                            >{nameNormalization(n.data.initiator.name, 2)}</button> {#if n.data.response}согласился с Вашим предложением{:else}отказался от Вашего предложения{/if} провести онлайн-встречу</div>
+                            >{nameNormalization(n.data.target.name, 2)}</button> {#if n.data.response}согласился с Вашим предложением{:else}отказался от Вашего предложения{/if} провести онлайн-встречу</div>
                         </div>
                         <div class="flex justify-between mt-2">
                             <button
                                 class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    router.go('/residents/' + n.data.target.id.toString());
                                     logHide();
                                 }}"
                             >
@@ -387,7 +387,7 @@
                 
                 
                 
-                {:else if n.event == 'online_confirmation'}
+                {:else if n.event == 'online_confirmation' && n.data.recepient}
                     <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
                         <div
                             class="text-xs w-full mb-1"
@@ -397,7 +397,7 @@
                             <button
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    router.go('/residents/' + n.data.recepient.id.toString());
                                     logHide();
                                 }}"
                                 class="w-8 h-8 shrink-0 grow-0 mt-0.5 mr-2.5"
@@ -405,9 +405,9 @@
                             >
                                 <Avatar
                                     user="{{
-                                        id: n.data.initiator.id,
-                                        name: n.data.initiator.name,
-                                        avatar_hash: n.data.initiator.hash,
+                                        id: n.data.recepient.id,
+                                        name: n.data.recepient.name,
+                                        avatar_hash: n.data.recepient.hash,
                                         roles: [ 'client' ],
                                         telegram: '',
                                     }}"
@@ -419,18 +419,18 @@
                             ><button
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    router.go('/residents/' + n.data.recepient.id.toString());
                                     logHide();
                                 }}"
                                 class="font-semibold text-moderate"
-                            >{nameNormalization(n.data.initiator.name, 2)}</button> принял Ваше предложение провести онлайн-встречу</div>
+                            >{nameNormalization(n.data.recepient.name, 2)}</button>{#if n.data.source == 'client'} принял Ваше предложение{/if}, назначена онлайн-встреча</div>
                         </div>
                         <div class="flex justify-between mt-2">
                             <button
                                 class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/residents/' + n.data.initiator.id.toString());
+                                    router.go('/residents/' + n.data.recepient.id.toString());
                                     logHide();
                                 }}"
                             >
@@ -453,7 +453,7 @@
 
 
 
-                {:else if n.event == 'online_request'}
+                {:else if n.event == 'online_request' && n.data.initiator}
                     <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
                         <div
                             class="text-xs w-full mb-1"
@@ -507,7 +507,7 @@
                                 class="btn btn-sm bg-base-300 flex shrink-0 grow-0"
                                 on:click="{() => {
                                     view(n.time_notify_key);
-                                    router.go('/meetings/');
+                                    router.go('/meetings/requests');
                                     logHide();
                                 }}"
                             >
@@ -518,7 +518,7 @@
                     </div>
 
             
-
+                <!-- уже не используется -->
                 {:else if n.event == 'online_manager_confirmation'}
                     <div class="rounded-2xl w-full overflow-hidden p-3 bg-base-200">
                         <div

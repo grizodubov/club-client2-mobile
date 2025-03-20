@@ -47,7 +47,7 @@
 
 
     let archive = false;
-    let requests = false;
+    let requests = params && params['section'] && params['section'] == 'requests' ? true : false;
 
 
     let filter = {

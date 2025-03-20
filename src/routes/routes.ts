@@ -87,6 +87,18 @@ const routes: PathRoute[] = [
 	},
     /* **** */
 	{
+		path: '/meetings/:section',
+        constraints: {
+            'section': '[a-z]+',
+        },
+		layout: 'Main',
+		component: 'Meetings',
+		meta: {
+			name: 'Встречи',
+		},
+	},
+    /* **** */
+	{
 		path: '/residents/:id',
         constraints: {
             'id': '\\d+',
