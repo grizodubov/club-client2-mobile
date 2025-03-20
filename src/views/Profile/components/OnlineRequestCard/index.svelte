@@ -220,6 +220,7 @@
                 class="btn btn-sm btn-front text-base-100 flex shrink-0 grow-0 mb-2.5"
                 on:click="{() => {
                     update();
+                    comment = '';
                     confirmationShow = false;
                 }}"
             >Отменить</button>
