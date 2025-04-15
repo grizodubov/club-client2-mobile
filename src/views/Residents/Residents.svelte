@@ -399,7 +399,7 @@
         <div class="absolute bg-scene opacity-90 w-full h-full">
         </div>
         <div class="absolute w-full h-full flex flex-col jsutify-start items-center">
-            <div class="text-base-100 mt-10 text">Оцените потенциальных партнеров</div>
+            <div class="text-base-100 mt-10 text">Новые потенциальные партнёры</div>
             <button
                 class="rounded-lg px-4 btn-scene text-base-300 mt-2.5 text-[11px] font-semibold h-[26px] leading-[26px] py-0"
                 on:click="{() => {
@@ -421,20 +421,20 @@
                 on:swipe="{(e) => {
                     //console.log('swipe', e.detail.index);
                     cardsAmount = cardsAmount - 1;
-                    const id = cards[e.detail.index]['id'];
-                    setFavorites(id, cardsStates[id.toString()]);
+                    //const id = cards[e.detail.index]['id'];
+                    //setFavorites(id, cardsStates[id.toString()]);
                     if (!cardsAmount) {
                         cardsOpacity = false;
                         setTimeout(() => { cardsShow = false; }, 400);
                     }
                 }}"
                 on:move_left="{(e) => {
-                    const id = cards[e.detail.index]['id'];
-                    cardsStates[id.toString()] = false;
+                    //const id = cards[e.detail.index]['id'];
+                    //cardsStates[id.toString()] = false;
                 }}"
                 on:move_right="{(e) => {
-                    const id = cards[e.detail.index]['id'];
-                    cardsStates[id.toString()] = true;
+                    //const id = cards[e.detail.index]['id'];
+                    //cardsStates[id.toString()] = true;
                 }}"
             >
                 <div
@@ -500,6 +500,7 @@
                             {/if}
                         </div>
                     {/if}
+                    <!--
                     <div class="absolute rounded-[14px] bg-scene h-[28px] bottom-[-48px] left-[48px] right-[48px] flex justify-between items-center">
                         <div class="h-[28px] w-[28px] bg-error rounded-[14px] flex items-center justify-center px-1.5">
                             <svg class="text-base-100 w-4 h-4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28L75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256L9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" fill="currentColor"></path></svg>
@@ -517,6 +518,7 @@
                             {/if}
                         </div>
                     </div>
+                    -->
                 </div>
                 <svelte:fragment slot="swipe-btn">
                     <div class="absolute bottom-[-56px] w-full flex justify-between">
