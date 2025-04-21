@@ -146,7 +146,7 @@ function ajaxRequest({ method, url, body }: RequestAjaxOptions): Promise<HTTPRes
 								data['_bindings'][header.replace(/-/g, '_')] = parseInt(result);
 						}
 					);
-					if (xhr.status < 500) {
+					if (xhr.status == 200) {
 						resolve({
                             status: xhr.status,
                             data: data,
