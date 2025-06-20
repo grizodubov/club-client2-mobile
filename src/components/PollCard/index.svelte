@@ -1,6 +1,8 @@
 <script lang="ts">
     import { Entity, collector } from '@/helpers/entity';
 
+    import InputText from './components/InputText/index.svelte';
+
     import {
         addVote,
     } from '@/queries/poll';
@@ -10,6 +12,7 @@
 
 
     let selected: number[] = [];
+    let custom = '';
 
 
     /* DATA: addVoteHandler */
@@ -21,13 +24,16 @@
 
     /* vote */
     function vote() {
-        if (selected.length > 0)
+        if (selected.length > 0 || custom)
             collector.get([
                 [ 
                     addVoteHandler,
                     {
                         pollId: poll.id,
-                        answer: selected.map((s: number) => s + 1),
+                        answer: poll.new ? selected.map((s: number) => poll.answersIds[s]) : selected.map((s: number) => s + 1),
+                        newFlag: poll.new ? true : false,
+                        custom: custom ? custom : null,
+                        questionId: poll.new ? poll.questionId : null,
                     }
                 ],
             ]);
@@ -37,6 +43,12 @@
     /* calculateWidth */
     function calculateWidth(votes: number): number {
         return poll.votes_max ? Math.round(votes / poll.votes_max * 80) : 0;
+    }
+
+
+    /* parseCustomTags */
+    function parseCustomTags(str) {
+        return str.replace(/\</gi, '&gt;').replace(/\</gi, '&lt;').replace(/\[b\]/gi, '<strong>').replace(/\[\/b\]/gi, '</strong>').replace(/\[br]/gi, '<br />');
     }
 </script>
 
@@ -71,7 +83,7 @@
                             class:brightness-105="{i % 2 == 1}"
                         ></div>
                         <div class="relative w-full h-full flex justify-between items-center">
-                            <div class="text-sm text-left">{answer.replace(/^\{[gyr]\}/, '')}</div>
+                            <div class="text-sm text-left mr-2">{@html parseCustomTags(answer.replace(/^\{[gyr]\}/, ''))}</div>
                             {#if selected.indexOf(i) > -1}
                                 <div
                                     class="border-2 border-front bg-front w-7 h-7 flex items-center justify-center text-base-100 shrink-0 grow-0"
@@ -90,6 +102,22 @@
                         </div>
                     </button>
                 {/each}
+                {#if poll.custom}
+                    <div class="relative w-full px-4 pt-3 pb-11 mb-[-32px] border-b-base-200 rounded-t-2xl overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 bottom-0 left-0 bg-base-200"
+                            class:brightness-100="{poll.answers.length % 2 == 0}"
+                            class:brightness-105="{poll.answers.length % 2 == 1}"
+                        ></div>
+                        <div class="relative w-full h-full">
+                            <div class="font-semibold text-sm mb-2">{poll.customPreamble}</div>
+                            <InputText
+                                placeholder=""
+                                bind:value="{custom}"
+                            />
+                        </div>
+                    </div>
+                {/if}
             {:else if poll.show_results}
                 {#each poll.answers as answer, i}
                     <div
@@ -105,7 +133,7 @@
                                 <div class="bg-primary shrink-0 grow-0 rounded-full overflow-hidden" style="width: {calculateWidth(poll.votes[(i + 1).toString()])}%"></div>
                                 <div class="text-sm font-semibold ml-3 shrink-0 grow-0">{poll.votes[(i + 1).toString()]}</div>
                             </div>
-                            <div class="text-sm text-left mt-1">{answer.replace(/^\{[gyr]\}/, '')}</div>
+                            <div class="text-sm text-left mt-1 mr-2">{@html parseCustomTags(answer.replace(/^\{[gyr]\}/, ''))}</div>
                         </div>
                     </div>
                 {/each}
@@ -115,8 +143,8 @@
             >
                 <div
                     class="absolute top-0 right-0 bottom-0 left-0 bg-base-200"
-                    class:brightness-100="{poll.answers.length % 2 == 0}"
-                    class:brightness-105="{poll.answers.length % 2 == 1}"
+                    class:brightness-100="{(poll.answers.length + (poll.custom ? 1 : 0)) % 2 == 0}"
+                    class:brightness-105="{(poll.answers.length + (poll.custom ? 1 : 0)) % 2 == 1}"
                 ></div>
                 <div class="relative flex justify-center">
                     {#if poll.answered}
@@ -127,7 +155,7 @@
                             class:btn-active="{selected.length == 0}"
                             class:opacity-60="{selected.length == 0}"
                             on:click="{() => {
-                                if (selected.length > 0) {
+                                if (selected.length > 0 || custom) {
                                     vote();
                                 }
                             }}"

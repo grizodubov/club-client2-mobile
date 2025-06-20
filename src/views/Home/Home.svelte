@@ -120,7 +120,7 @@
 		retriever: getRatingPolls.retriever,
         onSuccess: data => {
             start = false;
-            ratingPolls = data.polls;
+            ratingPolls = data.polls.filter(p => !p.new || !p.answered);
             ratingVotes = data.votes;
         },
 	});
