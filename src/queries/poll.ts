@@ -9,12 +9,18 @@ export const addVote = {
 	retriever: async function({
         pollId = 0,
         answer = 0,
+        newFlag = false,
+        custom = null,
+        questionId = null,
     }) {
 		const response = await request({
 			path: '/poll/add/vote',
 			data: {
                 poll_id: pollId,
                 answer: typeof answer === 'number' ? [ answer ] : answer,
+                new: newFlag,
+                custom: custom,
+                question_id: questionId,
             },
 		});
 		if (response.status == 200)
