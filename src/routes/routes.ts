@@ -69,6 +69,15 @@ const routes: PathRoute[] = [
 	},
     /* **** */
 	{
+		path: '/partners',
+		layout: 'Main',
+		component: 'Partners',
+		meta: {
+			name: 'Потенциальные партнёры',
+		},
+	},
+    /* **** */
+	{
 		path: '/residents',
 		layout: 'Main',
 		component: 'Residents',

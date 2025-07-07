@@ -49,6 +49,54 @@ export const residentsList = {
 };
 
 
+/* partnersBundleList */
+export const partnersBundleList = {
+	/* model */
+	model: {
+        partners: []
+    },
+	/* retriever */
+	retriever: async function({
+        usersIds = null,
+    }) {
+		const response = await request({
+			path: '/new/user/bundle/partners',
+			data: {
+                users_ids: usersIds,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
+/* bundleUser */
+export const bundleUser = {
+	/* model */
+	model: {
+        user: {},
+    },
+	/* retriever */
+	retriever: async function({
+        primaryUserId = 0,
+        secondaryUserId = 0,
+    }) {
+		const response = await request({
+			path: '/new/user/bundle/prompt',
+			data: {
+               primary_user_id: primaryUserId,
+               secondary_user_id: secondaryUserId,
+            },
+		});
+		if (response.status == 200)
+			return response.data;
+		return null;
+	}
+};
+
+
 /* residentInfo */
 export const residentInfo = {
 	/* model */

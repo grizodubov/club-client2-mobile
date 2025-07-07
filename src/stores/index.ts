@@ -4,6 +4,7 @@ import { events } from './events';
 import { type User, user, userFirstName } from './user';
 import { bindings } from './bindings';
 import { type ResidentsFilters, residentsFilters, activeResidentsFiltersAmount } from './residentsFilters';
+import { type PartnersFilters, partnersFilters } from './partnersFilters';
 import { type EventsFilters, eventsFilters, activeEventsFiltersAmount } from './eventsFilters';
 import { type CommunitiesFilters, communitiesFilters, activeCommunitiesFiltersAmount } from './communitiesFilters';
 import { type CommunityFilters, communityFilters, activeCommunityFiltersAmount } from './communityFilters';
@@ -20,6 +21,8 @@ export {
     type ResidentsFilters,
     residentsFilters,
     activeResidentsFiltersAmount,
+    type PartnersFilters,
+    partnersFilters,
     type EventsFilters,
     eventsFilters,
     activeEventsFiltersAmount,
