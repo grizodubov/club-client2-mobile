@@ -38,7 +38,7 @@
 
 <button
     on:click="{() => { router.go('/residents/' + resident.id.toString()); }}"
-    class="flex items-start justify-start px-3"
+    class="flex items-start justify-start px-3 w-full"
 >
     <div class="w-[68px] shrink-0 grow-0 relative">
         <div class="w-[68px] h-[68px]">
