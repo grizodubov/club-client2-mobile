@@ -387,7 +387,7 @@
                                 {/if}
                             {/each}
                         {:else}
-                            <div class="p-6 text-center w-full mt-[120px]">Для получения результатов по анализу возможного партнёрства с помощью <span class="medium">искусственного интеллекта</span>, пройдите собеседование с Вашим <a href='/communities' class="font-medium text-front">комьюнити-менеджером</a></div>
+                            <div class="p-6 text-center w-full mt-[132px]">Для получения аналитического отчёта по возможному партнёрству с использованием ИИ, пройдите собеседование с Вашим <a href='/communities' class="font-medium text-front">комьюнити-менеджером</a></div>
                         {/if}
                     </div>
                 {/if}
