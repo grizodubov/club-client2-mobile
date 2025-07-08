@@ -41,9 +41,9 @@
         }}"
     ></button>
     <div
-        class="absolute ease-out transition-all duration-300 w-[calc(100%-40px)] max-h-[calc(100%-276px)] bottom-[106px] left-0 bg-base-100 border-4 border-base-100 rounded-l-2xl scrollable-y"
+        class="absolute ease-out transition-all duration-300 w-[calc(100%-16px)] max-h-[calc(100%-122px)] bottom-[16px] left-0 bg-base-100 border-4 border-base-100 rounded-l-2xl scrollable-y"
         class:ml-[100%]="{!open}"
-        class:ml-[40px]="{open}"
+        class:ml-[16px]="{open}"
     >
         <slot />
     </div>

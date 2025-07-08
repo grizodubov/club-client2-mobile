@@ -27,6 +27,14 @@
     $: flag_favorites = $meetings[resident.id.toString()] !== undefined ? $meetings[resident.id.toString()].favorites : null;
 
     const colors1 = [
+        'rgb(0,169,110,0.3)',
+        'rgb(0,181,251,0.3)',
+        'rgb(255,191,0,0.3)',
+        'rgb(55,124,251,0.3)',
+        'rgb(246,128,103,0.3)',
+    ];
+
+    const colors2 = [
         'rgb(0,169,110)',
         'rgb(0,181,251)',
         'rgb(255,191,0)',
@@ -100,9 +108,9 @@
         {/if}
         <button on:click|stopPropagation="{() => { dispatch('prompt', { secondaryUserId: resident.id }); }}" class="block px-2 py-1 border border-base-200 rounded-lg mt-1.5 w-full">
             <div class="text-left text-[10px] opacity-80">РЕЙТИНГ НА БАЗЕ АНАЛИЗА ИИ</div>
-            <div class="h-5 flex mt-0.5">
+            <div class="h-6 flex mt-0.5">
                 {#each [0, 1, 2, 3, 4] as i}
-                    <div class="w-5 h-5 rounded-lg border ml-[2px] first:ml-0 text-base-100 flex items-center justify-center text-xs font-semibold" style="background-color: {colors1[i]}">{resident.ratings[i]}</div>
+                    <div class="w-6 h-6 rounded-full border ml-1 first:ml-0 flex items-center justify-center text-xs font-semibold border" style="background-color: {colors1[i]}; border-color: {colors2[i]};">{resident.ratings[i]}</div>
                 {/each}
             </div>
         </button>

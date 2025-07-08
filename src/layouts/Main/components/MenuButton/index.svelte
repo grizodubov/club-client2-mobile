@@ -24,10 +24,10 @@
             class:h-[18px]="{typeof binding == 'number'}"
             class:bg-error="{typeof binding == 'number'}"
             class:bottom-[1px]="{typeof binding == 'number'}"
-            class:w-[24px]="{typeof binding == 'string'}"
-            class:h-[24px]="{typeof binding == 'string'}"
-            class:bg-[#00a96e]="{typeof binding == 'string'}"
-            class:bottom-[3px]="{typeof binding == 'string'}"
+            class:w-[20px]="{typeof binding == 'string'}"
+            class:h-[20px]="{typeof binding == 'string'}"
+            class:text-base-300="{typeof binding == 'string'}"
+            class:bottom-[2px]="{typeof binding == 'string'}"
         ><span>{binding}</span></div>
     {/if}
 </button>

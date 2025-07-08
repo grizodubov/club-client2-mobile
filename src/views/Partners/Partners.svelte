@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy, tick } from 'svelte';
-    import { fade } from 'svelte/transition';
+    import { fade, fly } from 'svelte/transition';
 
     import { ResidentCard, InputText, ModalSelector } from './components';
     
@@ -177,12 +177,23 @@
 
 
     const colors1 = [
+        'rgb(0,169,110,0.3)',
+        'rgb(0,181,251,0.3)',
+        'rgb(255,191,0,0.3)',
+        'rgb(55,124,251,0.3)',
+        'rgb(246,128,103,0.3)',
+    ];
+
+    const colors2 = [
         'rgb(0,169,110)',
         'rgb(0,181,251)',
         'rgb(255,191,0)',
         'rgb(55,124,251)',
         'rgb(246,128,103)',
     ];
+
+
+    const sortNames: string[] = [ 'Сделка', 'Синергия', 'Экспертиза', 'Инсайт', 'Мост', ];
 
 
     /* onMount */
@@ -222,7 +233,7 @@
                 </button>
             </div>
             <div class="mt-4 leading-[56px] h-[56px] shrink-1 grow-1 text-center text-base-100 text-xl font-medium">
-                Партнёры
+                Партнёры {#if !$partnersListLoading && !partnerFilterLoading}<span class="ml-1 text-base-300 text-lg font-extralight">(<span class="text-base-100">{partnersFiltered.length}</span> / <span>{partners.length}</span>)</span>{/if}
             </div>
             <div class="w-[56px] h-[56px] mr-4 mt-4 shrink-0 grow-0 flex items-center justify-center">
                 &nbsp;
@@ -239,6 +250,45 @@
                         placeholder="Имя / Компания"
                         bind:value="{filters.name}"
                     />
+                    <div class="flex w-full h-7 justify-between mt-3">
+                        {#each [0, 1, 2, 3, 4] as i}
+                            <div
+                                class="h-7 transition-all duration-150 ml-2 first:ml-0 rounded-full ease-out bg-base-100 overflow-hidden"
+                                class:w-7="{filters.sort != i * 2 && filters.sort != i * 2 + 1}"
+                                class:shrink-0="{filters.sort != i * 2 && filters.sort != i * 2 + 1}"
+                                class:grow-0="{filters.sort != i * 2 && filters.sort != i * 2 + 1}"
+                                class:w-full="{filters.sort == i * 2 || filters.sort == i * 2 + 1}"
+                                class:shrink-1="{filters.sort == i * 2 || filters.sort == i * 2 + 1}"
+                                class:grow-1="{filters.sort == i * 2 || filters.sort == i * 2 + 1}"
+                            >
+                                <button
+                                    class="w-full h-full flex justify-start items-center border rounded-full overflow-hidden"
+                                    style="background-color: {colors1[i]}; border-color: {colors2[i]};"
+                                    on:click="{() => {
+                                        filters.sort = filters.sort == i * 2 ? i * 2 + 1 : i * 2;
+                                        scrollBeacon = 0;
+                                        scrollToPosition();
+                                    }}"    
+                                >
+                                    <div class="w-7 h-7 overflow-hidden shrink-0 grow-0 opacity-60">
+                                        {#if filters.sort == i * 2}
+                                            <div class="w-7 h-7 flex items-center justify-center" in:fly={{ y: -32, duration: 100, delay: 100 }} out:fly={{ y: 32, duration: 100 }}>
+                                                <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM16 160h48v304a16 16 0 0 0 16 16h32a16 16 0 0 0 16-16V160h48c14.21 0 21.38-17.24 11.31-27.31l-80-96a16 16 0 0 0-22.62 0l-80 96C-5.35 142.74 1.77 160 16 160zm416 0H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z" fill="currentColor"></path></svg>
+                                            </div>
+                                        {:else if filters.sort == i * 2 + 1}
+                                            <div class="w-7 h-7 flex items-center justify-center" in:fly={{ y: -32, duration: 100, delay: 100 }} out:fly={{ y: 32, duration: 100 }}>
+                                                <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M240 96h64a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16zm0 128h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16zm256 192H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-256-64h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16zm-64 0h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.37 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352z" fill="currentColor"></path></svg>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                    {#if filters.sort == i * 2 || filters.sort == i * 2 + 1}
+                                        <div class="font-medium text-xs">{sortNames[i]}</div>
+                                    {/if}
+                                </button>
+                            </div>
+                        {/each}
+                    </div>
+                    <!--
                     <div class="grid grid-cols-5 gap-0.5 h-6 mt-3">
                         <button
                             on:click="{() => { filters.sort = filters.sort == 0 ? 1 : 0 }}"
@@ -306,6 +356,7 @@
                             {/if}
                         </button>
                     </div>
+                    -->
                 </div>
 
                 {#if ($partnersListLoading && start) || partnerFilterLoading}
@@ -318,7 +369,7 @@
                             {#each [ ...partnersFiltered, { id: 0 } ] as partner (partner.id)}
                                 {#if partner.id !== 0}
                                     <div
-                                        class="first:mt-[140px] mb-5"
+                                        class="first:mt-[144px] mb-5"
                                         in:fade="{{ duration: 100 }}"
                                     >
                                         <ResidentCard
@@ -335,6 +386,8 @@
                                     <div class="w-full first:mt-[104px] h-[0px]" use:scrollToPosition></div>
                                 {/if}
                             {/each}
+                        {:else}
+                            <div class="p-6 text-center w-full">Для получения результатов по анализу возможного партнёрства с помощью <span class="medium">искусственного интеллекта</span>, пройдите собеседование с Вашим <a href='/communities' class="font-medium text-front">комьюнити-менеджером</a>.</div>
                         {/if}
                     </div>
                 {/if}
