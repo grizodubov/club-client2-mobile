@@ -3,7 +3,7 @@
 
 
     export let path: string;
-    export let binding: number = 0;
+    export let binding: string | number = 0;
 </script>
 
 
@@ -18,6 +18,16 @@
 >
     <slot />
     {#if binding}
-        <div class="absolute w-[18px] h-[18px] bg-error text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full bottom-[1px] right-[-5px]"><span>{binding}</span></div>
+        <div
+            class="absolute text-base-100 flex items-center justify-center text-[10px] font-medium rounded-full right-[-5px]"
+            class:w-[18px]="{typeof binding == 'number'}"
+            class:h-[18px]="{typeof binding == 'number'}"
+            class:bg-error="{typeof binding == 'number'}"
+            class:bottom-[1px]="{typeof binding == 'number'}"
+            class:w-[20px]="{typeof binding == 'string'}"
+            class:h-[20px]="{typeof binding == 'string'}"
+            class:text-base-300="{typeof binding == 'string'}"
+            class:bottom-[2px]="{typeof binding == 'string'}"
+        ><span>{binding}</span></div>
     {/if}
 </button>
