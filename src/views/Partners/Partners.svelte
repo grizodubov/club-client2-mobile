@@ -172,7 +172,7 @@
 
     /* refresh */
     function refresh() {
-        get();
+        //get();
     }
 
 
