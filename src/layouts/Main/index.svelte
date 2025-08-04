@@ -95,7 +95,7 @@
 
 <div class="bg-scene flex flex-col w-full h-full min-w-[320px]">
     {#if currentStates.safeTop}
-        <div class="w-full overflow-hidden shrink-0 grow-0 bg-front" style="height: {currentStates.safeTop}px;">&nbsp;</div>
+        <div class="w-full overflow-hidden shrink-0 grow-0 bg-front" style="height: {Math.max(currentStates.safeTop - 8, 0)}px;">&nbsp;</div>
     {/if}
     <div
         class="shrink-1 grow-1 w-full h-full bg-base-100 overflow-hidden"
@@ -128,6 +128,6 @@
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M28 6H8c-1.2 0-2 .8-2 2v14c0 1.2.8 2 2 2h8v-2H8V8h20v14h-7.2L16 28.8l1.6 1.2l4.2-6H28c1.2 0 2-.8 2-2V8c0-1.2-.8-2-2-2z" fill="currentColor"></path><path d="M4 18H2V5c0-1.7 1.3-3 3-3h13v2H5c-.6 0-1 .4-1 1v13z" fill="currentColor"></path></svg>
             </MenuButton>
         </div>
-        <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {currentStates.safeBottom + 2}px;">&nbsp;</div>
+        <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {Math.max(currentStates.safeBottom - 4, 8)}px;">&nbsp;</div>
     {/if}
 </div>

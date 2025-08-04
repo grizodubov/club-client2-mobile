@@ -10,7 +10,7 @@
 	import LoadingFallback from './Loading.svelte';
 	import ErrorFallback from './Error.svelte';
 
-	import {FirebaseAnalytics} from "@capacitor-community/firebase-analytics";
+	// import {FirebaseAnalytics} from "@capacitor-community/firebase-analytics";
 	import {user} from "@/stores";
 
 
@@ -68,13 +68,13 @@
 			 * @returns instanceId - individual instance id value
 			 * https://firebase.google.com/docs/analytics/screenviews
 			 */
-			let screenName	= viewNext?.name.toString();
-			if (screenName) {
-				FirebaseAnalytics.setScreenName({
-					screenName,
-					nameOverride: `${screenName}Screen`,
-				});
-			}
+			// let screenName	= viewNext?.name.toString();
+			// if (screenName) {
+			// 	FirebaseAnalytics.setScreenName({
+			// 		screenName,
+			// 		nameOverride: `${screenName}Screen`,
+			// 	});
+			// }
 			const id = user.pull('id');
 			if (userId != id) {
 				userId = id;
@@ -93,10 +93,10 @@
 				 * @returns void
 				 * https://firebase.google.com/docs/analytics/userid
 				 */
-				let userId_string = userId.toString();
-				FirebaseAnalytics.setUserId({
-					userId: userId_string,
-				});
+				// let userId_string = userId.toString();
+				// FirebaseAnalytics.setUserId({
+				// 	userId: userId_string,
+				// });
 			}
 			component = createPromise(viewNext);
 			componentResolve(undefined);

@@ -15,7 +15,7 @@
 
 
 <div class="bg-scene flex flex-col w-full h-full min-w-[320px]">
-    <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {currentStates.safeTop + 2}px;">&nbsp;</div>
+    <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {Math.max(currentStates.safeTop - 6, 0)}px;">&nbsp;</div>
     <div class="w-full h-full shrink-1 grow-1">
         <RouterView>
             <div slot="loading" class="w-full h-full flex justify-center items-center">
@@ -23,5 +23,5 @@
             </div>
         </RouterView>
     </div>
-    <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {currentStates.safeBottom + 4}px;">&nbsp;</div>
+    <div class="w-full overflow-hidden shrink-0 grow-0" style="height: {Math.max(currentStates.safeBottom - 2, 8)}px;">&nbsp;</div>
 </div>

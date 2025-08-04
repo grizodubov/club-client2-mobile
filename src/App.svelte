@@ -17,9 +17,7 @@
         type Token
     } from '@capacitor/push-notifications';
 
-    import { FirebaseAnalytics } from "@capacitor-community/firebase-analytics";
-
-    import { StatusBar, Style } from '@capacitor/status-bar';
+    // import { FirebaseAnalytics } from "@capacitor-community/firebase-analytics";
 
     import {
         BarcodeScanner,
@@ -244,7 +242,7 @@
         const deviceInfo = await getDeviceInfo();
         let top = 0;
         let bottom = 0;
-        if (typeof deviceInfo === 'object' && deviceInfo.platform && deviceInfo.platform == 'ios') {
+        if (typeof deviceInfo === 'object' && deviceInfo.platform && (deviceInfo.platform == 'ios' || deviceInfo.platform == 'android')) {
             const safeAreaData = await SafeArea.getSafeAreaInsets();
             const { insets } = safeAreaData;
             top = insets.top ? insets.top : 0;
@@ -260,7 +258,7 @@
         alertsSetup({
             max: 1,
             duration: 6000,
-            top: top + 32,
+            top: Math.max(top + 16, 24),
             right: 'calc(50% - 150px)',
         });
 
@@ -268,7 +266,7 @@
         notificationsSetup({
             max: 1,
             duration: 6000,
-            top: top + 24,
+            top: Math.max(top + 12, 20),
             right: 12,
         });
 
@@ -489,10 +487,10 @@
          * @returns void
          * https://firebase.google.com/docs/analytics/userid
          */
-        let userId_string = userId.toString();
-        FirebaseAnalytics.setUserId({
-            userId: userId_string,
-        });
+        // let userId_string = userId.toString();
+        // FirebaseAnalytics.setUserId({
+        //     userId: userId_string,
+        // });
         const main = document.getElementById('main');
         if (main)
             main.addEventListener('click', blurInputs);
@@ -503,8 +501,8 @@
         };
 	});
 
-    StatusBar.setStyle({ style: Style.Dark });
-    StatusBar.setBackgroundColor({ color: '#0a2d3c' });
+    // StatusBar.setStyle({ style: Style.Dark });
+    // StatusBar.setBackgroundColor({ color: '#0a2d3c' });
 
 
 
@@ -544,7 +542,7 @@
     </div>
     <button
             class="w-7 h-7 text-base-300 absolute right-[24px]"
-            style="top: {(statesO.safeTop + 24).toString()}px"
+            style="top: {Math.max(statesO.safeTop + 12, 20)}px"
             on:click="{stopScan}"
         >
         <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2zm4.3 14.3a.996.996 0 0 1-1.41 0L12 13.41L9.11 16.3a.996.996 0 1 1-1.41-1.41L10.59 12L7.7 9.11A.996.996 0 1 1 9.11 7.7L12 10.59l2.89-2.89a.996.996 0 1 1 1.41 1.41L13.41 12l2.89 2.89c.38.38.38 1.02 0 1.41z" fill="currentColor"></path></svg>
